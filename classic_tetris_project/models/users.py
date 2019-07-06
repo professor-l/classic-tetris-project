@@ -48,4 +48,3 @@ class DiscordUser(PlatformUser):
 
 signals.pre_save.connect(PlatformUser.before_save, sender=DiscordUser)
 signals.pre_save.connect(PlatformUser.before_save, sender=TwitchUser)
-    
