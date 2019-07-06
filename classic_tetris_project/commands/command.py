@@ -15,25 +15,25 @@ class Command:
 
 
 
-    async def check_support_and_execute(self):
+    def check_support_and_execute(self):
         if self.context.PLATFORM in self.supported_platforms:
             try:
-                await self.execute(*self.args)
+                self.execute(*self.args)
             except ArgException:
-                await self.send_usage()
+                self.send_usage()
         else:
-            await self.send_message("Command not supported on this platform.")
+            self.send_message("Command not supported on this platform.")
 
-    async def send_message(self, message):
-        await self.context.send_message(message)
+    def send_message(self, message):
+        self.context.send_message(message)
 
-    async def send_usage(self):
+    def send_usage(self):
         # Add `wrapper` if in Discord
         formatted = self.context.format_code("{prefix}{usage}".format(
             prefix=self.context.PREFIX,
             usage=self.usage
         ))
-        await self.send_message("Usage: {formatted}".format(formatted=formatted))
+        self.send_message("Usage: {formatted}".format(formatted=formatted))
 
 
 

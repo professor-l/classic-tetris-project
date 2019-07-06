@@ -3,3 +3,4 @@ ipython
 discord.py==1.2.3
 django-environ
 ipdb
+asgiref==3.1.3
