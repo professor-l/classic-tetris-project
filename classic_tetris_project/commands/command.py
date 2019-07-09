@@ -31,9 +31,9 @@ class Command:
         # Add `wrapper` if in Discord
         formatted = self.context.format_code("{prefix}{usage}".format(
             prefix=self.context.PREFIX,
-            usage=self.usage
+            usage=self.USAGE
         ))
-        self.send_message("Usage: {formatted}".format(formatted=formatted))
+        self.send_message(f"Usage: {formatted}")
 
 
 

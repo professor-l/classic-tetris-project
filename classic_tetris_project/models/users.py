@@ -10,6 +10,18 @@ class User(models.Model):
     pal_pb = models.IntegerField(null=True)
     country = models.CharField(max_length=3, null=True)
 
+    def set_pb(self, pb, pb_type="ntsc"):
+        if pb_type == "pal":
+            self.pal_pb = pb
+            self.save()
+        elif pb_type == "ntsc":
+            self.ntsc_pb = pb
+            self.save()
+        else:
+            raise Exception(f"Illegal pb type '{pb_type}'")
+
+            
+
 
 class PlatformUser(models.Model):
 

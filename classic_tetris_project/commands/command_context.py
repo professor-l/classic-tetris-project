@@ -2,6 +2,7 @@ import re
 from asgiref.sync import async_to_sync
 from .command import COMMAND_MAP
 from ..util import Platform
+from ..models.users import DiscordUser
 
 class CommandContext:
     def __init__(self, content):
@@ -23,6 +24,10 @@ class CommandContext:
     def is_command(cls, message):
         return message.startswith(cls.PREFIX)
 
+    @property
+    def user(self):
+        return self.platform_user.user
+
 
 
 class DiscordCommandContext(CommandContext):
@@ -37,3 +42,11 @@ class DiscordCommandContext(CommandContext):
 
     def send_message(self, message):
         async_to_sync(self.channel.send)(message)
+
+    @property
+    def user_tag(self):
+        return f"<@{self.author.id}>"
+
+    @property
+    def platform_user(self):
+        return DiscordUser.fetch_by_discord_id(self.author.id)
