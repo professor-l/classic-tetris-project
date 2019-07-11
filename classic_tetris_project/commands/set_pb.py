@@ -2,12 +2,9 @@ from .command import Command, CommandException, register_command
 
 @register_command("newpb", "setpb")
 class SetPBCommand(Command):
-    USAGE = "setpb <pb> [type] (default type NTSC)"
+    usage = "setpb <pb> [type] (default type NTSC)"
 
-    def execute(self, pb, pb_type="ntsc", *args):
-        if args:
-            raise CommandException(send_usage=True)
-
+    def execute(self, pb, pb_type="ntsc"):
         try:
             pb = int(pb.replace(",", ""))
         except ValueError:

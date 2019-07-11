@@ -5,12 +5,9 @@ from ..models.users import DiscordUser
 
 @register_command("pb", "getpb")
 class GetPBCommand(Command):
-    USAGE = "pb [username] (default username you)"
+    usage = "pb [username] (default username you)"
 
-    def execute(self, username=None, *args):
-        if args:
-            raise CommandException(send_usage=True)
-
+    def execute(self, username=None):
         if self.context.platform == Platform.DISCORD:
             platform_user = self.discord_user_from_username(username) if username else self.context.platform_user
 
@@ -36,4 +33,3 @@ class GetPBCommand(Command):
                 return None
         else:
             raise CommandException("Invalid username", send_usage=False)
-            
