@@ -1,8 +1,9 @@
 from ..util import Platform
 
-class ArgException(Exception):
-    pass
-
+class CommandException(Exception):
+    def __init__(self, message=None, send_usage=False):
+        self.message = message
+        self.send_usage = send_usage
 
 class Command:
     def __init__(self, context):
@@ -16,11 +17,14 @@ class Command:
 
 
     def check_support_and_execute(self):
-        if self.context.PLATFORM in self.supported_platforms:
+        if self.context.platform in self.supported_platforms:
             try:
                 self.execute(*self.args)
-            except ArgException:
-                self.send_usage()
+            except CommandException as e:
+                if e.message:
+                    self.send_message(e.message)
+                if e.send_usage:
+                    self.send_usage()
         else:
             self.send_message("Command not supported on this platform.")
 

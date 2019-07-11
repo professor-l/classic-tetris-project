@@ -1,4 +1,4 @@
-from .command import Command, ArgException, register_command
+from .command import Command, register_command
 
 @register_command("test", "devtest")
 class TestCommand(Command):

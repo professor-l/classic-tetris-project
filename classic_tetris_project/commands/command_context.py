@@ -28,10 +28,13 @@ class CommandContext:
     def user(self):
         return self.platform_user.user
 
+    def format_code(self, message):
+        return message
+
 
 
 class DiscordCommandContext(CommandContext):
-    PLATFORM = Platform.DISCORD
+    platform = Platform.DISCORD
     PREFIX = "!"
     def __init__(self, message):
         super().__init__(message.content)
@@ -50,3 +53,6 @@ class DiscordCommandContext(CommandContext):
     @property
     def platform_user(self):
         return DiscordUser.fetch_by_discord_id(self.author.id)
+
+    def format_code(self, message):
+        return f"`{message}`"

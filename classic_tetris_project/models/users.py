@@ -57,6 +57,10 @@ class DiscordUser(PlatformUser):
         discord_user, created = DiscordUser.objects.get_or_create(discord_id=discord_id)
         return discord_user
 
+    @property
+    def user_tag(self):
+        return f"<@{self.discord_id}>"
+
 
 signals.pre_save.connect(PlatformUser.before_save, sender=DiscordUser)
 signals.pre_save.connect(PlatformUser.before_save, sender=TwitchUser)
