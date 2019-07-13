@@ -14,13 +14,13 @@ class User(models.Model):
         if pb_type == "pal":
             self.pal_pb = pb
             self.save()
+            return True
         elif pb_type == "ntsc":
             self.ntsc_pb = pb
             self.save()
+            return True
         else:
-            raise Exception(f"Illegal pb type '{pb_type}'")
-
-            
+            return False
 
 
 class PlatformUser(models.Model):
@@ -47,6 +47,11 @@ class TwitchUser(PlatformUser):
     def fetch_by_twitch_id(twitch_id):
         twitch_user, created = TwitchUser.objects.get_or_create(twitch_id=twitch_id)
         return twitch_user
+
+    @property
+    def user_tag(self):
+        # TODO
+        raise NotImplementedError
 
 
 class DiscordUser(PlatformUser):

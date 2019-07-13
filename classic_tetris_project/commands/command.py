@@ -29,9 +29,6 @@ class Command:
                     self.send_message(e.message)
                 if e.send_usage:
                     self.send_usage()
-            except TypeError as e:
-                import ipdb; ipdb.set_trace()
-                self.send_usage()
         else:
             self.send_message("Command not supported on this platform.")
 
@@ -41,25 +38,25 @@ class Command:
     def send_usage(self):
         # Add `wrapper` if in Discord
         formatted = self.context.format_code("{prefix}{usage}".format(
-            prefix=self.context.PREFIX,
+            prefix=self.context.prefix,
             usage=self.usage
         ))
         self.send_message(f"Usage: {formatted}")
 
     @property
     def arity(self):
-        required = 0
-        optional = 0
+        min_args = 0
+        max_args = 0
         sig = signature(self.execute)
         for param in sig.parameters.values():
             if param.kind == param.VAR_POSITIONAL:
-                optional = None
+                max_args = None
             else:
                 if param.default == param.empty:
-                    required += 1
-                if optional is not None:
-                    optional += 1
-        return required, optional
+                    min_args += 1
+                if max_args is not None:
+                    max_args += 1
+        return min_args, max_args
 
 
 

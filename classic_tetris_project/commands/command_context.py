@@ -2,13 +2,13 @@ import re
 from asgiref.sync import async_to_sync
 from .command import COMMAND_MAP
 from ..util import Platform
-from ..models.users import DiscordUser
+from ..models.users import DiscordUser, TwitchUser
 
 class CommandContext:
     def __init__(self, content):
         self.content = content
         trimmed = re.sub(r"\s+", " ", content).strip()
-        tokens = trimmed[len(self.PREFIX):].split(" ")
+        tokens = trimmed[len(self.prefix):].split(" ")
         self.command_name = tokens[0].lower()
         self.args = tokens[1:]
 
@@ -22,7 +22,7 @@ class CommandContext:
 
     @classmethod
     def is_command(cls, message):
-        return message.startswith(cls.PREFIX)
+        return message.startswith(cls.prefix)
 
     @property
     def user(self):
@@ -35,7 +35,7 @@ class CommandContext:
 
 class DiscordCommandContext(CommandContext):
     platform = Platform.DISCORD
-    PREFIX = "!"
+    prefix = "!"
     def __init__(self, message):
         super().__init__(message.content)
 
@@ -56,3 +56,27 @@ class DiscordCommandContext(CommandContext):
 
     def format_code(self, message):
         return f"`{message}`"
+
+
+
+class TwitchCommandContext(CommandContext):
+    platform = Platform.TWITCH
+    prefix = "!"
+
+    def __init__(self, message):
+        super().__init__(message.content)
+
+        self.message = message
+        self.channel = message.channel
+        self.author = message.author
+
+    def send_message(self, message):
+        self.channel.send_message(message)
+
+    @property
+    def user_tag(self):
+        return f"@{self.author.username}"
+
+    @property
+    def platform_user(self):
+        return TwitchUser.fetch_by_twitch_id(self.author.id)
