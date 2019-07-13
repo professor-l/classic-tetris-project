@@ -4,6 +4,9 @@ from django.db import models
 from django.db.models import signals
 from django.dispatch import receiver
 
+from .. import twitch
+from ..util import memoize
+
 class User(models.Model):
     preferred_name = models.CharField(max_length=64, null=True)
     ntsc_pb = models.IntegerField(null=True)
@@ -48,10 +51,26 @@ class TwitchUser(PlatformUser):
         twitch_user, created = TwitchUser.objects.get_or_create(twitch_id=twitch_id)
         return twitch_user
 
+    @staticmethod
+    def from_username(username):
+        user_obj = twitch.API.user_from_username(username)
+        if user_obj:
+            return TwitchUser.objects.get(twitch_id=user_obj.id)
+        else:
+            raise TwitchUser.DoesNotExist
+
+    @property
+    @memoize
+    def user_obj(self):
+        return twitch.API.user_from_id(self.twitch_id)
+
+    @property
+    def username(self):
+        return self.user_obj.username
+
     @property
     def user_tag(self):
-        # TODO
-        raise NotImplementedError
+        return f"@{self.username}"
 
 
 class DiscordUser(PlatformUser):

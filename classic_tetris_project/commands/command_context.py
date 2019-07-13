@@ -51,6 +51,7 @@ class DiscordCommandContext(CommandContext):
         return f"<@{self.author.id}>"
 
     @property
+    @memoize
     def platform_user(self):
         return DiscordUser.fetch_by_discord_id(self.author.id)
 
@@ -78,5 +79,6 @@ class TwitchCommandContext(CommandContext):
         return f"@{self.author.username}"
 
     @property
+    @memoize
     def platform_user(self):
         return TwitchUser.fetch_by_twitch_id(self.author.id)

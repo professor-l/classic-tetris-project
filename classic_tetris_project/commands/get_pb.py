@@ -1,7 +1,7 @@
 import re
 from .command import Command, CommandException, register_command
 from ..util import Platform
-from ..models.users import DiscordUser
+from ..models.users import DiscordUser, TwitchUser
 
 @register_command("pb", "getpb")
 class GetPBCommand(Command):
@@ -9,7 +9,11 @@ class GetPBCommand(Command):
 
     def execute(self, username=None):
         if self.context.platform == Platform.DISCORD:
-            platform_user = self.discord_user_from_username(username) if username else self.context.platform_user
+            platform_user = (self.discord_user_from_username(username) if username
+                             else self.context.platform_user)
+        elif self.context.platform == Platform.TWITCH:
+            platform_user = (self.twitch_user_from_username(username) if username
+                             else self.context.platform_user)
 
 
         if platform_user:
@@ -21,7 +25,6 @@ class GetPBCommand(Command):
         else:
             self.send_message("User has not set a PB.")
 
-
     def discord_user_from_username(self, username):
         match = re.match(r"^<@!?(\d+)>$", username)
 
@@ -30,6 +33,18 @@ class GetPBCommand(Command):
             try:
                 return DiscordUser.objects.get(discord_id=discord_id)
             except DiscordUser.DoesNotExist:
+                return None
+        else:
+            raise CommandException("Invalid username", send_usage=False)
+
+    def twitch_user_from_username(self, username):
+        match = re.match(r"^@?(\w+)$", username)
+
+        if match:
+            username = match.group(1)
+            try:
+                return TwitchUser.from_username(username)
+            except TwitchUser.DoesNotExist:
                 return None
         else:
             raise CommandException("Invalid username", send_usage=False)

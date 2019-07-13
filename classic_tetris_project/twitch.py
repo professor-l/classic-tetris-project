@@ -1,18 +1,59 @@
-import re
 import irc.client
+import re
+import requests
 
-import logging
+from .env import env
 
 
+TWITCH_API = "https://api.twitch.tv/kraken/"
 TWITCH_SERVER = "irc.chat.twitch.tv"
 TWITCH_PORT = 6667
 
+class APIClient:
+    def __init__(self, client_id):
+        self.client_id = client_id
+        self.headers = {
+            "Accept": "application/vnd.twitchtv.v5+json",
+            "Client-ID": client_id
+        }
+
+    def _request(self, endpoint, params={}):
+        response = requests.get(f"{TWITCH_API}{endpoint}", params=params, headers=self.headers)
+        return response.json()
+
+    def user_from_username(self, username):
+        response = self._request("users", { "login": username })
+        user_list = response["users"]
+        if user_list:
+            user_obj = user_list[0]
+            return User(
+                username=user_obj["name"],
+                id=user_obj["_id"],
+                display_name=user_obj["display_name"],
+                tags=user_obj
+            )
+        else:
+            return None
+
+    def user_from_id(self, user_id):
+        user_obj = self._request(f"users/{user_id}")
+        return User(
+            username=user_obj["name"],
+            id=user_obj["_id"],
+            display_name=user_obj["display_name"],
+            tags=user_obj
+        )
+
+
+
+
+API = APIClient(env("TWITCH_CLIENT_ID"))
+
+
 class Client:
-    def __init__(self, username, token, client_id=None, channels=[]):
-        # logging.basicConfig(level=logging.DEBUG)
+    def __init__(self, username, token, channels=[]):
         self.username = username
         self.token = token
-        self.client_id = client_id
         self.channels = channels
         self.reactor = irc.client.Reactor()
         self.connection = self.reactor.server()
@@ -37,7 +78,7 @@ class Client:
     def _handle_message(self, event, handler):
         tags = { tag["key"]: tag["value"] for tag in event.tags }
         username = re.match(r"\w+!(\w+)@[\w.]+", event.source)[1]
-        author = User(self, username, tags)
+        author = User(username, tags["user-id"], tags["display-name"], tags)
         if event.type == "pubmsg":
             channel = PublicChannel(self, event.target[1:])
         elif event.type == "whisper":
@@ -51,11 +92,11 @@ class Client:
 
 
 class User:
-    def __init__(self, client, username, tags):
+    def __init__(self, username, id, display_name, tags={}):
         self.username = username
-        self.display_name = tags["display-name"]
-        self.id = tags["user-id"]
-        self.type = tags["user-type"]
+        self.id = id
+        self.display_name = display_name
+        self.tags = tags
 
 
 

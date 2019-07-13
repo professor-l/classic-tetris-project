@@ -4,8 +4,11 @@ from ... import twitch
 from ...env import env
 from ...commands.command_context import TwitchCommandContext
 
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        # import logging
+        # logging.basicConfig(level=logging.DEBUG)
         client = twitch.Client(
             env("TWITCH_USERNAME"),
             env("TWITCH_TOKEN"),
