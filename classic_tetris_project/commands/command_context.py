@@ -1,7 +1,7 @@
 import re
 from asgiref.sync import async_to_sync
 from .command import COMMAND_MAP
-from ..util import Platform
+from ..util import Platform, memoize
 from ..models.users import DiscordUser, TwitchUser
 
 class CommandContext:

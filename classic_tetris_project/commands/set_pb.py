@@ -15,7 +15,7 @@ class SetPBCommand(Command):
         if pb < 0:
             self.send_message("Invalid PB.")
         elif pb > 1400000:
-            self.send_message("You wish, kid")
+            self.send_message("You wish, kid >.>")
         else:
             if self.context.user.set_pb(pb, pb_type):
                 self.send_message("{user_tag} has a new {pb_type} pb of {pb:,}!".format(

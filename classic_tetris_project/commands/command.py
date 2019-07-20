@@ -1,5 +1,8 @@
+import re
 from inspect import signature
+
 from ..util import Platform
+from ..models.users import DiscordUser, TwitchUser
 
 class CommandException(Exception):
     def __init__(self, message=None, send_usage=False):
@@ -57,6 +60,33 @@ class Command:
                 if max_args is not None:
                     max_args += 1
         return min_args, max_args
+
+
+    @staticmethod
+    def discord_user_from_username(username):
+        match = re.match(r"^<@!?(\d+)>$", username)
+
+        if match:
+            discord_id = match.group(1)
+            try:
+                return DiscordUser.objects.get(discord_id=discord_id)
+            except DiscordUser.DoesNotExist:
+                return None
+        else:
+            raise CommandException("Invalid username", send_usage=False)
+
+    @staticmethod
+    def twitch_user_from_username(username):
+        match = re.match(r"^@?(\w+)$", username)
+
+        if match:
+            username = match.group(1)
+            try:
+                return TwitchUser.from_username(username)
+            except TwitchUser.DoesNotExist:
+                return None
+        else:
+            raise CommandException("Invalid username", send_usage=False)
 
 
 
