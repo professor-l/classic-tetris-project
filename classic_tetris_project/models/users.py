@@ -85,6 +85,11 @@ class DiscordUser(PlatformUser):
     def user_tag(self):
         return f"<@{self.discord_id}>"
 
+    def send_message(self, message):
+        from ..tasks import send_message_to_discord_user
+        # send_message_to_discord_user.delay(self.id, message)
+        send_message_to_discord_user(self.id, message)
+
 
 signals.pre_save.connect(PlatformUser.before_save, sender=DiscordUser)
 signals.pre_save.connect(PlatformUser.before_save, sender=TwitchUser)

@@ -7,6 +7,11 @@ from ..models.users import DiscordUser, TwitchUser
 class CommandContext:
     def __init__(self, content):
         self.content = content
+        try:
+            self.args_string = content[(content.index(" ") + 1):]
+        except ValueError:
+            self.args_string = ""
+
         trimmed = re.sub(r"\s+", " ", content).strip()
         tokens = trimmed[len(self.prefix):].split(" ")
         self.command_name = tokens[0].lower()

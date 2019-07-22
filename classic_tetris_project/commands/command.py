@@ -4,6 +4,10 @@ from inspect import signature
 from ..util import Platform
 from ..models.users import DiscordUser, TwitchUser
 
+RE_DISCORD_MENTION = re.compile(r"^<@!?(\d+)>$")
+RE_DISCORD_TAG = re.compile(r"^@?(?P<username>[^@#:]+)#(?P<discriminator>\d+)$")
+RE_TWITCH_USERNAME = re.compile(r"^@?(\w+)$")
+
 class CommandException(Exception):
     def __init__(self, message=None, send_usage=False):
         self.message = message
@@ -64,20 +68,24 @@ class Command:
 
     @staticmethod
     def discord_user_from_username(username):
-        match = re.match(r"^<@!?(\d+)>$", username)
+        match_mention = RE_DISCORD_MENTION.match(username)
+        match_tag = RE_DISCORD_TAG.match(username)
 
-        if match:
+        if match_mention:
             discord_id = match.group(1)
             try:
                 return DiscordUser.objects.get(discord_id=discord_id)
             except DiscordUser.DoesNotExist:
                 return None
+        elif match_tag:
+            username = match_tag.group("username")
+            discriminator = int(match_tag.group("discriminator"))
         else:
             raise CommandException("Invalid username", send_usage=False)
 
     @staticmethod
     def twitch_user_from_username(username):
-        match = re.match(r"^@?(\w+)$", username)
+        match = re.match(r, username)
 
         if match:
             username = match.group(1)
