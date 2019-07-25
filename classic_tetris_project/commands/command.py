@@ -72,7 +72,7 @@ class Command:
         match_tag = RE_DISCORD_TAG.match(username)
 
         if match_mention:
-            discord_id = match.group(1)
+            discord_id = match_mention.group(1)
             try:
                 return DiscordUser.objects.get(discord_id=discord_id)
             except DiscordUser.DoesNotExist:

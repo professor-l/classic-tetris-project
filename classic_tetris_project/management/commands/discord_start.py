@@ -34,7 +34,7 @@ class Command(BaseCommand):
 
         @client.event
         async def on_ready():
-            thread = Thread(target=celery_app.worker_main, args=(["worker", "-Q discord,celery"],))
+            thread = Thread(target=celery_app.worker_main, args=(["worker", "-Q", "discord"],))
             thread.start()
 
         client.run(env("DISCORD_TOKEN"))

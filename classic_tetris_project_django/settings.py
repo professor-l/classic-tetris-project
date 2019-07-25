@@ -123,5 +123,6 @@ STATIC_URL = '/static/'
 
 
 CELERY_TASK_ROUTES = {
-    # "classic_tetris_project.tasks.*": { "queue": "discord" }
+    "classic_tetris_project.tasks.discord_*": { "queue": "discord" },
+    "classic_tetris_project.tasks.twitch_*": { "queue": "twitch" },
 }
