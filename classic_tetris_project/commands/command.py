@@ -1,11 +1,12 @@
 import re
 from inspect import signature
 
+from .. import discord
 from ..util import Platform
 from ..models.users import DiscordUser, TwitchUser
 
 RE_DISCORD_MENTION = re.compile(r"^<@!?(\d+)>$")
-RE_DISCORD_TAG = re.compile(r"^@?(?P<username>[^@#:]+)#(?P<discriminator>\d+)$")
+RE_DISCORD_TAG = re.compile(r"^@?((?P<username>[^@#:]+)#(?P<discriminator>\d+))$")
 RE_TWITCH_USERNAME = re.compile(r"^@?(\w+)$")
 
 class CommandException(Exception):
@@ -78,8 +79,13 @@ class Command:
             except DiscordUser.DoesNotExist:
                 return None
         elif match_tag:
-            username = match_tag.group("username")
-            discriminator = int(match_tag.group("discriminator"))
+            discord_tag = match_tag.group(1)
+            guild = discord.client.get_guild(discord.guild_id)
+            member = guild.get_member_named(discord_tag)
+            if member:
+                return DiscordUser.objects.get(discord_id=member.id)
+            else:
+                return None
         else:
             raise CommandException("Invalid username", send_usage=False)
 

@@ -1,3 +1,5 @@
 import discord
+from .env import env
 
-discord_client = discord.Client()
+client = discord.Client()
+guild_id = int(env("DISCORD_GUILD_ID"))

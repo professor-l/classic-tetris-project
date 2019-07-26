@@ -3,9 +3,9 @@ from asgiref.sync import sync_to_async
 from celery import current_app as celery_app
 from threading import Thread
 
+from ... import discord, twitch
 from ...env import env
-from ...commands.command_context import DiscordCommandContext
-from ...discord import client
+from ...commands.command_context import DiscordCommandContext, TwitchCommandContext
 
 """
 The discord.py library uses asyncio coroutines for all event 
@@ -25,17 +25,31 @@ https://www.aeracode.org/2018/02/19/python-async-simplified/
 """
 
 class Command(BaseCommand):
-    def handle(self, *args, **options):
-        @client.event
+    def run_discord(self):
+        @discord.client.event
         async def on_message(message):
             if DiscordCommandContext.is_command(message.content):
                 context = DiscordCommandContext(message)
                 await sync_to_async(context.dispatch)()
 
-        @client.event
-        async def on_ready():
-            thread = Thread(target=celery_app.worker_main, args=(["worker", "-Q", "discord"],))
-            thread.start()
+        discord.client.run(env("DISCORD_TOKEN"))
 
-        client.run(env("DISCORD_TOKEN"))
+    def run_twitch(self):
+        client = twitch.Client(
+            env("TWITCH_USERNAME"),
+            env("TWITCH_TOKEN"),
+            channels=["classictetrisbottest"]
+        )
 
+        @client.on_message
+        def on_message(message):
+            if TwitchCommandContext.is_command(message.content):
+                context = TwitchCommandContext(message)
+                context.dispatch()
+
+        client.start()
+
+    def handle(self, *args, **options):
+        twitch_thread = Thread(target=self.run_twitch)
+        twitch_thread.start()
+        self.run_discord()

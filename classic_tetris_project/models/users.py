@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models import signals
 from django.dispatch import receiver
 
-from .. import twitch
+from .. import twitch, discord
 from ..util import memoize
 
 class User(models.Model):
