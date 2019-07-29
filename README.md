@@ -1,6 +1,6 @@
 # The Classic Tetris Bot
 
-This repository is a new and improved bot for Classic Tetris Monthly that is designed to be accessible to the whole community, both in and out of CTM contexts. **This bot is not yet production ready and has not been rolled out.** It is designed, however, to be run on a cloud computing instance rather than a home PC, and as such its uptime will be drastically improved from the [current bot](https://github.com/professor-l/lsq-bot).
+This repository is a new and improved bot for Classic Tetris Monthly that is designed to be accessible to the whole community, both in and out of CTM contexts. **This bot is not yet production ready and has not been rolled out.** It is designed, however, to be run on a cloud computing instance rather than a home PC, and as such its uptime will be drastically improved from the strikingly mediocre [current bot](https://github.com/professor-l/lsq-bot).
 
 Here are some of the greater features the bot **supports** or _will support_:
 
