@@ -35,19 +35,13 @@ class Command(BaseCommand):
         discord.client.run(env("DISCORD_TOKEN"))
 
     def run_twitch(self):
-        client = twitch.Client(
-            env("TWITCH_USERNAME"),
-            env("TWITCH_TOKEN"),
-            channels=["classictetrisbottest"]
-        )
-
-        @client.on_message
+        @twitch.client.on_message
         def on_message(message):
             if TwitchCommandContext.is_command(message.content):
                 context = TwitchCommandContext(message)
                 context.dispatch()
 
-        client.start()
+        twitch.client.start()
 
     def handle(self, *args, **options):
         twitch_thread = Thread(target=self.run_twitch)

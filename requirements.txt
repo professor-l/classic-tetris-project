@@ -6,4 +6,5 @@ ipdb==0.12
 ipython==7.5.0
 irc==17.1
 requests==2.22.0
+django-redis==4.10.0
 celery==4.3.0

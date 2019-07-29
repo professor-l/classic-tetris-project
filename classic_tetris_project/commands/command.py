@@ -4,6 +4,7 @@ from inspect import signature
 from .. import discord
 from ..util import Platform
 from ..models.users import DiscordUser, TwitchUser
+from ..env import env
 
 RE_DISCORD_MENTION = re.compile(r"^<@!?(\d+)>$")
 RE_DISCORD_TAG = re.compile(r"^@?((?P<username>[^@#:]+)#(?P<discriminator>\d+))$")
@@ -51,6 +52,20 @@ class Command:
         ))
         self.send_message(f"Usage: {formatted}")
 
+    def check_moderator(self):
+        if self.context.platform == Platform.TWITCH:
+            if not self.context.author.is_moderator:
+                raise CommandException()
+
+        elif self.context.platform == Platform.DISCORD:
+            guild = discord.get_guild()
+            member = guild.get_member(self.context.author.id)
+            role = guild.get_role(discord.moderator_role_id)
+
+            if role not in member.roles:
+                raise CommandException()
+
+
     @property
     def arity(self):
         min_args = 0
@@ -80,10 +95,13 @@ class Command:
                 return None
         elif match_tag:
             discord_tag = match_tag.group(1)
-            guild = discord.client.get_guild(discord.guild_id)
+            guild = discord.get_guild()
             member = guild.get_member_named(discord_tag)
             if member:
-                return DiscordUser.objects.get(discord_id=member.id)
+                try:
+                    return DiscordUser.objects.get(discord_id=member.id)
+                except DiscordUser.DoesNotExist:
+                    return None
             else:
                 return None
         else:
@@ -91,7 +109,7 @@ class Command:
 
     @staticmethod
     def twitch_user_from_username(username):
-        match = re.match(r, username)
+        match = RE_TWITCH_USERNAME.match(username)
 
         if match:
             username = match.group(1)

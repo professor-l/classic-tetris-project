@@ -1,5 +1,6 @@
-from django.db import models
+import asyncio
 
+from django.db import models
 # Used to add User upon creation of TwitchUser or DiscordUser
 from django.db.models import signals
 from django.dispatch import receiver
@@ -62,7 +63,7 @@ class TwitchUser(PlatformUser):
     @property
     @memoize
     def user_obj(self):
-        return twitch.API.user_from_id(self.twitch_id)
+        return twitch.client.get_user(self.twitch_id)
 
     @property
     def username(self):
@@ -71,6 +72,10 @@ class TwitchUser(PlatformUser):
     @property
     def user_tag(self):
         return f"@{self.username}"
+
+    def send_message(self, message):
+        self.user_obj.send_message(message)
+
 
 
 class DiscordUser(PlatformUser):
@@ -86,8 +91,12 @@ class DiscordUser(PlatformUser):
         return f"<@{self.discord_id}>"
 
     def send_message(self, message):
-        from ..tasks import discord_send_message_to_user
-        discord_send_message_to_user.delay(self.id, message)
+        discord_user_obj = discord.client.get_user(int(self.discord_id))
+
+        asyncio.run_coroutine_threadsafe(
+            discord_user_obj.send(message), 
+            discord.client.loop
+        )
 
 
 signals.pre_save.connect(PlatformUser.before_save, sender=DiscordUser)
