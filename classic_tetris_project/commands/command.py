@@ -1,4 +1,5 @@
 import re
+import traceback
 from inspect import signature
 
 from .. import discord
@@ -38,6 +39,9 @@ class Command:
                     self.send_message(e.message)
                 if e.send_usage:
                     self.send_usage()
+            except Exception as e:
+                self.send_message("Internal error :(")
+                traceback.print_exc()
         else:
             self.send_message("Command not supported on this platform.")
 
@@ -113,10 +117,7 @@ class Command:
 
         if match:
             username = match.group(1)
-            try:
-                return TwitchUser.from_username(username)
-            except TwitchUser.DoesNotExist:
-                return None
+            return TwitchUser.from_username(username)
         else:
             raise CommandException("Invalid username", send_usage=False)
 

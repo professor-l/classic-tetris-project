@@ -1,6 +1,6 @@
 import asyncio
 
-from django.db import models
+from django.db import models, transaction
 # Used to add User upon creation of TwitchUser or DiscordUser
 from django.db.models import signals
 from django.dispatch import receiver
@@ -26,6 +26,22 @@ class User(models.Model):
         else:
             return False
 
+    @transaction.atomic
+    def link(self, target_user):
+
+        self.preferred_name = self.preferred_name or target_user.preferred_name
+        
+        if self.ntsc_pb is None or (target_user.ntsc_pb is not None and target_user.ntsc_pb > self.ntsc_pb):
+            self.ntsc_pb = target_user.ntsc_pb
+        if self.pal_pb is None or (target_user.pal_pb is not None and target_user.pal_pb > self.pal_pb):
+            self.pal_pb = target_user.pal_pb
+            
+        self.country = self.country or target_user.country
+        self.save()
+
+        TwitchUser.objects.filter(user_id=target_user.id).update(user_id=self.id)
+        DiscordUser.objects.filter(user_id=target_user.id).update(user_id=self.id)
+        target_user.delete()
 
 class PlatformUser(models.Model):
 
@@ -56,9 +72,9 @@ class TwitchUser(PlatformUser):
     def from_username(username):
         user_obj = twitch.API.user_from_username(username)
         if user_obj:
-            return TwitchUser.objects.get(twitch_id=user_obj.id)
+            return TwitchUser.fetch_by_twitch_id(user_obj.id)
         else:
-            raise TwitchUser.DoesNotExist
+            return None
 
     @property
     @memoize
@@ -87,14 +103,21 @@ class DiscordUser(PlatformUser):
         return discord_user
 
     @property
+    @memoize
+    def user_obj(self):
+        return discord.client.get_user(int(self.discord_id))
+
+    @property
+    def username(self):
+        return self.user_obj.name
+
+    @property
     def user_tag(self):
         return f"<@{self.discord_id}>"
 
     def send_message(self, message):
-        discord_user_obj = discord.client.get_user(int(self.discord_id))
-
         asyncio.run_coroutine_threadsafe(
-            discord_user_obj.send(message), 
+            self.user_obj.send(message), 
             discord.client.loop
         )
 
