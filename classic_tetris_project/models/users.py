@@ -7,6 +7,7 @@ from django.dispatch import receiver
 
 from .. import twitch, discord
 from ..util import memoize
+from ..countries import countries
 
 class User(models.Model):
     preferred_name = models.CharField(max_length=64, null=True)
@@ -25,6 +26,15 @@ class User(models.Model):
             return True
         else:
             return False
+
+    def set_country(self, country_code):
+        if country_code.upper() in countries:
+            self.country = country_code.upper()
+            self.save()
+            return True
+        else:
+            return False
+        
 
     @transaction.atomic
     def link(self, target_user):
