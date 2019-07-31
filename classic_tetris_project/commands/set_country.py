@@ -1,6 +1,4 @@
 from .command import Command, CommandException, register_command
-from ..util import Platform
-from ..models.users import User, DiscordUser, TwitchUser
 from ..countries import countries
 
 @register_command("setcountry")

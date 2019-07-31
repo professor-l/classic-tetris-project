@@ -1,4 +1,5 @@
 import asyncio
+import re
 
 from django.db import models, transaction
 # Used to add User upon creation of TwitchUser or DiscordUser
@@ -10,6 +11,8 @@ from ..util import memoize
 from ..countries import countries
 
 class User(models.Model):
+    RE_PREFERRED_NAME = re.compile(r"^[A-Za-z0-9\-_. ]+$")
+    
     preferred_name = models.CharField(max_length=64, null=True)
     ntsc_pb = models.IntegerField(null=True)
     pal_pb = models.IntegerField(null=True)
@@ -30,6 +33,14 @@ class User(models.Model):
     def set_country(self, country_code):
         if country_code.upper() in countries:
             self.country = country_code.upper()
+            self.save()
+            return True
+        else:
+            return False
+
+    def set_preferred_name(self, name):
+        if User.RE_PREFERRED_NAME.match(name):
+            self.preferred_name = name
             self.save()
             return True
         else:
