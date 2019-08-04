@@ -21,10 +21,6 @@ class Command:
         self.context = context
         self.args = context.args
 
-    @property
-    def supported_platforms(self):
-        return [Platform.DISCORD, Platform.TWITCH]
-
     def check_support_and_execute(self):
         if self.context.platform in self.supported_platforms:
             try:
@@ -125,8 +121,9 @@ class Command:
 
 COMMAND_MAP = {}
 
-def register_command(*aliases):
+def register_command(*aliases, platforms=(Platform.DISCORD, Platform.TWITCH)):
     def register(command):
+        command.supported_platforms = platforms
         for alias in aliases:
             COMMAND_MAP[alias] = command
         return command

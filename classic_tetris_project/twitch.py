@@ -125,6 +125,7 @@ class Channel:
         self.client = client
 
 class PublicChannel(Channel):
+    type = "channel"
     def __init__(self, client, name):
         super().__init__(client)
         self.name = name
@@ -133,6 +134,7 @@ class PublicChannel(Channel):
         self.client.send_message(f"#{self.name}", message)
 
 class Whisper(Channel):
+    type = "whisper"
     def __init__(self, client, author):
         super().__init__(client)
         self.author = author

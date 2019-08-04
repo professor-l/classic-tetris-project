@@ -13,7 +13,6 @@ class GetPBCommand(Command):
             platform_user = (Command.twitch_user_from_username(username) if username
                              else self.context.platform_user)
 
-
         if not platform_user:
             self.send_message("User has not set a PB.")
             return
@@ -25,7 +24,6 @@ class GetPBCommand(Command):
                 ntsc=user.ntsc_pb,
                 pal=user.pal_pb
             ))
-
         else:
             if user.ntsc_pb:
                 self.send_message("{user_tag} has an NTSC PB of {ntsc:,}.".format(
