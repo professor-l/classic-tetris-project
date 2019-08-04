@@ -9,13 +9,12 @@ from ..models.users import User, DiscordUser, TwitchUser
 
 REQUEST_TIMEOUT = 30 * 60
 
-@register_command("link", "linkaccount")
+@register_command(
+    "link", "linkaccount", 
+    platforms=(Platform.DISCORD,)
+)
 class LinkCommand(Command):
     usage = "link <twitch username>"
-
-    @property
-    def supported_platforms(self):
-        return [Platform.DISCORD]
 
     def execute(self, username):
         if self.context.channel.type != ChannelType.private:
@@ -65,13 +64,12 @@ class LinkCommand(Command):
         )
 
 
-@register_command("linktoken")
+@register_command(
+    "linktoken",
+    platforms=(Platform.DISCORD,)
+)
 class LinkTokenCommand(Command):
     usage = "linktoken <token>"
-
-    @property
-    def supported_platforms(self):
-        return [Platform.DISCORD]
 
     def execute(self, token):
         if self.context.channel.type != ChannelType.private:
