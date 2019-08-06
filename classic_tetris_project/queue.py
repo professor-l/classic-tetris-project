@@ -6,16 +6,27 @@ class Queue:
     def __init__(self, channel):
         self.channel = channel
         self.matches = []
-        self.open = True
+        self._open = False
 
-    def add_match(self, match):
-        self.matches.append(match)
+    def add_match(self, user1, user2):
+        self.matches.append(Match(user1, user2))
 
     def save(self):
         cache.set(f"queues.{self.channel}", self, timeout=QUEUE_TIMEOUT)
 
-    def close():
-        self.open = False
+    def open(self):
+        self._open = True
+        self.save()
+
+    def close(self):
+        self._open = False
+        self.save()
+
+
+
+    @property
+    def is_open(self):
+        return self._open
 
     @staticmethod
     def get(channel):
@@ -33,13 +44,6 @@ class Match:
         self.winner = None
     
 class Game:
+    def declare_winner(winner):
+        self.winner = winner
 
-
-
-        
-class Game:
-
-
-vandweller roncli
-
-!winner roncli 341,533

@@ -1,6 +1,7 @@
 import re
 import traceback
 from inspect import signature
+from discord import ChannelType
 
 from .. import discord
 from ..util import Platform
@@ -65,6 +66,24 @@ class Command:
             if role not in member.roles:
                 raise CommandException()
 
+    def check_private(self):
+        if self.context.platform == Platform.DISCORD:
+            if self.context.channel.type != ChannelType.private:
+                raise CommandException("This command only works in a direct message.")
+        
+        elif self.context.platform == Platform.TWITCH:
+            if self.context.channel.type != "whisper":
+                raise CommandException("This command only works in a direct message.")
+
+    def check_public(self):
+        if self.context.platform == Platform.DISCORD:
+            if self.context.channel.type != ChannelType.text:
+                raise CommandException("This command only works in a public channel.")
+        
+        elif self.context.platform == Platform.TWITCH:
+            if self.context.channel.type != "channel":
+                raise CommandException("This command only works in a public channel.")
+        
 
     @property
     def arity(self):

@@ -17,8 +17,7 @@ class LinkCommand(Command):
     usage = "link <twitch username>"
 
     def execute(self, username):
-        if self.context.channel.type != ChannelType.private:
-            raise CommandException("This command only works in a direct message.")
+        self.check_private()
 
         twitch_user = Command.twitch_user_from_username(username)
         if not twitch_user:

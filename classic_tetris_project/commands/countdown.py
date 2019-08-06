@@ -9,7 +9,9 @@ from ..util import Platform
 )
 class Countdown(Command):
     def execute(self):
+        self.check_public()
         self.check_moderator()
+
         n = int(self.context.command_name)
         for i in range(n, 0, -1):
             self.send_message(str(i))
