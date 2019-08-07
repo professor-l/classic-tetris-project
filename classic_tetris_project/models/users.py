@@ -83,6 +83,13 @@ class PlatformUser(models.Model):
 
 class TwitchUser(PlatformUser):
     twitch_id = models.CharField(max_length=64, unique=True, blank=False)
+    """
+    username is set when:
+    - a TwitchUser with no username is saved
+    - a TwitchUser runs a command
+    - TwitchUser.from_username is called
+    """
+    username = models.CharField(max_length=25, unique=True, blank=False)
 
     @staticmethod
     def fetch_by_twitch_id(twitch_id):
@@ -91,20 +98,22 @@ class TwitchUser(PlatformUser):
 
     @staticmethod
     def from_username(username):
-        user_obj = twitch.API.user_from_username(username)
-        if user_obj:
-            return TwitchUser.fetch_by_twitch_id(user_obj.id)
-        else:
-            return None
+        try:
+            twitch_user = TwitchUser.objects.get(username__iexact=username)
+            return twitch_user
+        except TwitchUser.DoesNotExist:
+            user_obj = twitch.API.user_from_username(username)
+            if user_obj:
+                twitch_user = TwitchUser.fetch_by_twitch_id(user_obj.id)
+                twitch_user.update_username(user_obj.username)
+                return twitch_user
+            else:
+                return None
 
     @property
     @memoize
     def user_obj(self):
         return twitch.client.get_user(self.twitch_id)
-
-    @property
-    def username(self):
-        return self.user_obj.username
 
     @property
     def user_tag(self):
@@ -113,11 +122,23 @@ class TwitchUser(PlatformUser):
     def send_message(self, message):
         self.user_obj.send_message(message)
 
+    def update_username(self, username):
+        if self.username != username:
+            self.username = username
+            self.save()
+
+    @staticmethod
+    def before_save(sender, instance, **kwargs):
+        if not instance.username:
+            instance.username = instance.user_obj.username
+
+        PlatformUser.before_save(sender, instance, **kwargs)
+
 
 
 class DiscordUser(PlatformUser):
     discord_id = models.CharField(max_length=64, unique=True, blank=False)
-
+        
     @staticmethod
     def fetch_by_discord_id(discord_id):
         discord_user, created = DiscordUser.objects.get_or_create(discord_id=discord_id)
@@ -143,5 +164,5 @@ class DiscordUser(PlatformUser):
         )
 
 
-signals.pre_save.connect(PlatformUser.before_save, sender=DiscordUser)
-signals.pre_save.connect(PlatformUser.before_save, sender=TwitchUser)
+signals.pre_save.connect(DiscordUser.before_save, sender=DiscordUser)
+signals.pre_save.connect(TwitchUser.before_save, sender=TwitchUser)
