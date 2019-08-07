@@ -8,8 +8,9 @@ class Queue:
         self.matches = []
         self._open = False
 
-    def add_match(self, user1, user2):
-        self.matches.append(Match(user1, user2))
+    def add_match(self, twitch_user1, twitch_user2):
+        self.matches.append(Match(twitch_user1, twitch_user2))
+        self.save()
 
     def save(self):
         cache.set(f"queues.{self.channel}", self, timeout=QUEUE_TIMEOUT)
@@ -33,13 +34,10 @@ class Queue:
         return cache.get(f"queues.{channel}")
 
 
-    
-
-
 class Match:
-    def __init__(self, player1, player2):
-        self.player1 = player1
-        self.player2 = player2
+    def __init__(self, twitch_user1, twitch_user2):
+        self.twitch_user1 = twitch_user1
+        self.twitch_user2 = twitch_user2
         self.games = []
         self.winner = None
     
