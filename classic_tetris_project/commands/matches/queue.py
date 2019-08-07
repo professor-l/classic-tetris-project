@@ -87,4 +87,11 @@ class AddMatchCommand(Command):
         else:
             twitch_user1 = Command.twitch_user_from_username(player1)
             twitch_user2 = Command.twitch_user_from_username(player2)
+
+            if twitch_user1 is None:
+                raise CommandException(f"The twitch user \"{player1}\" does not exist.")
+            if twitch_user2 is None:
+                raise CommandException(f"The twitch user \"{player2}\" does not exist.")
+                
             queue.add_match(twitch_user1, twitch_user2)
+            self.send_message(f"A match has been added between {twitch_user1.user_tag} and {twitch_user2.user_tag}!")
