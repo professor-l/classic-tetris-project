@@ -108,12 +108,12 @@ class UnlinkCommand(Command):
         if self.context.platform == Platform.DISCORD:
             if not TwitchUser.objects.filter(user_id=self.context.user.id).exists():
                 raise CommandException("No accounts to unlink!")
-            self.context.platform_user.delete()
+            self.context.platform_user.unlink_from_user()
 
         elif self.context.platform == Platform.TWITCH:
             if not DiscordUser.objects.filter(user_id=self.context.user.id).exists():
                 raise CommandException("No accounts to unlink!")
-            self.context.platform_user.delete()
+            self.context.platform_user.unlink_from_user()
         
         self.send_message("This account has been successfully unlinked from all user data.")
 
