@@ -12,6 +12,10 @@ class Queue:
         self.matches.append(Match(twitch_user1, twitch_user2))
         self.save()
 
+    def remove_match(self, index):
+        del self.matches[index]
+        self.save()
+
     def save(self):
         cache.set(f"queues.{self.channel}", self, timeout=QUEUE_TIMEOUT)
 
@@ -23,9 +27,9 @@ class Queue:
         self._open = False
         self.save()
 
+    def is_empty(self):
+        return len(self.matches) == 0
 
-
-    @property
     def is_open(self):
         return self._open
 
@@ -41,7 +45,11 @@ class Match:
         self.games = []
         self.winner = None
     
+    def declare_winner(twitch_user, losing_score):
+        self.games.append(Game(twitch_user, losing_score)
+    
 class Game:
-    def declare_winner(winner):
+    def __init__(winner, losing_score):
         self.winner = winner
+        self.losing_score = losing_score
 

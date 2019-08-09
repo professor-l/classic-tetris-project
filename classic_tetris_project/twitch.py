@@ -52,22 +52,27 @@ class APIClient:
 class Client:
     def __init__(self, username, token, channels=[]):
         self.username = username
+        self.user_obj = API.user_from_username(username, self)
+        self.user_id = self.user_obj.id
         self.token = token
         self.channels = channels
         self.reactor = irc.client.Reactor()
         self.connection = self.reactor.server()
 
-        self.connection.add_global_handler("welcome", self.on_welcome)
+        self.on_welcome(self.handle_welcome)
 
-    def on_welcome(self, c, e):
-        c.cap("REQ", ":twitch.tv/tags")
-        c.cap("REQ", ":twitch.tv/commands")
+    def handle_welcome(self):
+        self.connection.cap("REQ", ":twitch.tv/tags")
+        self.connection.cap("REQ", ":twitch.tv/commands")
         for channel in self.channels:
-            c.join(f"#{channel}")
+            self.connection.join(f"#{channel}")
 
     def start(self):
         self.connection.connect(TWITCH_SERVER, TWITCH_PORT, self.username, self.token)
         self.reactor.process_forever()
+
+    def on_welcome(self, handler):
+        self.connection.add_global_handler("welcome", lambda c, e: handler())
 
     def on_message(self, handler):
         self.connection.add_global_handler("pubmsg", lambda c, e: self._handle_message(e, handler))

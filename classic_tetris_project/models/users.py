@@ -134,6 +134,10 @@ class TwitchUser(PlatformUser):
 
         PlatformUser.before_save(sender, instance, **kwargs)
 
+    def __getstate__(self):
+        return {k: v for k, v in self.__dict__.items() if not k.startswith("_memo_")}
+    def __setstate__(self, state):
+        self.__dict__.update(state)
 
 
 class DiscordUser(PlatformUser):
