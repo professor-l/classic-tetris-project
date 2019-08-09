@@ -1,10 +1,3 @@
-from enum import Enum
-
-class Platform(Enum):
-    DISCORD = 0
-    TWITCH = 1
-
-
 # Currently only memoizes nullary instance methods
 def memoize(f):
     var_name = f"_memo_{f.__name__}"

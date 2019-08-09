@@ -27,6 +27,10 @@ https://www.aeracode.org/2018/02/19/python-async-simplified/
 class Command(BaseCommand):
     def run_discord(self):
         @discord.client.event
+        async def on_ready():
+            print("Connected to Discord")
+
+        @discord.client.event
         async def on_message(message):
             if DiscordCommandContext.is_command(message.content):
                 context = DiscordCommandContext(message)
@@ -35,6 +39,10 @@ class Command(BaseCommand):
         discord.client.run(env("DISCORD_TOKEN"))
 
     def run_twitch(self):
+        @twitch.client.on_welcome
+        def on_welcome():
+            print("Connected to Twitch")
+
         @twitch.client.on_message
         def on_message(message):
             if TwitchCommandContext.is_command(message.content):

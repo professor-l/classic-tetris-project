@@ -1,6 +1,7 @@
 from ..command import Command, CommandException, register_command
 from ...util import Platform
 from ...queue import Queue
+from ...util import memoize
 
 """
 queue.py:
@@ -24,28 +25,48 @@ challenge.py
 
 """
 
+
+
+class QueueCommand(Command):
+    @property
+    @memoize
+    def queue(self):
+        return Queue.get(self.context.channel.name)
+
+    def is_queue_open(self):
+        return self.queue and self.queue.is_open()
+
+    def stringify_queue(self, queue):
+        s = []
+        for i, match in enumerate(queue.matches):
+            s.append("[{index}]: {player1} vs. {player2}".format(
+                index=i+1,
+                player1=match.twitch_user1.username,
+                player2=match.twitch_user2.username
+            ))
+
+        return " ".join(s) or "No current queue."
+
+
 @register_command(
     "open", "openqueue",
     platforms=(Platform.TWITCH,)
 )
-class OpenQueueCommand(Command):
+class OpenQueueCommand(QueueCommand):
     usage = "open"
 
     def execute(self):
         self.check_public()
         self.check_moderator()
 
-        channel_name = self.context.channel.name
-        queue = Queue.get(channel_name)
-        if queue and queue.is_open:
+        if self.is_queue_open():
             raise CommandException("The queue has already been opened.")
         else:
-            if queue:
-                queue.open()
+            if self.queue:
+                self.queue.open()
                 self.send_message("The queue has been repoened!")
             else:
-                queue = Queue(channel_name)
-                queue.open()
+                Queue(self.context.channel.name).open()
                 self.send_message("The queue is now open!")
 
 
@@ -53,36 +74,44 @@ class OpenQueueCommand(Command):
     "close", "closequeue",
     platforms=(Platform.TWITCH,)
 )
-class CloseQueueCommand(Command):
+class CloseQueueCommand(QueueCommand):
     usage = "close"
 
     def execute(self):
         self.check_public()
         self.check_moderator()
 
-        channel_name = self.context.channel.name
-        queue = Queue.get(channel_name)
-        if queue is None or not queue.is_open:
+        if not self.is_queue_open():
             raise CommandException("The queue isn't open!")
         else:
-            queue.close()
+            self.queue.close()
             self.send_message("The queue has been closed.")   
+
+@register_command(
+    "queue", "q", "matches",
+    platforms=(Platform.TWITCH,)
+)
+class ShowQueueCommand(QueueCommand):
+    usage = "queue"
+
+    def execute(self):
+        self.check_public()
+        self.send_message(self.stringify_queue(self.queue))
+
 
 
 @register_command(
     "addmatch", 
     platforms=(Platform.TWITCH,)
 )
-class AddMatchCommand(Command):
+class AddMatchCommand(QueueCommand):
     usage = "addmatch <player 1> <player 2>"
 
     def execute(self, player1, player2):
         self.check_public()
         self.check_moderator()
 
-        channel_name = self.context.channel.name
-        queue = Queue.get(channel_name)
-        if queue is None or not queue.is_open:
+        if not self.is_queue_open():
             raise CommandException("The queue is not open.")
         else:
             twitch_user1 = Command.twitch_user_from_username(player1)
@@ -93,5 +122,30 @@ class AddMatchCommand(Command):
             if twitch_user2 is None:
                 raise CommandException(f"The twitch user \"{player2}\" does not exist.")
                 
-            queue.add_match(twitch_user1, twitch_user2)
+            self.queue.add_match(twitch_user1, twitch_user2)
             self.send_message(f"A match has been added between {twitch_user1.user_tag} and {twitch_user2.user_tag}!")
+            
+
+@register_command(
+    "removematch",
+    platforms=(Platform.TWITCH,)
+)
+class RemoveMatchCommand(QueueCommand):
+    usage = "removematch <index>"
+
+    def execute(self, index):
+        self.check_public()
+        self.check_moderator()
+
+        try:
+            index = int(index)
+        except ValueError:
+            raise CommandException("Invalid index.")
+            
+        if index < 1 or index > len(self.queue.matches):
+            raise CommandException("No match at specified index.")
+        else:
+            self.queue.remove_match(index - 1)
+            self.send_message("Match removed! New queue: {queue}".format(
+                queue=self.stringify_queue(self.queue)
+            ))

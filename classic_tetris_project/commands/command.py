@@ -3,7 +3,7 @@ import traceback
 from inspect import signature
 from discord import ChannelType
 
-from .. import discord
+from .. import discord, twitch
 from ..util import Platform
 from ..models.users import DiscordUser, TwitchUser
 from ..env import env
@@ -69,20 +69,28 @@ class Command:
     def check_private(self):
         if self.context.platform == Platform.DISCORD:
             if self.context.channel.type != ChannelType.private:
-                raise CommandException("This command only works in a direct message.")
+                raise CommandException(
+                    "This command only works in a direct message."
+                )
         
         elif self.context.platform == Platform.TWITCH:
             if self.context.channel.type != "whisper":
-                raise CommandException("This command only works in a direct message.")
+                raise CommandException(
+                    "This command only works in a direct message."
+                )
 
     def check_public(self):
         if self.context.platform == Platform.DISCORD:
             if self.context.channel.type != ChannelType.text:
-                raise CommandException("This command only works in a public channel.")
+                raise CommandException(
+                    "This command only works in a public channel."
+                )
         
         elif self.context.platform == Platform.TWITCH:
             if self.context.channel.type != "channel":
-                raise CommandException("This command only works in a public channel.")
+                raise CommandException(
+                    "This command only works in a public channel."
+                )
         
 
     @property
@@ -132,7 +140,11 @@ class Command:
 
         if match:
             username = match.group(1)
-            return TwitchUser.from_username(username)
+            user = TwitchUser.from_username(username)
+            if user.twitch_id == twitch.client.user_id:
+                raise CommandException("I'm a bot, silly!")
+            
+            return user
         else:
             raise CommandException("Invalid username", send_usage=False)
 
