@@ -80,6 +80,10 @@ class PlatformUser(models.Model):
             user.save()
             instance.user = user
 
+    def unlink_from_user(self):
+        self.user_id = None
+        self.save()
+
 
 class TwitchUser(PlatformUser):
     twitch_id = models.CharField(max_length=64, unique=True, blank=False)
