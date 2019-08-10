@@ -10,7 +10,7 @@ from ..models.users import User, DiscordUser, TwitchUser
 REQUEST_TIMEOUT = 30 * 60
 
 @register_command(
-    "link", "linkaccount", 
+    "link", "linkaccount",
     platforms=(Platform.DISCORD,)
 )
 class LinkCommand(Command):
@@ -40,11 +40,11 @@ class LinkCommand(Command):
         except TwitchUser.DoesNotExist:
             pass
 
-        
+
         link_request = cache.get(f"link_requests.{self.context.user.id}")
         if link_request and link_request.target_user_id == twitch_user.user_id:
             raise CommandException(f"You've already sent a link request to the twitch user \"{username}\".")
-        
+
         link_request = LinkRequest(discord_user.user_id, twitch_user.user_id)
         cache.set(f"link_requests.{discord_user.user_id}", link_request, timeout=REQUEST_TIMEOUT)
 
@@ -78,7 +78,7 @@ class LinkTokenCommand(Command):
 
         if link_request and link_request.token == token:
             target_user = User.objects.get(id=link_request.target_user_id)
-            twitch_user = TwitchUser.objects.filter(user_id=target_user.id).first()
+            twitch_user = target_user.twitch_user
             self.context.user.merge(target_user)
 
             self.send_message(f"The twitch account \"{twitch_user.username}\" is now linked to this Discord account!")
@@ -92,6 +92,7 @@ PAL PB: {self.context.user.pal_pb}
         else:
             raise CommandException("No link request with that token was made.")
 
+
 @register_command("unlink")
 class UnlinkCommand(Command):
     usage = "unlink yesimsure"
@@ -104,22 +105,22 @@ class UnlinkCommand(Command):
                 "will be preserved on other platforms. Are you sure?",
                 send_usage=True
             )
-        
+
         if self.context.platform == Platform.DISCORD:
-            if not TwitchUser.objects.filter(user_id=self.context.user.id).exists():
+            if not hasattr(self.context.user, "twitch_user"):
                 raise CommandException("No accounts to unlink!")
             self.context.platform_user.unlink_from_user()
 
         elif self.context.platform == Platform.TWITCH:
-            if not DiscordUser.objects.filter(user_id=self.context.user.id).exists():
+            if not hasattr(self.context.user, "discord_user"):
                 raise CommandException("No accounts to unlink!")
             self.context.platform_user.unlink_from_user()
-        
+
         self.send_message("This account has been successfully unlinked from all user data.")
+
 
 class LinkRequest:
     def __init__(self, request_user_id, target_user_id):
         self.request_user_id = request_user_id
         self.target_user_id = target_user_id
         self.token = "".join(str(random.randrange(10)) for _ in range(6))
-

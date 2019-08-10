@@ -12,7 +12,7 @@ from ..countries import countries
 
 class User(models.Model):
     RE_PREFERRED_NAME = re.compile(r"^[A-Za-z0-9\-_. ]+$")
-    
+
     preferred_name = models.CharField(max_length=64, null=True)
     ntsc_pb = models.IntegerField(null=True)
     pal_pb = models.IntegerField(null=True)
@@ -53,9 +53,6 @@ class User(models.Model):
 
 class PlatformUser(models.Model):
 
-    # Foreign key referencing User, delete this if said User is deleted
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
     class Meta:
         abstract = True
 
@@ -73,6 +70,7 @@ class PlatformUser(models.Model):
 
 
 class TwitchUser(PlatformUser):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="twitch_user")
     twitch_id = models.CharField(max_length=64, unique=True, blank=False)
     """
     username is set when:
@@ -132,8 +130,9 @@ class TwitchUser(PlatformUser):
 
 
 class DiscordUser(PlatformUser):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="discord_user")
     discord_id = models.CharField(max_length=64, unique=True, blank=False)
-        
+
     @staticmethod
     def fetch_by_discord_id(discord_id):
         discord_user, created = DiscordUser.objects.get_or_create(discord_id=discord_id)
