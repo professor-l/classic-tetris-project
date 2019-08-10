@@ -1,7 +1,5 @@
 from django.db import transaction
 
-from ..models import TwitchUser, DiscordUser
-
 class UserMerger:
     def __init__(self, user1, user2):
         self.user1 = user1
@@ -28,5 +26,9 @@ class UserMerger:
         self.user1.save()
 
     def update_platform_users(self):
-        TwitchUser.objects.filter(user_id=self.user2.id).update(user_id=self.user1.id)
-        DiscordUser.objects.filter(user_id=self.user2.id).update(user_id=self.user1.id)
+        if hasattr(self.user2, "twitch_user"):
+            self.user2.twitch_user.user = self.user1
+            self.user2.twitch_user.save()
+        if hasattr(self.user2, "discord_user"):
+            self.user2.discord_user.user = self.user1
+            self.user2.discord_user.save()
