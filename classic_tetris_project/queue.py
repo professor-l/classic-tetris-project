@@ -44,12 +44,11 @@ class Match:
         self.twitch_user2 = twitch_user2
         self.games = []
         self.winner = None
-    
+
     def declare_winner(twitch_user, losing_score):
-        self.games.append(Game(twitch_user, losing_score)
-    
+        self.games.append(Game(twitch_user, losing_score))
+
 class Game:
     def __init__(winner, losing_score):
         self.winner = winner
         self.losing_score = losing_score
-
