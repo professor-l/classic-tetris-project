@@ -1,7 +1,7 @@
 import asyncio
 import re
 
-from django.db import models, transaction
+from django.db import models
 # Used to add User upon creation of TwitchUser or DiscordUser
 from django.db.models import signals
 from django.dispatch import receiver
@@ -45,24 +45,11 @@ class User(models.Model):
             return True
         else:
             return False
-        
 
-    @transaction.atomic
-    def link(self, target_user):
+    def merge(self, target_user):
+        from ..util.merge import UserMerger
+        UserMerger(self, target_user).merge()
 
-        self.preferred_name = self.preferred_name or target_user.preferred_name
-        
-        if self.ntsc_pb is None or (target_user.ntsc_pb is not None and target_user.ntsc_pb > self.ntsc_pb):
-            self.ntsc_pb = target_user.ntsc_pb
-        if self.pal_pb is None or (target_user.pal_pb is not None and target_user.pal_pb > self.pal_pb):
-            self.pal_pb = target_user.pal_pb
-            
-        self.country = self.country or target_user.country
-        self.save()
-
-        TwitchUser.objects.filter(user_id=target_user.id).update(user_id=self.id)
-        DiscordUser.objects.filter(user_id=target_user.id).update(user_id=self.id)
-        target_user.delete()
 
 class PlatformUser(models.Model):
 

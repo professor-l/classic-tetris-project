@@ -79,7 +79,7 @@ class LinkTokenCommand(Command):
         if link_request and link_request.token == token:
             target_user = User.objects.get(id=link_request.target_user_id)
             twitch_user = TwitchUser.objects.filter(user_id=target_user.id).first()
-            self.context.user.link(target_user)
+            self.context.user.merge(target_user)
 
             self.send_message(f"The twitch account \"{twitch_user.username}\" is now linked to this Discord account!")
             self.send_message(f"""
