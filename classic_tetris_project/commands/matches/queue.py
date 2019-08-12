@@ -41,8 +41,8 @@ class QueueCommand(Command):
         for i, match in enumerate(queue.matches):
             s.append("[{index}]: {player1} vs. {player2}".format(
                 index=i+1,
-                player1=match.twitch_user1.username,
-                player2=match.twitch_user2.username
+                player1=match.player1.twitch_user.username,
+                player2=match.player2.twitch_user.username
             ))
 
         return " ".join(s) or "No current queue."
@@ -87,6 +87,7 @@ class CloseQueueCommand(QueueCommand):
             self.queue.close()
             self.send_message("The queue has been closed.")   
 
+
 @register_command(
     "queue", "q", "matches",
     platforms=(Platform.TWITCH,)
@@ -97,7 +98,6 @@ class ShowQueueCommand(QueueCommand):
     def execute(self):
         self.check_public()
         self.send_message(self.stringify_queue(self.queue))
-
 
 
 @register_command(
@@ -122,7 +122,7 @@ class AddMatchCommand(QueueCommand):
             if twitch_user2 is None:
                 raise CommandException(f"The twitch user \"{player2}\" does not exist.")
                 
-            self.queue.add_match(twitch_user1, twitch_user2)
+            self.queue.add_match(twitch_user1.user, twitch_user2.user)
             self.send_message(f"A match has been added between {twitch_user1.user_tag} and {twitch_user2.user_tag}!")
             
 
