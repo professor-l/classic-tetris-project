@@ -1,3 +1,5 @@
+from django.core.exceptions import ObjectDoesNotExist
+
 from ..command import Command, CommandException, register_command
 from ...util import Platform
 from ...queue import Queue
@@ -39,11 +41,14 @@ class QueueCommand(Command):
     def stringify_queue(self, queue):
         s = []
         for i, match in enumerate(queue.matches):
-            s.append("[{index}]: {player1} vs. {player2}".format(
-                index=i+1,
-                player1=match.player1.twitch_user.username,
-                player2=match.player2.twitch_user.username
-            ))
+            try:
+                s.append("[{index}]: {player1} vs. {player2}".format(
+                    index=i+1,
+                    player1=match.player1.twitch_user.username,
+                    player2=match.player2.twitch_user.username
+                ))
+            except ObjectDoesNotExist:
+                pass
 
         return " ".join(s) or "No current queue."
 

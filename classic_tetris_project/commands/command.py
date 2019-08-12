@@ -141,7 +141,7 @@ class Command:
         if match:
             username = match.group(1)
             user = TwitchUser.from_username(username)
-            if user.twitch_id == twitch.client.user_id:
+            if user and user.twitch_id == twitch.client.user_id:
                 raise CommandException("I'm a bot, silly!")
             
             return user

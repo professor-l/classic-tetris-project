@@ -1,6 +1,6 @@
 from django.core.cache import cache
 
-from .models import Match, Game
+from .models import TwitchUser, Match, Game
 
 QUEUE_TIMEOUT = 60 * 60 * 24
 
@@ -13,8 +13,9 @@ class Queue:
 
     def add_match(self, player1, player2):
         match = Match(player1=player1, player2=player2, channel=self.channel)
+        match.save()
 
-        self.matches.append(Match(twitch_user1, twitch_user2))
+        self.matches.append(match)
         self.save()
 
     def remove_match(self, index):
@@ -40,5 +41,5 @@ class Queue:
         return self._open
 
     @staticmethod
-    def get(channel):
+    def get(channel_name):
         return cache.get(f"queues.{channel_name}")
