@@ -1,23 +1,29 @@
 from django.core.cache import cache
 
+from .models import Match, Game
+
 QUEUE_TIMEOUT = 60 * 60 * 24
 
 class Queue:
-    def __init__(self, channel):
-        self.channel = channel
+    def __init__(self, channel_name):
+        self.channel_name = channel_name
+        self.channel = TwitchUser.from_username(channel_name)
         self.matches = []
         self._open = False
 
-    def add_match(self, twitch_user1, twitch_user2):
+    def add_match(self, player1, player2):
+        match = Match(player1=player1, player2=player2, channel=self.channel)
+
         self.matches.append(Match(twitch_user1, twitch_user2))
         self.save()
 
     def remove_match(self, index):
-        del self.matches[index]
+        match = self.matches.pop(index)
+        match.delete()
         self.save()
 
     def save(self):
-        cache.set(f"queues.{self.channel}", self, timeout=QUEUE_TIMEOUT)
+        cache.set(f"queues.{self.channel_name}", self, timeout=QUEUE_TIMEOUT)
 
     def open(self):
         self._open = True
@@ -35,20 +41,4 @@ class Queue:
 
     @staticmethod
     def get(channel):
-        return cache.get(f"queues.{channel}")
-
-
-class Match:
-    def __init__(self, twitch_user1, twitch_user2):
-        self.twitch_user1 = twitch_user1
-        self.twitch_user2 = twitch_user2
-        self.games = []
-        self.winner = None
-
-    def declare_winner(twitch_user, losing_score):
-        self.games.append(Game(twitch_user, losing_score))
-
-class Game:
-    def __init__(winner, losing_score):
-        self.winner = winner
-        self.losing_score = losing_score
+        return cache.get(f"queues.{channel_name}")
