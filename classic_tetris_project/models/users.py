@@ -1,5 +1,6 @@
 import asyncio
 import re
+from datetime import datetime
 
 from django.db import models
 # Used to add User upon creation of TwitchUser or DiscordUser
@@ -15,16 +16,20 @@ class User(models.Model):
 
     preferred_name = models.CharField(max_length=64, null=True)
     ntsc_pb = models.IntegerField(null=True)
+    ntsc_pb_updated_at = models.DateTimeField(null=True)
     pal_pb = models.IntegerField(null=True)
+    pal_pb_updated_at = models.DateTimeField(null=True)
     country = models.CharField(max_length=3, null=True)
 
     def set_pb(self, pb, pb_type="ntsc"):
         if pb_type == "pal":
             self.pal_pb = pb
+            self.pal_pb_updated_at = datetime.now()
             self.save()
             return True
         elif pb_type == "ntsc":
             self.ntsc_pb = pb
+            self.ntsc_pb_updated_at = datetime.now()
             self.save()
             return True
         else:
