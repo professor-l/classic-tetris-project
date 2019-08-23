@@ -154,3 +154,71 @@ class RemoveMatchCommand(QueueCommand):
             self.send_message("Match removed! New queue: {queue}".format(
                 queue=self.stringify_queue(self.queue)
             ))
+
+
+@register_command(
+    "clear", "clearqueue",
+    platforms=(Platform.TWITCH,)
+)
+class ClearQueueCommand(QueueCommand):
+    usage = "clear yesimsure"
+    
+    def execute(self, comfirm):
+        self.check_public()
+        self.check_moderator()
+        
+        if comfirm == "yesimsure":
+            self.queue.clear()
+            self.send_message("The queue has been cleared.")
+
+        else:
+            self.send_usage()
+
+
+@register_command(
+    "winner", "declarewinner",
+    platforms=(Platform.TWITCH,)
+)
+class DeclareWinnerCommand(QueueCommand):
+    usage = "winner <player> [losing score]"
+
+    def execute(self, player_name, losing_score=None):
+        self.check_public()
+        self.check_moderator()
+
+        if self.queue.is_empty():
+            raise CommandException("There is no current match.")
+        try:
+            losing_score = int(losing_score)
+        except ValueError:
+            raise CommandException("Invalid losing score.")
+        
+        if losing_score < 0 or losing_score > 1400000:
+            raise CommandException("Invalid losing score.")
+
+        twitch_user = self.twitch_user_from_username(player_name)
+        if not twitch_user:
+            self.send_message(f"Twitch user \"{player_name}\" does not exist.")
+
+        
+        user = Command.twitch_user_from_username(player_name).user
+        try:
+            self.queue.declare_winner(user, int(losing_score))
+        except ValueError:
+            raise CommandException(f"player \"{twitch_user.username}\" is not in the current match.")
+            
+        current_match = self.queue.current_match
+        current_winner = current_match.get_current_winner()
+
+        beginning_string = f"{twitch_user.username} has won a game!"
+        middle_string = "The score is now {score1}-{score2}.".format(
+            score1=current_match.wins1,
+            score2=current_match.wins2
+        )
+        if current_winner:
+            end_string = f"{current_winner.twitch_user.username} is ahead!"
+        else:
+            end_string = "It's all tied up!"
+        
+        strings = [beginning_string, middle_string, end_string]
+        self.send_message(" ".join(strings))
