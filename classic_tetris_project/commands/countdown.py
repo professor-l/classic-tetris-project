@@ -18,7 +18,7 @@ class Countdown(Command):
             self.send_message(str(i))
             time.sleep(1)
             
-        if random.randint(1,100) == 42:
+        if randint(1,100) == 42:
             self.send_message("Texas!")
         else:
             self.send_message("Tetris!")
