@@ -1,4 +1,5 @@
 import time
+from random import randint
 
 from .command import Command, CommandException, register_command
 from ..util import Platform
@@ -16,4 +17,8 @@ class Countdown(Command):
         for i in range(n, 0, -1):
             self.send_message(str(i))
             time.sleep(1)
-        self.send_message("Tetris!")
+            
+        if random.randint(1,100) == 42:
+            self.send_message("Texas!")
+        else:
+            self.send_message("Tetris!")
