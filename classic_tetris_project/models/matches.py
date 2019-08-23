@@ -14,8 +14,26 @@ class Match(models.Model):
     ended_at = models.DateTimeField(null=True)
 
     def add_game(self, winner, losing_score):
-        game = Game(match=self, winner=winner, losing_score=losing_score)
-        game.save()
+        if winner == self.player1 or winner == self.player2:
+            game = Game(match=self, winner=winner, losing_score=losing_score)
+            game.save()
+
+            if winner == self.player1:
+                self.wins1 += 1
+            else:
+                self.wins2 += 1
+            self.save()
+
+        else:
+            raise ValueError("Winner is not a player in the match")
+
+    def get_current_winner(self):
+        if self.wins1 > self.wins2:
+            return self.player1
+        elif self.wins2 > self.wins1:
+            return self.player2
+        else:
+            return None
 
 
 class Game(models.Model):

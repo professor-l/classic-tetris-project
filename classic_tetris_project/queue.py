@@ -11,6 +11,10 @@ class Queue:
         self.matches = []
         self._open = False
 
+    @property
+    def current_match(self):
+        return self.matches[0] if self.matches else None
+
     def add_match(self, player1, player2):
         match = Match(player1=player1, player2=player2, channel=self.channel)
         match.save()
@@ -23,6 +27,12 @@ class Queue:
         match.delete()
         self.save()
 
+    def clear(self):
+        for match in self.matches:
+            match.delete()
+        self.matches = []
+        self.save()
+
     def save(self):
         cache.set(f"queues.{self.channel_name}", self, timeout=QUEUE_TIMEOUT)
 
@@ -33,6 +43,9 @@ class Queue:
     def close(self):
         self._open = False
         self.save()
+
+    def declare_winner(self, winner, losing_score):
+        self.current_match.add_game(winner, losing_score)
 
     def is_empty(self):
         return len(self.matches) == 0
