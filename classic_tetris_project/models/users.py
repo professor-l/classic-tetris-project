@@ -55,6 +55,12 @@ class User(models.Model):
         from ..util.merge import UserMerger
         UserMerger(self, target_user).merge()
 
+    def __str__(self):
+        if hasattr(self, "twitch_user"):
+            return self.twitch_user.username
+        else:
+            return f"User<id={self.id}>"
+
 
 class PlatformUser(models.Model):
 
@@ -132,6 +138,9 @@ class TwitchUser(PlatformUser):
         return {k: v for k, v in self.__dict__.items() if not k.startswith("_memo_")}
     def __setstate__(self, state):
         self.__dict__.update(state)
+
+    def __str__(self):
+        return self.username
 
 
 class DiscordUser(PlatformUser):
