@@ -39,18 +39,22 @@ class QueueCommand(Command):
         return self.queue and self.queue.is_open()
 
     def stringify_queue(self, queue):
-        s = []
-        for i, match in enumerate(queue.matches):
-            try:
-                s.append("[{index}]: {player1} vs. {player2}".format(
-                    index=i+1,
-                    player1=match.player1.twitch_user.username,
-                    player2=match.player2.twitch_user.username
-                ))
-            except ObjectDoesNotExist:
-                pass
-
-        return " ".join(s) or "No current queue."
+        if queue and queue.matches:
+            match_strings = []
+            for i, match in enumerate(queue.matches):
+                try:
+                    match_strings.append("[{index}]: {player1} vs. {player2}".format(
+                        index=i+1,
+                        player1=match.player1.twitch_user.username,
+                        player2=match.player2.twitch_user.username
+                    ))
+                except ObjectDoesNotExist:
+                    # Something went wrong displaying this match, probably someone changed their
+                    # Twitch username
+                    pass
+            return " ".join(match_strings)
+        else:
+            return "No current queue."
 
 
 @register_command(
@@ -90,7 +94,7 @@ class CloseQueueCommand(QueueCommand):
             raise CommandException("The queue isn't open!")
         else:
             self.queue.close()
-            self.send_message("The queue has been closed.")   
+            self.send_message("The queue has been closed.")
 
 
 @register_command(
@@ -106,7 +110,7 @@ class ShowQueueCommand(QueueCommand):
 
 
 @register_command(
-    "addmatch", 
+    "addmatch",
     platforms=(Platform.TWITCH,)
 )
 class AddMatchCommand(QueueCommand):
@@ -126,10 +130,10 @@ class AddMatchCommand(QueueCommand):
                 raise CommandException(f"The twitch user \"{player1}\" does not exist.")
             if twitch_user2 is None:
                 raise CommandException(f"The twitch user \"{player2}\" does not exist.")
-                
+
             self.queue.add_match(twitch_user1.user, twitch_user2.user)
             self.send_message(f"A match has been added between {twitch_user1.user_tag} and {twitch_user2.user_tag}!")
-            
+
 
 @register_command(
     "removematch",
@@ -146,7 +150,7 @@ class RemoveMatchCommand(QueueCommand):
             index = int(index)
         except ValueError:
             raise CommandException("Invalid index.")
-            
+
         if index < 1 or index > len(self.queue.matches):
             raise CommandException("No match at specified index.")
         else:
@@ -162,12 +166,12 @@ class RemoveMatchCommand(QueueCommand):
 )
 class ClearQueueCommand(QueueCommand):
     usage = "clear yesimsure"
-    
-    def execute(self, comfirm):
+
+    def execute(self, confirm):
         self.check_public()
         self.check_moderator()
-        
-        if comfirm == "yesimsure":
+
+        if confirm == "yesimsure":
             self.queue.clear()
             self.send_message("The queue has been cleared.")
 
@@ -188,11 +192,11 @@ class DeclareWinnerCommand(QueueCommand):
 
         if self.queue.is_empty():
             raise CommandException("There is no current match.")
+
         try:
             losing_score = int(losing_score)
         except ValueError:
             raise CommandException("Invalid losing score.")
-        
         if losing_score < 0 or losing_score > 1400000:
             raise CommandException("Invalid losing score.")
 
@@ -200,25 +204,25 @@ class DeclareWinnerCommand(QueueCommand):
         if not twitch_user:
             self.send_message(f"Twitch user \"{player_name}\" does not exist.")
 
-        
-        user = Command.twitch_user_from_username(player_name).user
+
         try:
-            self.queue.declare_winner(user, int(losing_score))
+            self.queue.declare_winner(twitch_user.user, int(losing_score))
         except ValueError:
             raise CommandException(f"player \"{twitch_user.username}\" is not in the current match.")
-            
+
+
         current_match = self.queue.current_match
         current_winner = current_match.get_current_winner()
 
-        beginning_string = f"{twitch_user.username} has won a game!"
-        middle_string = "The score is now {score1}-{score2}.".format(
+        msg_winner = f"{twitch_user.username} has won a game!"
+        msg_score = "The score is now {score1}-{score2}.".format(
             score1=current_match.wins1,
             score2=current_match.wins2
         )
         if current_winner:
-            end_string = f"{current_winner.twitch_user.username} is ahead!"
+            msg_lead = f"{current_winner.twitch_user.username} is ahead!"
         else:
-            end_string = "It's all tied up!"
-        
-        strings = [beginning_string, middle_string, end_string]
+            msg_lead = "It's all tied up!"
+
+        strings = [msg_winner, msg_score, msg_lead]
         self.send_message(" ".join(strings))
