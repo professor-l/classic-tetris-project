@@ -40,6 +40,9 @@ class Match(models.Model):
         self.ended_at = timezone.now()
         self.save()
 
+    def __str__(self):
+        return f"{self.player1} vs. {self.player2}"
+
 
 class Game(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
