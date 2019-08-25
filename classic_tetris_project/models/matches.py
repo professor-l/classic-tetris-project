@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 from .users import User, TwitchUser
 
@@ -35,10 +36,14 @@ class Match(models.Model):
         else:
             return None
 
+    def end(self):
+        self.ended_at = timezone.now()
+        self.save()
+
 
 class Game(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     winner = models.ForeignKey(User, on_delete=models.PROTECT)
-    losing_score = models.IntegerField()
+    losing_score = models.IntegerField(null=True)
 
     ended_at = models.DateTimeField(auto_now_add=True)
