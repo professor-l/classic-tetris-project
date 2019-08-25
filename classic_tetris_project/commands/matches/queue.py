@@ -35,19 +35,36 @@ class QueueCommand(Command):
     def queue(self):
         return Queue.get(self.context.channel.name)
 
+    @property
+    def current_match(self):
+        return self.queue.current_match
+
     def is_queue_open(self):
         return self.queue and self.queue.is_open()
+
+    def check_queue_exists(self):
+        if not self.queue:
+            raise CommandException("There is no current queue.")
+
+    def check_current_match(self):
+        if not self.current_match:
+            raise CommandException("There is no current match.")
+
+    def format_match(self, match):
+        if match:
+            return "{player1} vs. {player2}".format(
+                player1=match.player1.twitch_user.username,
+                player2=match.player2.twitch_user.username
+            )
+        else:
+            return "No current match."
 
     def stringify_queue(self, queue):
         if queue and queue.matches:
             match_strings = []
             for i, match in enumerate(queue.matches):
                 try:
-                    match_strings.append("[{index}]: {player1} vs. {player2}".format(
-                        index=i+1,
-                        player1=match.player1.twitch_user.username,
-                        player2=match.player2.twitch_user.username
-                    ))
+                    match_strings.append(f"[{i+1}]: {self.format_match(match)}")
                 except ObjectDoesNotExist:
                     # Something went wrong displaying this match, probably someone changed their
                     # Twitch username
@@ -145,6 +162,7 @@ class RemoveMatchCommand(QueueCommand):
     def execute(self, index):
         self.check_public()
         self.check_moderator()
+        self.check_queue_exists()
 
         try:
             index = int(index)
@@ -170,6 +188,7 @@ class ClearQueueCommand(QueueCommand):
     def execute(self, confirm):
         self.check_public()
         self.check_moderator()
+        self.check_queue_exists()
 
         if confirm == "yesimsure":
             self.queue.clear()
@@ -189,35 +208,34 @@ class DeclareWinnerCommand(QueueCommand):
     def execute(self, player_name, losing_score=None):
         self.check_public()
         self.check_moderator()
+        self.check_queue_exists()
+        self.check_current_match()
 
-        if self.queue.is_empty():
-            raise CommandException("There is no current match.")
-
-        try:
-            losing_score = int(losing_score)
-        except ValueError:
-            raise CommandException("Invalid losing score.")
-        if losing_score < 0 or losing_score > 1400000:
-            raise CommandException("Invalid losing score.")
+        if losing_score is not None:
+            try:
+                losing_score = int(losing_score)
+            except ValueError:
+                raise CommandException("Invalid losing score.")
+            if losing_score < 0 or losing_score > 1400000:
+                raise CommandException("Invalid losing score.")
 
         twitch_user = self.twitch_user_from_username(player_name)
         if not twitch_user:
-            self.send_message(f"Twitch user \"{player_name}\" does not exist.")
+            raise CommandException(f"Twitch user \"{player_name}\" does not exist.")
 
 
         try:
-            self.queue.declare_winner(twitch_user.user, int(losing_score))
+            self.queue.declare_winner(twitch_user.user, losing_score)
         except ValueError:
             raise CommandException(f"player \"{twitch_user.username}\" is not in the current match.")
 
 
-        current_match = self.queue.current_match
-        current_winner = current_match.get_current_winner()
+        current_winner = self.current_match.get_current_winner()
 
         msg_winner = f"{twitch_user.username} has won a game!"
         msg_score = "The score is now {score1}-{score2}.".format(
-            score1=current_match.wins1,
-            score2=current_match.wins2
+            score1=self.current_match.wins1,
+            score2=self.current_match.wins2
         )
         if current_winner:
             msg_lead = f"{current_winner.twitch_user.username} is ahead!"
@@ -226,3 +244,26 @@ class DeclareWinnerCommand(QueueCommand):
 
         strings = [msg_winner, msg_score, msg_lead]
         self.send_message(" ".join(strings))
+
+
+@register_command(
+    "endmatch",
+    platforms=(Platform.TWITCH,)
+)
+class EndMatchCommand(QueueCommand):
+    usage = "endmatch"
+
+    def execute(self):
+        self.check_public()
+        self.check_moderator()
+        self.check_queue_exists()
+        self.check_current_match()
+
+        match = self.current_match
+        winner = match.get_current_winner()
+        self.queue.end_match()
+
+        # TODO: Handle ties?
+        if winner:
+            self.send_message(f"Congratulations, {winner.twitch_user.username}!")
+        self.send_message(f"Next match: {self.format_match(self.current_match)}")

@@ -27,6 +27,11 @@ class Queue:
         match.delete()
         self.save()
 
+    def end_match(self):
+        match = self.matches.pop(0)
+        match.end()
+        self.save()
+
     def clear(self):
         for match in self.matches:
             match.delete()
@@ -46,6 +51,7 @@ class Queue:
 
     def declare_winner(self, winner, losing_score):
         self.current_match.add_game(winner, losing_score)
+        self.save()
 
     def is_empty(self):
         return len(self.matches) == 0
