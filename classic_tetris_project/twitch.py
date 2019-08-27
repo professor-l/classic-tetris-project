@@ -17,8 +17,8 @@ class APIClient:
             "Client-ID": client_id
         }
 
-    def _request(self, endpoint, params={}):
-        response = requests.get(f"{TWITCH_API}{endpoint}", params=params, headers=self.headers)
+    def _request(self, endpoint, params={}, api=TWITCH_API):
+        response = requests.get(f"{api}{endpoint}", params=params, headers=self.headers)
         return response.json()
 
     def user_from_username(self, username, client=None):
@@ -46,7 +46,10 @@ class APIClient:
             tags=user_obj
         )
 
-
+    def users_in_channel(self, channel):
+        response = self._request(f"group/user/{channel}/chatters", api="http://tmi.twitch.tv/")
+        return sum(group for group in response["chatters"].values())
+        
 
 
 class Client:
