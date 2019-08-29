@@ -1,10 +1,9 @@
-from .command import Command, CommandException, register_command
+from .command import Command, CommandException
 from ..util import Platform
 
-@register_command("name", "getname")
+@Command.register("name", "getname",
+                  usage="name [username] (default username you)")
 class GetPreferredNameCommand(Command):
-    usage = "name [username] (default username you)"
-
     def execute(self, username=None):
         if username is None:
             platform_user = self.context.platform_user
@@ -22,10 +21,9 @@ class GetPreferredNameCommand(Command):
             self.send_message("User has not set a preferred name.")
 
 
-@register_command("setname")
+@Command.register("setname",
+                  usage="setname <name>")
 class SetPreferredNameCommand(Command):
-    usage = "setname <name>"
-
     def execute(self, *name):
         name = " ".join(name)
         if self.context.user.set_preferred_name(name):

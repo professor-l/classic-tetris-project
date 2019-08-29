@@ -1,14 +1,15 @@
 import time
 from random import randint
 
-from .command import Command, CommandException, register_command
-from ..util import Platform
+from .command import Command, CommandException
 
-@register_command(
-    *map(str, range(3, 11)),
-    platforms=(Platform.TWITCH,)
-)
+@Command.register_twitch(*map(str, range(3, 11)),
+                         usage=None)
 class Countdown(Command):
+    @property
+    def usage(self):
+        return self.context.command_name
+
     def execute(self):
         self.check_public()
         self.check_moderator()
@@ -17,7 +18,7 @@ class Countdown(Command):
         for i in range(n, 0, -1):
             self.send_message(str(i))
             time.sleep(1)
-            
+
         if randint(1,100) == 42:
             self.send_message("Texas!")
         else:

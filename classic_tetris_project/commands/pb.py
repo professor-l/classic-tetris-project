@@ -1,10 +1,9 @@
-from .command import Command, CommandException, register_command
+from .command import Command, CommandException
 from ..util import Platform
 
-@register_command("pb", "getpb")
+@Command.register("pb", "getpb",
+                  usage="pb [username] (default username you)")
 class GetPBCommand(Command):
-    usage = "pb [username] (default username you)"
-
     def execute(self, username=None):
         if self.context.platform == Platform.DISCORD:
             platform_user = (Command.discord_user_from_username(username) if username
@@ -39,11 +38,9 @@ class GetPBCommand(Command):
                 self.send_message("User has not set a PB.")
 
 
-
-@register_command("newpb", "setpb")
+@Command.register("newpb", "setpb",
+                  usage="setpb <pb> [type] (default type NTSC)")
 class SetPBCommand(Command):
-    usage = "setpb <pb> [type] (default type NTSC)"
-
     def execute(self, pb, pb_type="ntsc"):
         try:
             pb = int(pb.replace(",", ""))

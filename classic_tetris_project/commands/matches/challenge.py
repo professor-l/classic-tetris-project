@@ -5,8 +5,7 @@ from django.core.cache import cache
 
 from .queue import QueueCommand
 from ...models import TwitchUser
-from ..command import Command, CommandException, register_command
-from ...util import Platform
+from ..command import Command, CommandException
 from ...queue import Queue
 from ... import twitch
 
@@ -53,13 +52,9 @@ class Challenge:
         return self.uuid == challenge.uuid
 
 
-@register_command(
-    "challenge",
-    platforms=(Platform.TWITCH,)
-)
+@Command.register_twitch("challenge",
+                         usage="challenge <user>")
 class ChallengeCommand(QueueCommand):
-    usage = "challenge <user>"
-
     def execute(self, username):
         self.check_public()
 
@@ -108,15 +103,10 @@ class ChallengeCommand(QueueCommand):
         expire_thread.start()
 
 
-@register_command(
-    "accept",
-    (Platform.TWITCH,)
-)
+@Command.register_twitch("accept",
+                         usage="accept")
 class AcceptChallengeCommand(Command):
-    usage = "accept"
-
     def execute(self):
-
         # Check this is in a whisper
         self.check_private()
 
@@ -144,13 +134,9 @@ class AcceptChallengeCommand(Command):
         ))
 
 
-@register_command(
-    "decline",
-    (Platform.TWITCH)
-)
+@Command.register_twitch("decline",
+                         usage="decline")
 class DeclineChallengeCommand(Command):
-    usage = "decline"
-
     def execute(self):
         self.check_private()
 

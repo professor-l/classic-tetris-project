@@ -1,7 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 
-from ..command import Command, CommandException, register_command
-from ...util import Platform
+from ..command import Command, CommandException
 from ...queue import Queue
 from ...util import memoize
 
@@ -74,13 +73,9 @@ class QueueCommand(Command):
             return "No current queue."
 
 
-@register_command(
-    "open", "openqueue",
-    platforms=(Platform.TWITCH,)
-)
+@Command.register_twitch("open", "openqueue",
+                         usage="open")
 class OpenQueueCommand(QueueCommand):
-    usage = "open"
-
     def execute(self):
         self.check_public()
         self.check_moderator()
@@ -96,13 +91,9 @@ class OpenQueueCommand(QueueCommand):
                 self.send_message("The queue is now open!")
 
 
-@register_command(
-    "close", "closequeue",
-    platforms=(Platform.TWITCH,)
-)
+@Command.register_twitch("close", "closequeue",
+                         usage="close")
 class CloseQueueCommand(QueueCommand):
-    usage = "close"
-
     def execute(self):
         self.check_public()
         self.check_moderator()
@@ -113,25 +104,18 @@ class CloseQueueCommand(QueueCommand):
             self.queue.close()
             self.send_message("The queue has been closed.")
 
-@register_command(
-    "queue", "q", "matches",
-    platforms=(Platform.TWITCH,)
-)
-class ShowQueueCommand(QueueCommand):
-    usage = "queue"
 
+@Command.register_twitch("queue", "q", "matches",
+                         usage="queue")
+class ShowQueueCommand(QueueCommand):
     def execute(self):
         self.check_public()
         self.send_message(self.stringify_queue(self.queue))
 
 
-@register_command(
-    "addmatch",
-    platforms=(Platform.TWITCH,)
-)
+@Command.register_twitch("addmatch",
+                         usage="addmatch <player 1> <player 2>")
 class AddMatchCommand(QueueCommand):
-    usage = "addmatch <player 1> <player 2>"
-
     def execute(self, player1, player2):
         self.check_public()
         self.check_moderator()
@@ -151,13 +135,9 @@ class AddMatchCommand(QueueCommand):
             self.send_message(f"A match has been added between {twitch_user1.user_tag} and {twitch_user2.user_tag}!")
 
 
-@register_command(
-    "removematch",
-    platforms=(Platform.TWITCH,)
-)
+@Command.register_twitch("removematch",
+                         usage="removematch <index>")
 class RemoveMatchCommand(QueueCommand):
-    usage = "removematch <index>"
-
     def execute(self, index):
         self.check_public()
         self.check_moderator()
@@ -177,13 +157,9 @@ class RemoveMatchCommand(QueueCommand):
             ))
 
 
-@register_command(
-    "clear", "clearqueue",
-    platforms=(Platform.TWITCH,)
-)
+@Command.register_twitch("clear", "clearqueue",
+                         usage="clear yesimsure")
 class ClearQueueCommand(QueueCommand):
-    usage = "clear yesimsure"
-
     def execute(self, confirm):
         self.check_public()
         self.check_moderator()
@@ -197,13 +173,9 @@ class ClearQueueCommand(QueueCommand):
             self.send_usage()
 
 
-@register_command(
-    "winner", "declarewinner",
-    platforms=(Platform.TWITCH,)
-)
+@Command.register_twitch("winner", "declarewinner",
+                         usage="winner <player> [losing score]")
 class DeclareWinnerCommand(QueueCommand):
-    usage = "winner <player> [losing score]"
-
     def execute(self, player_name, losing_score=None):
         self.check_public()
         self.check_moderator()
@@ -245,13 +217,9 @@ class DeclareWinnerCommand(QueueCommand):
         self.send_message(" ".join(strings))
 
 
-@register_command(
-    "endmatch",
-    platforms=(Platform.TWITCH,)
-)
+@Command.register_twitch("endmatch",
+                         usage="endmatch")
 class EndMatchCommand(QueueCommand):
-    usage = "endmatch"
-
     def execute(self):
         self.check_public()
         self.check_moderator()

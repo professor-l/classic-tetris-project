@@ -1,11 +1,10 @@
-from .command import Command, CommandException, register_command
+from .command import Command, CommandException
 from ..util import Platform
 from ..countries import countries
 
-@register_command("country", "getcountry")
+@Command.register("country", "getcountry",
+                  usage="country [username] (default username you)")
 class GetCountryCommand(Command):
-    usage = "country [username] (default username you)"
-
     def execute(self, username=None):
         if username is None:
             platform_user = self.context.platform_user
@@ -22,10 +21,9 @@ class GetCountryCommand(Command):
         else:
             self.send_message("User has not set a country.")
 
-@register_command("setcountry")
+@Command.register("setcountry",
+                  usage="setpb <three-letter country code>")
 class SetCountryCommand(Command):
-    usage = "setpb <three-letter country code>"
-
     def execute(self, country): 
         if not self.context.user.set_country(country):
             raise CommandException("Invalid country code. See "
