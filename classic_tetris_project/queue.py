@@ -62,3 +62,9 @@ class Queue:
     @staticmethod
     def get(channel_name):
         return cache.get(f"queues.{channel_name}")
+
+    def __len__(self):
+        return len(self.matches)
+
+    def __bool__(self):
+        return True

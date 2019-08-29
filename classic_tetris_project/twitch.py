@@ -99,6 +99,9 @@ class Client:
     def get_user(self, user_id):
         return API.user_from_id(user_id, self)
 
+    def get_channel(self, channel_name):
+        return PublicChannel(self, channel_name)
+
 
 
 class User:
