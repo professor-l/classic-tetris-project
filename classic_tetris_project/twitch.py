@@ -46,10 +46,10 @@ class APIClient:
             tags=user_obj
         )
 
-    def users_in_channel(self, channel):
+    def usernames_in_channel(self, channel):
         response = self._request(f"group/user/{channel}/chatters", api="http://tmi.twitch.tv/")
         return sum(group for group in response["chatters"].values())
-        
+
 
 
 class Client:
@@ -108,7 +108,7 @@ class User:
         self.id = id
         self.display_name = display_name
         self.tags = tags
-    
+
     @property
     def is_moderator(self):
         return self.tags.get("mod") == "1"

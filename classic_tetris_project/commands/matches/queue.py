@@ -112,7 +112,10 @@ class CloseQueueCommand(QueueCommand):
         else:
             self.queue.close()
             self.send_message("The queue has been closed.")
+<<<<<<< HEAD
 
+=======
+>>>>>>> Started work on challenge commands
 
 @register_command(
     "queue", "q", "matches",
@@ -148,7 +151,11 @@ class AddMatchCommand(QueueCommand):
             if twitch_user2 is None:
                 raise CommandException(f"The twitch user \"{player2}\" does not exist.")
 
+<<<<<<< HEAD
             self.queue.add_match(twitch_user1.user, twitch_user2.user)
+=======
+            self.queue.add_match(twitch_user1, twitch_user2)
+>>>>>>> Started work on challenge commands
             self.send_message(f"A match has been added between {twitch_user1.user_tag} and {twitch_user2.user_tag}!")
 
 
