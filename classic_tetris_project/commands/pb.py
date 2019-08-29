@@ -1,16 +1,11 @@
 from .command import Command, CommandException
-from ..util import Platform
 
 @Command.register("pb", "getpb",
                   usage="pb [username] (default username you)")
 class GetPBCommand(Command):
     def execute(self, username=None):
-        if self.context.platform == Platform.DISCORD:
-            platform_user = (Command.discord_user_from_username(username) if username
-                             else self.context.platform_user)
-        elif self.context.platform == Platform.TWITCH:
-            platform_user = (Command.twitch_user_from_username(username) if username
-                             else self.context.platform_user)
+        platform_user = (self.platform_user_from_username(username) if username
+                         else self.context.platform_user)
 
         if not platform_user:
             self.send_message("User has not set a PB.")

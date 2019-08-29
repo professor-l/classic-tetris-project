@@ -1,17 +1,12 @@
 from .command import Command, CommandException
-from ..util import Platform
 from ..countries import countries
 
 @Command.register("country", "getcountry",
                   usage="country [username] (default username you)")
 class GetCountryCommand(Command):
     def execute(self, username=None):
-        if username is None:
-            platform_user = self.context.platform_user
-        elif self.context.platform == Platform.DISCORD:
-            platform_user = Command.discord_user_from_username(username)
-        elif self.context.platform == Platform.TWITCH:
-            platform_user = Command.twitch_user_from_username(username)
+        platform_user = (self.platform_user_from_username(username) if username
+                         else self.context.platform_user)
 
         if platform_user and platform_user.user.country:
             self.send_message("{user_tag} is from {country}!".format(
