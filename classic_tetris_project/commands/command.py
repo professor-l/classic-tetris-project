@@ -111,6 +111,11 @@ class Command:
                     max_args += 1
         return min_args, max_args
 
+    def platform_user_from_username(self, username):
+        if self.context.platform == Platform.DISCORD:
+            return Command.discord_user_from_username(username)
+        elif self.context.platform == Platform.TWITCH:
+            return Command.twitch_user_from_username(username)
 
     @staticmethod
     def discord_user_from_username(username):
