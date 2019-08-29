@@ -1,8 +1,7 @@
-from .command import Command, register_command
+from .command import Command
 
-@register_command("test", "devtest")
+@Command.register("test", "devtest",
+                  usage="test")
 class TestCommand(Command):
-    usage = "test"
-
     def execute(self):
         self.send_message("Test!")

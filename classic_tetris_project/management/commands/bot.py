@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
 from asgiref.sync import sync_to_async
-from celery import current_app as celery_app
 from threading import Thread
 
 from ... import discord, twitch

@@ -72,7 +72,7 @@ class Command:
                 raise CommandException(
                     "This command only works in a direct message."
                 )
-        
+
         elif self.context.platform == Platform.TWITCH:
             if self.context.channel.type != "whisper":
                 raise CommandException(
@@ -85,13 +85,16 @@ class Command:
                 raise CommandException(
                     "This command only works in a public channel."
                 )
-        
+
         elif self.context.platform == Platform.TWITCH:
             if self.context.channel.type != "channel":
                 raise CommandException(
                     "This command only works in a public channel."
                 )
-        
+
+    @property
+    def usage(self):
+        return self._usage_string
 
     @property
     def arity(self):
@@ -132,7 +135,7 @@ class Command:
             else:
                 return None
         else:
-            raise CommandException("Invalid username", send_usage=False)
+            raise CommandException("Invalid username")
 
     @staticmethod
     def twitch_user_from_username(username):
@@ -143,19 +146,29 @@ class Command:
             user = TwitchUser.from_username(username)
             if user and user.twitch_id == twitch.client.user_id:
                 raise CommandException("I'm a bot, silly!")
-            
+
             return user
         else:
-            raise CommandException("Invalid username", send_usage=False)
+            raise CommandException("Invalid username")
+
+    @staticmethod
+    def register(*aliases, usage, platforms=(Platform.DISCORD, Platform.TWITCH)):
+        def _register_command(command):
+            command.supported_platforms = platforms
+            command._usage_string = usage
+            for alias in aliases:
+                COMMAND_MAP[alias] = command
+            return command
+        return _register_command
+
+    @staticmethod
+    def register_twitch(*args, **kwargs):
+        return Command.register(*args, **kwargs, platforms=(Platform.TWITCH,))
+
+    @staticmethod
+    def register_discord(*args, **kwargs):
+        return Command.register(*args, **kwargs, platforms=(Platform.DISCORD,))
 
 
 
 COMMAND_MAP = {}
-
-def register_command(*aliases, platforms=(Platform.DISCORD, Platform.TWITCH)):
-    def register(command):
-        command.supported_platforms = platforms
-        for alias in aliases:
-            COMMAND_MAP[alias] = command
-        return command
-    return register

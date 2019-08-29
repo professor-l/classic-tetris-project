@@ -2,20 +2,16 @@ import random
 from django.core.cache import cache
 from discord import ChannelType
 
-from .command import Command, CommandException, register_command
+from .command import Command, CommandException
 from ..util import Platform
 from ..models.users import User, DiscordUser, TwitchUser
 
 
 REQUEST_TIMEOUT = 30 * 60
 
-@register_command(
-    "link", "linkaccount",
-    platforms=(Platform.DISCORD,)
-)
+@Command.register_discord("link", "linkaccount",
+                          usage="link <twitch username>")
 class LinkCommand(Command):
-    usage = "link <twitch username>"
-
     def execute(self, username):
         self.check_private()
 
@@ -63,13 +59,9 @@ class LinkCommand(Command):
         )
 
 
-@register_command(
-    "linktoken",
-    platforms=(Platform.DISCORD,)
-)
+@Command.register_discord("linktoken",
+                          usage="linktoken <token>")
 class LinkTokenCommand(Command):
-    usage = "linktoken <token>"
-
     def execute(self, token):
         if self.context.channel.type != ChannelType.private:
             raise CommandException("This command must be run in a direct message.")
@@ -93,10 +85,9 @@ PAL PB: {self.context.user.pal_pb}
             raise CommandException("No link request with that token was made.")
 
 
-@register_command("unlink")
+@Command.register("unlink",
+                  usage="unlink yesimsure")
 class UnlinkCommand(Command):
-    usage = "unlink yesimsure"
-
     def execute(self, sure=None):
         if sure != "yesimsure":
             raise CommandException(
