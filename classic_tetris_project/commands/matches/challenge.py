@@ -7,6 +7,8 @@ from .queue import QueueCommand
 from ...models import TwitchUser
 from ..command import Command, CommandException, register_command
 from ...util import Platform
+from ...queue import Queue
+from ... import twitch
 
 """
 !challenge <user>
@@ -43,7 +45,7 @@ class Challenge:
         cache.set(f"challenges.{self.recipient.id}.received", self, timeout=120)
         cache.set(f"challenges.{self.sender.id}.sent", self, timeout=120)
 
-    def expire(self):
+    def remove(self):
         cache.delete(f"challenges.{self.recipient.id}.received")
         cache.delete(f"challenges.{self.sender.id}.sent")
 
@@ -72,12 +74,13 @@ class ChallengeCommand(QueueCommand):
         channel_name = self.context.channel.name
 
         # Check that recipient has no pending challenges
-
-        if Challenge.pending_challenge(channel_name, recipient):
+        # TODO: We may want to allow multiple challenges in the future, but
+        # allow users to choose which to accept
+        if Challenge.pending_challenge(recipient):
             raise CommandException(f"{username} already has a pending challenge.")
 
         # Check that sender has no pending challenges
-        sent_challenge = Challenge.sent_challenge(channel_name, sender)
+        sent_challenge = Challenge.sent_challenge(sender)
         if sent_challenge:
             raise CommandException("You have already challenged {sent_challenge.recipient.username}.")
 
@@ -95,11 +98,11 @@ class ChallengeCommand(QueueCommand):
         # In the future, we may want to schedule this with Celery
         def send_delayed_expiration_message(challenge):
             time.sleep(CHALLENGE_TIMEOUT)
-            existing_challenge = Challenge.pending_challenge(challenge.channel, challenge.recipient)
+            existing_challenge = Challenge.pending_challenge(challenge.recipient)
             if challenge == existing_challenge:
                 sender.send_message(f"Your challenge to {challenge.recipient.username} has expired.")
                 recipient.send_message(f"The challenge from {challenge.sender.username} has expired.")
-                challenge.expire()
+                challenge.remove()
 
         expire_thread = Thread(target=send_delayed_expiration_message, args=(challenge,))
         expire_thread.start()
@@ -109,7 +112,7 @@ class ChallengeCommand(QueueCommand):
     "accept",
     (Platform.TWITCH,)
 )
-class AcceptChallengeCommand(QueueCommand):
+class AcceptChallengeCommand(Command):
     usage = "accept"
 
     def execute(self):
@@ -118,7 +121,43 @@ class AcceptChallengeCommand(QueueCommand):
         self.check_private()
 
         # Check that the challenge exists
-        Challenge.pending_challenge(self.con)
+        challenge = Challenge.pending_challenge(self.context.platform_user)
+        if not challenge:
+            raise CommandException("You have no pending challenge.")
+
         # Check that the queue is open
+        queue = Queue.get(challenge.channel)
+        if not (queue and queue.is_open()):
+            raise CommandException("The queue is no longer open. :(")
+
         # Add the match to the queue
-        # ???
+        queue.add_match(challenge.sender.user, challenge.recipient.user)
+        # Remove the challenge
+        challenge.remove()
+
+        # Send public message
+        channel = twitch.client.get_channel(challenge.channel)
+        channel.send_message("{recipient} has accepted {sender}'s challenge! Match queued in spot {index}.".format(
+            recipient=challenge.recipient.user_tag,
+            sender=challenge.sender.user_tag,
+            index=len(queue)
+        ))
+
+
+@register_command(
+    "decline",
+    (Platform.TWITCH)
+)
+class DeclineChallengeCommand(Command):
+    usage = "decline"
+
+    def execute(self):
+        self.check_private()
+
+        challenge = Challenge.pending_challenge(self.context.platform_user)
+        if not challenge:
+            raise CommandException("You have no pending challenge.")
+
+        challenge.remove()
+        self.send_message(f"You have declined {challenge.sender.username}'s challenge.")
+        challenge.sender.send_message(f"{challenge.recipient.username} has declined your challenge.")
