@@ -14,7 +14,6 @@ from ... import twitch
 !cancel
 !accept
 !decline
-!forfeit
 !match
 Closest matches are...
 """
@@ -49,7 +48,7 @@ class Challenge:
         cache.delete(f"challenges.{self.sender.id}.sent")
 
     def __eq__(self, challenge):
-        return self.uuid == challenge.uuid
+        return isinstance(challenge, Challenge) and self.uuid == challenge.uuid
 
 
 @Command.register_twitch("challenge",
@@ -63,9 +62,11 @@ class ChallengeCommand(QueueCommand):
 
         recipient = self.twitch_user_from_username(username)
         if not recipient:
-            raise CommandException(f"Twitch user \"{player_name}\" does not exist.")
+            raise CommandException(f"Twitch user \"{username}\" does not exist.")
 
         sender = self.context.platform_user
+        if recipient == sender:
+            raise CommandException("You can't challenge yourself, silly!")
         channel_name = self.context.channel.name
 
         # Check that recipient has no pending challenges
@@ -147,3 +148,22 @@ class DeclineChallengeCommand(Command):
         challenge.remove()
         self.send_message(f"You have declined {challenge.sender.username}'s challenge.")
         challenge.sender.send_message(f"{challenge.recipient.username} has declined your challenge.")
+
+
+@Command.register_twitch("cancel",
+                         usage="cancel")
+class CancelChallengeCommand(Command):
+    def execute(self):
+        self.check_public()
+
+        challenge = Challenge.sent_challenge(self.context.platform_user)
+        if not challenge:
+            raise CommandException("You have not challenged anyone.")
+
+        challenge.remove()
+        self.send_message("{sender}: your challenge to {recipient} has been cancelled.".format(
+            sender=challenge.sender.user_tag,
+            recipient=challenge.recipient.username
+        ))
+        challenge.recipient.send_message(f"{challenge.sender.username} has cancelled their challenge.")
+

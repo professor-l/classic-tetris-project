@@ -8,34 +8,37 @@ class Queue:
     def __init__(self, channel_name):
         self.channel_name = channel_name
         self.channel = TwitchUser.from_username(channel_name)
-        self.matches = []
+        self._matches = []
         self._open = False
 
     @property
     def current_match(self):
-        return self.matches[0] if self.matches else None
+        return self._matches[0] if self._matches else None
+
+    def get_match(self, index):
+        return self._matches[index - 1]
 
     def add_match(self, player1, player2):
         match = Match(player1=player1, player2=player2, channel=self.channel)
         match.save()
 
-        self.matches.append(match)
+        self._matches.append(match)
         self.save()
 
     def remove_match(self, index):
-        match = self.matches.pop(index)
+        match = self._matches.pop(index - 1)
         match.delete()
         self.save()
 
     def end_match(self):
-        match = self.matches.pop(0)
+        match = self._matches.pop(0)
         match.end()
         self.save()
 
     def clear(self):
-        for match in self.matches:
+        for match in self._matches:
             match.delete()
-        self.matches = []
+        self._matches = []
         self.save()
 
     def save(self):
@@ -54,7 +57,7 @@ class Queue:
         self.save()
 
     def is_empty(self):
-        return len(self.matches) == 0
+        return len(self._matches) == 0
 
     def is_open(self):
         return self._open
@@ -64,7 +67,10 @@ class Queue:
         return cache.get(f"queues.{channel_name}")
 
     def __len__(self):
-        return len(self.matches)
+        return len(self._matches)
+
+    def __iter__(self):
+        return iter(self._matches)
 
     def __bool__(self):
         return True
