@@ -14,6 +14,7 @@ queue.py:
     !queue !q !matches
     !endmatch
     !winner
+    !forfeit
 
 challenge.py
     !challenge
@@ -58,10 +59,10 @@ class QueueCommand(Command):
         else:
             return "No current match."
 
-    def stringify_queue(self, queue):
-        if queue and queue.matches:
+    def format_queue(self, queue):
+        if queue and not queue.is_empty():
             match_strings = []
-            for i, match in enumerate(queue.matches):
+            for i, match in enumerate(queue):
                 try:
                     match_strings.append(f"[{i+1}]: {self.format_match(match)}")
                 except ObjectDoesNotExist:
@@ -71,6 +72,17 @@ class QueueCommand(Command):
             return " ".join(match_strings)
         else:
             return "No current queue."
+
+    def match_index(self, index_string):
+        try:
+            index = int(index_string)
+        except ValueError:
+            raise CommandException("Invalid index.")
+
+        if index < 1 or index > len(self.queue):
+            raise CommandException("No match at specified index.")
+
+        return index
 
 
 @Command.register_twitch("open", "openqueue",
@@ -110,7 +122,7 @@ class CloseQueueCommand(QueueCommand):
 class ShowQueueCommand(QueueCommand):
     def execute(self):
         self.check_public()
-        self.send_message(self.stringify_queue(self.queue))
+        self.send_message(self.format_queue(self.queue))
 
 
 @Command.register_twitch("addmatch",
@@ -143,18 +155,11 @@ class RemoveMatchCommand(QueueCommand):
         self.check_moderator()
         self.check_queue_exists()
 
-        try:
-            index = int(index)
-        except ValueError:
-            raise CommandException("Invalid index.")
-
-        if index < 1 or index > len(self.queue.matches):
-            raise CommandException("No match at specified index.")
-        else:
-            self.queue.remove_match(index - 1)
-            self.send_message("Match removed! New queue: {queue}".format(
-                queue=self.stringify_queue(self.queue)
-            ))
+        index = self.match_index(index)
+        self.queue.remove_match(index)
+        self.send_message("Match removed! New queue: {queue}".format(
+            queue=self.format_queue(self.queue)
+        ))
 
 
 @Command.register_twitch("clear", "clearqueue",
@@ -234,3 +239,31 @@ class EndMatchCommand(QueueCommand):
         if winner:
             self.send_message(f"Congratulations, {winner.twitch_user.username}!")
         self.send_message(f"Next match: {self.format_match(self.current_match)}")
+
+
+@Command.register_twitch("forfeit",
+                         usage="forfeit <index>")
+class ForfeitMatchCommand(QueueCommand):
+    def execute(self, index):
+        self.check_public()
+        self.check_queue_exists()
+
+        index = self.match_index(index)
+        match = self.queue.get_match(index)
+        user = self.context.user
+
+        forfeitee = None
+        if match.player1 == user:
+            forfeitee = match.player2
+        elif match.player2 == user:
+            forfeitee = match.player1
+
+        if forfeitee:
+            self.queue.remove_match(index)
+            self.send_message("{player1} has forfeited their match against {player2}! New queue: {queue}".format(
+                player1=user.twitch_user.username,
+                player2=forfeitee.twitch_user.username,
+                queue=self.format_queue(self.queue)
+            ))
+        else:
+            raise CommandException(f"{user.twitch_user.user_tag}, you're not playing in that match!")
