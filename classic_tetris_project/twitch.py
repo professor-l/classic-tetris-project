@@ -53,12 +53,12 @@ class APIClient:
 
 
 class Client:
-    def __init__(self, username, token, channels=[]):
+    def __init__(self, username, token, default_channels=[]):
         self.username = username
         self.user_obj = API.user_from_username(username, self)
         self.user_id = self.user_obj.id
         self.token = token
-        self.channels = channels
+        self.default_channels = default_channels
         self.reactor = irc.client.Reactor()
         self.connection = self.reactor.server()
 
@@ -67,8 +67,7 @@ class Client:
     def handle_welcome(self):
         self.connection.cap("REQ", ":twitch.tv/tags")
         self.connection.cap("REQ", ":twitch.tv/commands")
-        for channel in self.channels:
-            self.connection.join(f"#{channel}")
+        self.join_channels()
 
     def start(self):
         self.connection.connect(TWITCH_SERVER, TWITCH_PORT, self.username, self.token)
@@ -102,6 +101,22 @@ class Client:
     def get_channel(self, channel_name):
         return PublicChannel(self, channel_name)
 
+    def join_channels(self):
+        from .models import TwitchChannel
+        channel_names = (self.default_channels +
+                         list(TwitchChannel.objects.filter(connected=True).values_list("twitch_user__username",
+                                                                                       flat=True)))
+        for channel in channel_names:
+            self.join_channel(channel)
+
+    def join_channel(self, channel_name):
+        # TODO better logging"
+        print(f"Joining channel #{channel_name}")
+        self.connection.join(f"#{channel_name}")
+
+    def leave_channel(self, channel_name):
+        print(f"Leaving channel #{channel_name}")
+        self.connection.part(f"#{channel_name}")
 
 
 class User:
@@ -160,5 +175,5 @@ API = APIClient(env("TWITCH_CLIENT_ID"))
 client = Client(
     env("TWITCH_USERNAME"),
     env("TWITCH_TOKEN"),
-    channels=["classictetrisbottest"]
+    default_channels=["classictetrisbottest"]
 )

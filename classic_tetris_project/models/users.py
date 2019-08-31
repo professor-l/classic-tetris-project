@@ -127,6 +127,15 @@ class TwitchUser(PlatformUser):
             self.username = username
             self.save()
 
+    def get_or_create_channel(self):
+        if hasattr(self, "channel"):
+            return self.channel
+        else:
+            from .twitch import TwitchChannel
+            channel = TwitchChannel(twitch_user=self)
+            channel.save()
+            return channel
+
     @staticmethod
     def before_save(sender, instance, **kwargs):
         if not instance.username:
