@@ -48,7 +48,7 @@ class APIClient:
 
     def usernames_in_channel(self, channel):
         response = self._request(f"group/user/{channel}/chatters", api="http://tmi.twitch.tv/")
-        return sum(group for group in response["chatters"].values())
+        return sum((group for group in response["chatters"].values()), [])
 
 
 

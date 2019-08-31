@@ -1,11 +1,11 @@
 import asyncio
 import re
-from datetime import datetime
 
 from django.db import models
 # Used to add User upon creation of TwitchUser or DiscordUser
 from django.db.models import signals
 from django.dispatch import receiver
+from django.utils import timezone
 
 from .. import twitch, discord
 from ..util import memoize
@@ -24,12 +24,12 @@ class User(models.Model):
     def set_pb(self, pb, pb_type="ntsc"):
         if pb_type == "pal":
             self.pal_pb = pb
-            self.pal_pb_updated_at = datetime.now()
+            self.pal_pb_updated_at = timezone.now()
             self.save()
             return True
         elif pb_type == "ntsc":
             self.ntsc_pb = pb
-            self.ntsc_pb_updated_at = datetime.now()
+            self.ntsc_pb_updated_at = timezone.now()
             self.save()
             return True
         else:
@@ -167,7 +167,7 @@ class DiscordUser(PlatformUser):
 
     def send_message(self, message):
         asyncio.run_coroutine_threadsafe(
-            self.user_obj.send(message), 
+            self.user_obj.send(message),
             discord.client.loop
         )
 
