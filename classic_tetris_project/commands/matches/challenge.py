@@ -166,4 +166,3 @@ class CancelChallengeCommand(Command):
             recipient=challenge.recipient.username
         ))
         challenge.recipient.send_message(f"{challenge.sender.username} has cancelled their challenge.")
-
