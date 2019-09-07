@@ -40,7 +40,7 @@ Sets the specified country to yours in the database. You can find a list of the 
 Outputs the preferred name of the specified user, or you.
 
 ---
-#### `setname <name>`
+#### `!setname <name>`
 **Platforms**: Twitch, Discord
 
 Sets your preferred name to the specified name. Can contain letters, numbers, spaces, dashes, underscores, and periods.
