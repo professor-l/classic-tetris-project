@@ -55,7 +55,10 @@ class Command:
 
     def check_moderator(self):
         if self.context.platform == Platform.TWITCH:
-            if not self.context.author.is_moderator:
+            author = self.context.author
+            channel = self.context.channel
+            if not (author.is_moderator or
+                    (channel.type == "channel" and self.context.author.username == channel.name)):
                 raise CommandException()
 
         elif self.context.platform == Platform.DISCORD:
