@@ -6,4 +6,5 @@ django==2.2.4
 ipdb==0.12
 ipython==7.5.0
 irc==17.1
+mysqlclient==1.4.4
 requests==2.22.0
