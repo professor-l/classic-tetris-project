@@ -5,7 +5,7 @@ The following is a detailed outline of each command the bot supports. As always,
 Commands are listed with `<required parameters>` and `[optional paremeters]`, which occasionally have a `[default=value]`.
 
 ## User commands
----
+
 #### `!pb [username]`
 **Platforms**: Twitch, Discord<br/>
 **Aliases**: `!getpb`
@@ -51,7 +51,6 @@ Sets your preferred name to the specified name. Can contain letters, numbers, sp
 
 Account linking is the newest feature of the bot, which comes with Discord integration. Using this command, you may link your twitch and Discord accounts through the bot so that the same data is being tracked for you regardless of the platform on which you update it. As more commands and features are added, this will provide additional benefits.
 
----
 #### `!link <twitch username>`
 **Platforms**: Discord<br/>
 **Aliases**: `!linkaccount`<br/>
@@ -73,8 +72,10 @@ Links the twitch account specified in the `!link` command, provided that the **t
 
 Whichever platform this is run on, it will unlink your account on that platform from all other accounts it has been linked to.  As of right now, only one Discord account can be associated with a twitch account, and vice versa.  However, this command will dissociate from *all other platforms* in the future (yes, there will eventually be other platforms).
 
-## Queueing commands
 ---
+
+## Queueing commands
+
 #### `!queue`
 **Platforms**: Twitch<br/>
 **Aliases**: `!q`, `!matches`
@@ -181,7 +182,7 @@ Declares the specified player the winner of a game, and stores that result (as w
 Ends the current match, automatically determining the winner based on the match data stored each time `!winner` was called.
 
 ## Other commands
----
+
 #### `!summon`
 **Platforms**: Twitch<br/>
 **Must be run in a private message**
@@ -199,4 +200,4 @@ Call this command in a whisper to the bot to remove the bot from your channel.
 #### `!3`
 **Platforms**: Twitch
 
-Counts down from 3 before saying "Tetris!" in the chat. Works for any number fro 3-10.
+Counts down from 3 before saying "Tetris!" in the chat. Works for any number from 3-10.
