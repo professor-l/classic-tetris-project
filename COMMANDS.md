@@ -7,21 +7,21 @@ Commands are listed with `<required parameters>` and `[optional paremeters]`, wh
 ## User commands
 ---
 #### `!pb [username]`
-**Platforms**: Twitch, Discord
+**Platforms**: Twitch, Discord<br/>
 **Aliases**: `!getpb`
 
 Outputs the pb of the specified user, or you.
 
 ---
 #### `!setpb <pb> [type=NTSC]`
-**Platforms**: Twitch, Discord
+**Platforms**: Twitch, Discord<br/>
 **Aliases**: `!newpb`
 
 Sets the given pb (of type NTSC or PAL) to yours in the database.
 
 ---
 #### `!country [username]`
-**Platforms**: Twitch, Discord
+**Platforms**: Twitch, Discord<br/>
 **Aliases**: `!getcountry`
 
 Outputs the country of the specified user, or you.
@@ -34,7 +34,7 @@ Sets the specified country to yours in the database. You can find a list of the 
 
 ---
 #### `!name [username]`
-**Platforms**: Twitch, Discord
+**Platforms**: Twitch, Discord<br/>
 **Aliases**: `!getname`
 
 Outputs the preferred name of the specified user, or you.
@@ -48,27 +48,27 @@ Sets your preferred name to the specified name. Can contain letters, numbers, sp
 ---
 
 ## Account linking commands
----
 
 Account linking is the newest feature of the bot, which comes with Discord integration. Using this command, you may link your twitch and Discord accounts through the bot so that the same data is being tracked for you regardless of the platform on which you update it. As more commands and features are added, this will provide additional benefits.
 
+---
 #### `!link <twitch username>`
-**Platforms**: Discord
-**Aliases**: `!linkaccount`
+**Platforms**: Discord<br/>
+**Aliases**: `!linkaccount`<br/>
 **Must be run in a private message**
 
 Sends a whisper (on twitch) to the specified twitch user containing a **token** that can be used to link the two accounts. This **token** is then used in the `!linktoken` command to complete the account linking process.
 
 ---
 #### `!linktoken <token>`
-**Platforms**: Discord
+**Platforms**: Discord<br/>
 **Must be run in a private message**
 
 Links the twitch account specified in the `!link` command, provided that the **token** is the same one that was sent to the twitch user.  This means that to link an account, you must check your twitch whispers after sending the `!link` command and then input this token to the bot using this `!linktoken` command.
 
 ---
 #### `!unlink`
-**Platforms**: Twitch, Discord
+**Platforms**: Twitch, Discord<br/>
 **Must be run in a private message**
 
 Whichever platform this is run on, it will unlink your account on that platform from all other accounts it has been linked to.  As of right now, only one Discord account can be associated with a twitch account, and vice versa.  However, this command will dissociate from *all other platforms* in the future (yes, there will eventually be other platforms).
@@ -76,48 +76,49 @@ Whichever platform this is run on, it will unlink your account on that platform 
 ## Queueing commands
 ---
 #### `!queue`
-**Platforms**: Twitch
+**Platforms**: Twitch<br/>
 **Aliases**: `!q`, `!matches`
 
 Prints the entire queue into chat.
 
 ---
 #### `!forfeit <index>`
-**Platforms**: Twitch
+**Platforms**: Twitch<br/>
 **Must be run in a public channel**
 
 Forfeits the match at the specified index, provided you are one of the players in that match.
 
 ---
 #### `!match [user] [results=3]`
-**Platforms**: Twitch
+**Platforms**: Twitch<br/>
 **Must be run in a public channel**
+
 Retrieves the users in chat with personal bests closest to that of the specified user (or you). Displayes specified number of results.
 
 ---
 #### `!challenge <user>`
-**Platforms**: Twitch
+**Platforms**: Twitch<br/>
 **Must be run in a public channel**
 
 Challenges the specified user to a match. Only one challenge can be pending to a user at a time, and each user may only issue one challenge at a time.
 
 ---
 #### `!accept`
-**Platforms**: Twitch
+**Platforms**: Twitch<br/>
 **Must be run in a private message**
 
 Accepts the pending challenge to you, if there is  one, and adds that match to the queue.
 
 ---
 #### `!decline`
-**Platforms**: Twitch
+**Platforms**: Twitch<br/>
 **Must be run in a private message**
 
 Declines the pending challenge to you, if there is one.
 
 ---
-#### `!cancel`
-**Platforms**: Twitch
+#### `!cancel`<br/>
+**Platforms**: Twitch<br/>
 **Must be run in a public channel**
 
 Cancels your pending challenge to someone else, if you have issued one.
@@ -126,38 +127,38 @@ Cancels your pending challenge to someone else, if you have issued one.
 ### Moderator-only
 
 #### `!open`
-**Platforms**: Twitch
-**Aliases**: `!openqueue`
+**Platforms**: Twitch<br/>
+**Aliases**: `!openqueue`<br/>
 **Must be run in a public channel**
 
 Opens the queue. This both allows players to challenge one another and allows moderators to add matches manually.
 
 ---
 #### `!close`
-**Platforms**: Twitch
-**Aliases**: `!closequeue`
+**Platforms**: Twitch<br/>
+**Aliases**: `!closequeue`<br/>
 **Must be run in a public channel**
 
 Closes the queue. This prevents challenges from being issued or accepted. Moderators may no longer add matches to the queue unless they reopen it.
 
 ---
 #### `!addmatch <player 1> <player 2>`
-**Platforms**: Twitch
+**Platforms**: Twitch<br/>
 **Must be run in a public channel**
 
 Adds a match between the two specified players to the queue.
 
 ---
-#### `!removematch <index>`
-**Platforms**: Twitch
+#### `!removematch <index>`<br/>
+**Platforms**: Twitch<br/>
 **Must be run in a public channel**
 
 Removes a match at the specified index from the queue.
 
 ---
 #### `!clear`
-**Platforms**: Twitch
-**Aliases**: `!clearqueue`
+**Platforms**: Twitch<br/>
+**Aliases**: `!clearqueue`<br/>
 **Must be run in a public channel**
 
 Clears the entire queue.
@@ -166,15 +167,15 @@ Clears the entire queue.
 
 ---
 #### `!winner <player> [losing score]`
-**Platforms**: Twitch
-**Aliases**: `!declarewinner`
+**Platforms**: Twitch<br/>
+**Aliases**: `!declarewinner`<br/>
 **Must be run in a public channel**
 
 Declares the specified player the winner of a game, and stores that result (as well as the optionally provided losing score) in the current match data.
 
 ---
 #### `!endmatch`
-**Platforms**: Twitch
+**Platforms**: Twitch<br/>
 **Must be run in a public channel**
 
 Ends the current match, automatically determining the winner based on the match data stored each time `!winner` was called.
@@ -182,14 +183,14 @@ Ends the current match, automatically determining the winner based on the match 
 ## Other commands
 ---
 #### `!summon`
-**Platforms**: Twitch
+**Platforms**: Twitch<br/>
 **Must be run in a private message**
 
 Call this command in a whisper to the bot to add the bot to your channel.
 
 ---
 #### `!pleaseleavemychannel`
-**Platforms**: Twitch
+**Platforms**: Twitch<br/>
 **Must be run in a private message**
 
 Call this command in a whisper to the bot to remove the bot from your channel.
