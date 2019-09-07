@@ -23,7 +23,8 @@ class CommandContext:
             command = command_class(self)
             command.check_support_and_execute()
         else:
-            self.send_message("Not a valid command")
+            # Not a valid command
+            pass
 
     @classmethod
     def is_command(cls, message):
