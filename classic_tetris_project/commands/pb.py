@@ -34,7 +34,7 @@ class GetPBCommand(Command):
 
 
 @Command.register("newpb", "setpb",
-                  usage="setpb <pb> [type] (default type NTSC)")
+                  usage="setpb <pb> [type=NTSC]")
 class SetPBCommand(Command):
     def execute(self, pb, pb_type="ntsc"):
         try:

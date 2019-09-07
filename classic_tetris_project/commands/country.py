@@ -17,9 +17,9 @@ class GetCountryCommand(Command):
             self.send_message("User has not set a country.")
 
 @Command.register("setcountry",
-                  usage="setpb <three-letter country code>")
+                  usage="setcountry <three-letter country code>")
 class SetCountryCommand(Command):
-    def execute(self, country): 
+    def execute(self, country):
         if not self.context.user.set_country(country):
             raise CommandException("Invalid country code. See "
                 "https://www.iban.com/country-codes to find your 3-digit "

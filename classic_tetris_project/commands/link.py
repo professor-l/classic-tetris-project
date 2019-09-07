@@ -63,8 +63,7 @@ class LinkCommand(Command):
                           usage="linktoken <token>")
 class LinkTokenCommand(Command):
     def execute(self, token):
-        if self.context.channel.type != ChannelType.private:
-            raise CommandException("This command must be run in a direct message.")
+        self.check_private()
 
         link_request = cache.get(f"link_requests.{self.context.user.id}")
 
@@ -89,6 +88,8 @@ PAL PB: {self.context.user.pal_pb}
                   usage="unlink yesimsure")
 class UnlinkCommand(Command):
     def execute(self, sure=None):
+        self.check_private()
+
         if sure != "yesimsure":
             raise CommandException(
                 "Doing this will unlink this account from any other accounts "
