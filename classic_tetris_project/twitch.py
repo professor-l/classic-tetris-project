@@ -175,5 +175,5 @@ API = APIClient(env("TWITCH_CLIENT_ID"))
 client = Client(
     env("TWITCH_USERNAME"),
     env("TWITCH_TOKEN"),
-    default_channels=["classictetrisbottest"]
+    default_channels=[env("TWITCH_USERNAME")]
 )

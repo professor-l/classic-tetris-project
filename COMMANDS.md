@@ -2,7 +2,7 @@
 
 The following is a detailed outline of each command the bot supports. As always, suggestions for more commands are welcome - you may open a [GitHub issue](https://github.com/professor-l/classic-tetris-project/issues/new) to suggest them as well as to report bugs in the existing ones.
 
-Commands are listed with `<required parameters>` and `[optional paremeters]`, which occasionally have a `[default=value]`.
+Commands are listed with `<required parameters>` and `[optional parameters]`, which occasionally have a `[default=value]`.
 
 ## User commands
 
@@ -43,7 +43,7 @@ Outputs the preferred name of the specified user, or you.
 #### `!setname <name>`
 **Platforms**: Twitch, Discord
 
-Sets your preferred name to the specified name. Can contain letters, numbers, spaces, dashes, underscores, and periods.
+Sets your preferred name to the specified name. Can contain letters, numbers, spaces, hyphens, underscores, and periods.
 
 ---
 
@@ -131,6 +131,7 @@ Cancels your pending challenge to someone else, if you have issued one.
 **Platforms**: Twitch<br/>
 **Aliases**: `!openqueue`<br/>
 **Must be run in a public channel**
+**Moderator-only**
 
 Opens the queue. This both allows players to challenge one another and allows moderators to add matches manually.
 
@@ -139,6 +140,7 @@ Opens the queue. This both allows players to challenge one another and allows mo
 **Platforms**: Twitch<br/>
 **Aliases**: `!closequeue`<br/>
 **Must be run in a public channel**
+**Moderator-only**
 
 Closes the queue. This prevents challenges from being issued or accepted. Moderators may no longer add matches to the queue unless they reopen it.
 
@@ -146,6 +148,7 @@ Closes the queue. This prevents challenges from being issued or accepted. Modera
 #### `!addmatch <player 1> <player 2>`
 **Platforms**: Twitch<br/>
 **Must be run in a public channel**
+**Moderator-only**
 
 Adds a match between the two specified players to the queue.
 
@@ -153,6 +156,7 @@ Adds a match between the two specified players to the queue.
 #### `!removematch <index>`<br/>
 **Platforms**: Twitch<br/>
 **Must be run in a public channel**
+**Moderator-only**
 
 Removes a match at the specified index from the queue.
 
@@ -161,6 +165,7 @@ Removes a match at the specified index from the queue.
 **Platforms**: Twitch<br/>
 **Aliases**: `!clearqueue`<br/>
 **Must be run in a public channel**
+**Moderator-only**
 
 Clears the entire queue.
 
@@ -171,6 +176,7 @@ Clears the entire queue.
 **Platforms**: Twitch<br/>
 **Aliases**: `!declarewinner`<br/>
 **Must be run in a public channel**
+**Moderator-only**
 
 Declares the specified player the winner of a game, and stores that result (as well as the optionally provided losing score) in the current match data.
 
@@ -178,6 +184,7 @@ Declares the specified player the winner of a game, and stores that result (as w
 #### `!endmatch`
 **Platforms**: Twitch<br/>
 **Must be run in a public channel**
+**Moderator-only**
 
 Ends the current match, automatically determining the winner based on the match data stored each time `!winner` was called.
 
@@ -201,3 +208,9 @@ Call this command in a whisper to the bot to remove the bot from your channel.
 **Platforms**: Twitch
 
 Counts down from 3 before saying "Tetris!" in the chat. Works for any number from 3-10.
+
+---
+#### `!help`
+**Platforms**: Twitch, Discord
+
+Links the user to this page.
