@@ -2,6 +2,7 @@ import re
 import traceback
 from inspect import signature
 from discord import ChannelType
+import django.db
 
 from .. import discord, twitch
 from ..util import Platform
@@ -30,6 +31,10 @@ class Command:
                 if num_args < min_args or (max_args is not None and num_args > max_args):
                     raise CommandException(send_usage=True)
                 else:
+                    # Close expired database conections before and after each command to avoid
+                    # timeouts. This emulates Django's built-in behavior of closing connections
+                    # before and after each web request.
+                    django.db.close_old_connections()
                     self.execute(*self.args)
             except CommandException as e:
                 if e.message:
@@ -39,6 +44,8 @@ class Command:
             except Exception as e:
                 self.send_message("Internal error :(")
                 traceback.print_exc()
+            finally:
+                django.db.close_old_connections()
         else:
             self.send_message("Command not supported on this platform.")
 
