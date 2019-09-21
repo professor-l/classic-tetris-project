@@ -14,6 +14,9 @@ class Match(models.Model):
     # Null until the match has ended
     ended_at = models.DateTimeField(null=True)
 
+    class Meta:
+        verbose_name_plural = 'matches'
+
     def add_game(self, winner, losing_score):
         if winner == self.player1 or winner == self.player2:
             game = Game(match=self, winner=winner, losing_score=losing_score)
