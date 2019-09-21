@@ -126,6 +126,8 @@ class TwitchUser(PlatformUser):
         if self.username != username:
             self.username = username
             self.save()
+            if hasattr(self, "channel") and self.channel.connected:
+                self.channel.summon_bot()
 
     def get_or_create_channel(self):
         if hasattr(self, "channel"):
