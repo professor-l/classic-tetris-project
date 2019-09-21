@@ -132,19 +132,16 @@ class AddMatchCommand(QueueCommand):
         self.check_public()
         self.check_moderator()
 
-        if not self.is_queue_open():
-            raise CommandException("The queue is not open.")
-        else:
-            twitch_user1 = Command.twitch_user_from_username(player1)
-            twitch_user2 = Command.twitch_user_from_username(player2)
+        twitch_user1 = Command.twitch_user_from_username(player1)
+        twitch_user2 = Command.twitch_user_from_username(player2)
 
-            if twitch_user1 is None:
-                raise CommandException(f"The twitch user \"{player1}\" does not exist.")
-            if twitch_user2 is None:
-                raise CommandException(f"The twitch user \"{player2}\" does not exist.")
+        if twitch_user1 is None:
+            raise CommandException(f"The twitch user \"{player1}\" does not exist.")
+        if twitch_user2 is None:
+            raise CommandException(f"The twitch user \"{player2}\" does not exist.")
 
-            self.queue.add_match(twitch_user1.user, twitch_user2.user)
-            self.send_message(f"A match has been added between {twitch_user1.user_tag} and {twitch_user2.user_tag}!")
+        self.queue.add_match(twitch_user1.user, twitch_user2.user)
+        self.send_message(f"A match has been added between {twitch_user1.user_tag} and {twitch_user2.user_tag}!")
 
 
 @Command.register_twitch("removematch",
