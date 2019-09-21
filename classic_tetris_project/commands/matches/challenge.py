@@ -78,7 +78,7 @@ class ChallengeCommand(QueueCommand):
         # Check that sender has no pending challenges
         sent_challenge = Challenge.sent_challenge(sender)
         if sent_challenge:
-            raise CommandException("You have already challenged {sent_challenge.recipient.username}.")
+            raise CommandException(f"You have already challenged {sent_challenge.recipient.username}.")
 
         # Add challenge
         challenge = Challenge(channel_name, sender, recipient)
