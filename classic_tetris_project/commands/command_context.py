@@ -6,6 +6,7 @@ from .command import COMMAND_MAP
 from ..util import Platform, memoize
 from ..models.users import DiscordUser, TwitchUser
 from .. import discord
+from .. import twitch
 
 class CommandContext:
     def __init__(self, content):
@@ -97,8 +98,30 @@ class TwitchCommandContext(CommandContext):
         self.channel = message.channel
         self.author = message.author
 
+        self.logger = twitch.logger
+
+        self.log(self.author, self.channel, self.message.content)
+
     def send_message(self, message):
         self.channel.send_message(message)
+        self.log(self.channel.client.username, self.channel, message)
+
+    def log(self, user, channel, message, level=logging.INFO):
+        if (isinstance(channel, twitch.Whisper)):
+            channel_name = f"@{channel.author}"
+        elif (isinstance(channel, twitch.PublicChannel)):
+            channel_name = f"#{channel.name}"
+
+        if (isinstance(user, twitch.User)):
+            username=user.username
+        else:
+            username=user
+
+        self.logger.log(level, "[{channel_name}] <{username}> {message}".format(
+            channel_name=channel_name,
+            username=username,
+            message=message
+        ))
 
     @property
     def user_tag(self):
