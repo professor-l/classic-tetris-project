@@ -1,4 +1,5 @@
 import irc.client
+import logging
 import re
 import requests
 
@@ -8,6 +9,8 @@ from .env import env
 TWITCH_API = "https://api.twitch.tv/kraken/"
 TWITCH_SERVER = "irc.chat.twitch.tv"
 TWITCH_PORT = 6667
+
+logger = logging.getLogger("twitch-bot")
 
 class APIClient:
     def __init__(self, client_id):
@@ -143,7 +146,6 @@ class Message:
         self.content = content
         self.author = author
         self.channel = channel
-
 
 
 class Channel:

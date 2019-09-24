@@ -43,7 +43,8 @@ class Command(BaseCommand):
     def run_twitch(self):
         @twitch.client.on_welcome
         def on_welcome():
-            print("Connected to Twitch")
+            twitch.logger.info("Connected to twitch")
+            # print("Connected to twitch")
 
         @twitch.client.on_message
         def on_message(message):
