@@ -1,12 +1,16 @@
+import discord as discordpy
+import logging
 import re
 from asgiref.sync import async_to_sync
 from .command import COMMAND_MAP
 from ..util import Platform, memoize
 from ..models.users import DiscordUser, TwitchUser
+from .. import discord
 
 class CommandContext:
     def __init__(self, content):
         self.content = content
+
         try:
             self.args_string = content[(content.index(" ") + 1):]
         except ValueError:
@@ -48,9 +52,14 @@ class DiscordCommandContext(CommandContext):
         self.message = message
         self.channel = message.channel
         self.author = message.author
+        self.logger = discord.logger
+
+        self.log(self.author, self.channel, self.message.content)
 
     def send_message(self, message):
         async_to_sync(self.channel.send)(message)
+        self.log(discord.client.user, self.channel, message)
+
 
     @property
     def user_tag(self):
@@ -64,6 +73,17 @@ class DiscordCommandContext(CommandContext):
     def format_code(self, message):
         return f"`{message}`"
 
+    def log(self, user, channel, message, level=logging.INFO):
+        if (isinstance(channel, discordpy.DMChannel)):
+            channel_name = f"@{channel.recipient.name}"
+        elif (isinstance(channel, discordpy.TextChannel)):
+            channel_name = f"#{channel.name}"
+
+        self.logger.log(level, "[{channel_name}] <{username}> {message}".format(
+            channel_name=channel_name,
+            username=user.name,
+            message=message
+        ))
 
 
 class TwitchCommandContext(CommandContext):
