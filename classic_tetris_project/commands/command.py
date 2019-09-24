@@ -1,3 +1,4 @@
+import logging
 import re
 import traceback
 from inspect import signature
@@ -43,7 +44,7 @@ class Command:
                     self.send_usage()
             except Exception as e:
                 self.send_message("Internal error :(")
-                traceback.print_exc()
+                self.context.logger.exception("Internal error :(")
             finally:
                 django.db.close_old_connections()
         else:

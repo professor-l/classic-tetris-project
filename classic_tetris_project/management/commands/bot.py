@@ -1,6 +1,8 @@
-from django.core.management.base import BaseCommand, CommandError
 from asgiref.sync import sync_to_async
+from django.core.management.base import BaseCommand, CommandError
 from threading import Thread
+import logging.config
+import yaml
 
 from ... import discord, twitch
 from ...env import env
@@ -27,7 +29,8 @@ class Command(BaseCommand):
     def run_discord(self):
         @discord.client.event
         async def on_ready():
-            print("Connected to Discord")
+            discord.logger.info("Connected to Discord")
+            # print("Connected to Discord")
 
         @discord.client.event
         async def on_message(message):
@@ -51,6 +54,9 @@ class Command(BaseCommand):
         twitch.client.start()
 
     def handle(self, *args, **options):
+        with open("logging.yml", "r") as f:
+            logging.config.dictConfig(yaml.load(f, Loader=yaml.FullLoader))
+        # logging.config.fileConfig("logging.conf")
         twitch_thread = Thread(target=self.run_twitch)
         twitch_thread.start()
         self.run_discord()
