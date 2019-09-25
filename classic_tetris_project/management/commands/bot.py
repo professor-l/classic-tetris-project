@@ -55,9 +55,45 @@ class Command(BaseCommand):
         twitch.client.start()
 
     def handle(self, *args, **options):
-        with open("logging.yml", "r") as f:
-            logging.config.dictConfig(yaml.load(f, Loader=yaml.FullLoader))
-        # logging.config.fileConfig("logging.conf")
+
+        import sys
+        import logging.handlers
+
+        import os
+        try:
+            os.mkdir("logs")
+        except FileExistsError:
+            pass
+
+        formatter = logging.Formatter("%(asctime)s [%(name)s] %(levelname)s: %(message)s")
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.DEBUG)
+        console_handler.setFormatter(formatter)
+
+
+        file_handler = logging.handlers.TimedRotatingFileHandler(
+            filename="logs/bot.log",
+            when="midnight",
+            interval=1
+        )
+
+        from datetime import datetime
+        def namer(name):
+            return datetime.now().strftime("logs/bot-%Y-%m-%d.log")
+
+        file_handler.setLevel(logging.DEBUG)
+        file_handler.setFormatter(formatter)
+        file_handler.namer = namer
+
+        discord.logger.addHandler(console_handler)
+        discord.logger.addHandler(file_handler)
+        discord.logger.setLevel(logging.DEBUG)
+        twitch.logger.addHandler(console_handler)
+        twitch.logger.addHandler(file_handler)
+        twitch.logger.setLevel(logging.DEBUG)
+
+
         twitch_thread = Thread(target=self.run_twitch)
         twitch_thread.start()
         self.run_discord()
+        # """
