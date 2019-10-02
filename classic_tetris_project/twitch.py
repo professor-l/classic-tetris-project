@@ -113,12 +113,11 @@ class Client:
             self.join_channel(channel)
 
     def join_channel(self, channel_name):
-        # TODO better logging"
-        print(f"Joining channel #{channel_name}")
+        logger.info(f"Joining channel #{channel_name}")
         self.connection.join(f"#{channel_name}")
 
     def leave_channel(self, channel_name):
-        print(f"Leaving channel #{channel_name}")
+        logger.info(f"Leaving channel #{channel_name}")
         self.connection.part(f"#{channel_name}")
 
 
