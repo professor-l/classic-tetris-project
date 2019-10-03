@@ -1,4 +1,5 @@
 from django.db import transaction
+from ..models import Game, Match
 
 class UserMerger:
     def __init__(self, user1, user2):
@@ -9,6 +10,7 @@ class UserMerger:
     def merge(self):
         self.update_user_fields()
         self.update_platform_users()
+        self.update_related_models()
 
         self.user2.delete()
 
@@ -32,3 +34,8 @@ class UserMerger:
         if hasattr(self.user2, "discord_user"):
             self.user2.discord_user.user = self.user1
             self.user2.discord_user.save()
+
+    def update_related_models(self):
+        Match.objects.filter(player1=self.user2).update(player1=self.user1)
+        Match.objects.filter(player2=self.user2).update(player2=self.user1)
+        Game.objects.filter(winner=self.user2).update(winner=self.user1)
