@@ -7,7 +7,7 @@ from ..countries import countries
                   usage="profile [username] (default username you)")
 class ProfileCommand(Command):
     def execute(self, username=None):
-        if not self.platform_user_from_username(username):
+        if username and not self.platform_user_from_username(username):
             raise CommandException("Specified user has no profile.")
 
         user = (self.platform_user_from_username(username).user if username
