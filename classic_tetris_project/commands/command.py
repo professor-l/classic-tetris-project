@@ -139,19 +139,16 @@ class Command:
                 return DiscordUser.objects.get(discord_id=discord_id)
             except DiscordUser.DoesNotExist:
                 return None
-        elif match_tag:
-            discord_tag = match_tag.group(1)
+        else:
             guild = discord.get_guild()
-            member = guild.get_member_named(discord_tag)
+            member = guild.get_member_named(username)
             if member:
                 try:
                     return DiscordUser.objects.get(discord_id=member.id)
                 except DiscordUser.DoesNotExist:
                     return None
             else:
-                return None
-        else:
-            raise CommandException("Invalid username")
+                raise CommandException("Invalid username")
 
     @staticmethod
     def twitch_user_from_username(username):
