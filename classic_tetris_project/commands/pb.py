@@ -3,7 +3,8 @@ from .command import Command, CommandException
 @Command.register("pb", "getpb",
                   usage="pb [username] (default username you)")
 class GetPBCommand(Command):
-    def execute(self, username=None):
+    def execute(self, *username):
+        username = username[0] if len(username) == 1 else self.context.args_string
         platform_user = (self.platform_user_from_username(username) if username
                          else self.context.platform_user)
 

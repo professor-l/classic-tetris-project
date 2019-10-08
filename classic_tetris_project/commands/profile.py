@@ -6,7 +6,8 @@ from ..countries import countries
 @Command.register_discord("profile",
                   usage="profile [username] (default username you)")
 class ProfileCommand(Command):
-    def execute(self, username=None):
+    def execute(self, *username):
+        username = username[0] if len(username) == 1 else self.context.args_string
         if username and not self.platform_user_from_username(username):
             raise CommandException("Specified user has no profile.")
 
