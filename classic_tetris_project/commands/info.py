@@ -14,3 +14,8 @@ class StencilCommand(Command):
     def execute(self, *args):
         self.send_message("The stencil helps the streamer line up your Tetris playfield with their "
                           "broadcast scene. Link here: http://bit.ly/TheStencil")
+
+@Command.register_twitch("ctm", usage="ctm")
+class CTMDiscordCommand(Command):
+    def execute(self, *args):
+        self.send_message("Join the Classic Tetris Monthly Discord server to learn more about CTM! https://discord.gg/SYP37aV")
