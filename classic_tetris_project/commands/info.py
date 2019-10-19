@@ -19,3 +19,9 @@ class StencilCommand(Command):
 class CTMDiscordCommand(Command):
     def execute(self, *args):
         self.send_message("Join the Classic Tetris Monthly Discord server to learn more about CTM! https://discord.gg/SYP37aV")
+
+
+@Command.register("leaderboard", usage="leaderboard")
+class CTWCLeaderboardCommmand(Command):
+    def execute(self, *args):
+        self.send_message("CTWC qualification leaderboard: https://bit.ly/CTWC2019Leaderboard")
