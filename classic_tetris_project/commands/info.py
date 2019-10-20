@@ -29,4 +29,4 @@ class CTWCLeaderboardCommmand(Command):
 @Command.register("bracket", usage="bracket")
 class CTWCBracketCommand(Command):
     def execute(self, *args):
-        self.send_message("Round 0 bracket: http://bit.ly/2019CTWCTop32")
+        self.send_message("Official 2019 bracket: https://docs.google.com/spreadsheets/d/e/2PACX-1vQe3CtLlr3igQIINFBpTY2olXJ0wP3cP9h1i1huLF0BNAnVLzBD9eM74edVBlA7WT8tyLjJP5Af5G4X/pubhtml")
