@@ -25,3 +25,8 @@ class CTMDiscordCommand(Command):
 class CTWCLeaderboardCommmand(Command):
     def execute(self, *args):
         self.send_message("CTWC qualification leaderboard: https://bit.ly/CTWC2019Leaderboard")
+
+@Command.register("bracket", usage="bracket")
+class CTWCBracketCommand(Command):
+    def execute(self, *args):
+        self.send_message("Round 0 bracket: http://bit.ly/2019CTWCRound0")
