@@ -24,6 +24,7 @@ class ProfileCommand(Command):
 
         ntsc_pb = user.ntsc_pb or "Not set"
         pal_pb = user.pal_pb or "Not set"
+        playstyle = user.get_playstyle_display() or "Not set"
         country = countries[user.country] if user.country else "Not set"
 
         if hasattr(user, "twitch_user"):
@@ -37,12 +38,14 @@ class ProfileCommand(Command):
              "    **Personal bests:**\n"
              "        NTSC: {ntsc_pb}\n"
              "        PAL: {pal_pb}\n"
+             "    **Playstyle:** {playstyle}\n"
              "    **Country:** {country}\n"
              "    **Twitch:** {twitch_channel}"
              ).format(
                  name=name,
                  ntsc_pb=ntsc_pb,
                  pal_pb=pal_pb,
+                 playstyle=playstyle,
                  country=country,
                  twitch_channel=twitch_channel
             )
