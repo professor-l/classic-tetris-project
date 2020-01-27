@@ -1,3 +1,5 @@
+import random
+
 from .command import Command
 from ..util import Platform
 
@@ -21,12 +23,12 @@ class CTMDiscordCommand(Command):
         self.send_message("Join the Classic Tetris Monthly Discord server to learn more about CTM! https://discord.gg/SYP37aV")
 
 
-@Command.register("leaderboard", usage="leaderboard")
-class CTWCLeaderboardCommmand(Command):
+@Command.register("seed", "hex", usage="seed")
+class SeedGenerationCommand(Command):
     def execute(self, *args):
-        self.send_message("CTWC qualification leaderboard: https://bit.ly/CTWC2019Leaderboard")
+        self.send_message(("RANDOM SEED: [%06x]" % random.randint(0, 0xffffff)))
 
-@Command.register("bracket", usage="bracket")
-class CTWCBracketCommand(Command):
+@Command.register("coin", "flip", "coinflip", usage="coin")
+class CoinFlipCommand(Command):
     def execute(self, *args):
-        self.send_message("Official CTWC 2019 Bracket: http://bit.ly/2019CTWCTop8")
+        self.send_message(random.choice(["Heads!", "Tails!"]))
