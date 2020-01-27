@@ -14,11 +14,18 @@ from ..countries import countries
 class User(models.Model):
     RE_PREFERRED_NAME = re.compile(r"^[A-Za-z0-9\-_. ]+$")
 
+    PLAYSTYLE_CHOICES = {
+        'das': 'DAS',
+        'hypertap': 'Hypertap',
+        'hybrid': 'Hybrid',
+    }
+
     preferred_name = models.CharField(max_length=64, null=True)
     ntsc_pb = models.IntegerField(null=True)
     ntsc_pb_updated_at = models.DateTimeField(null=True)
     pal_pb = models.IntegerField(null=True)
     pal_pb_updated_at = models.DateTimeField(null=True)
+    playstyle = models.CharField(max_length=16, null=True, choices=PLAYSTYLE_CHOICES.items())
     country = models.CharField(max_length=3, null=True)
 
     def set_pb(self, pb, pb_type="ntsc"):
@@ -30,6 +37,15 @@ class User(models.Model):
         elif pb_type == "ntsc":
             self.ntsc_pb = pb
             self.ntsc_pb_updated_at = timezone.now()
+            self.save()
+            return True
+        else:
+            return False
+
+    def set_playstyle(self, style):
+        style = style.lower()
+        if style in self.PLAYSTYLE_CHOICES:
+            self.playstyle = style
             self.save()
             return True
         else:
