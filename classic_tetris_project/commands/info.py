@@ -26,7 +26,10 @@ class CTMDiscordCommand(Command):
 @Command.register("seed", "hex", usage="seed")
 class SeedGenerationCommand(Command):
     def execute(self, *args):
-        self.send_message(("RANDOM SEED: [%06x]" % random.randint(0, 0xffffff)))
+        seed = 0
+        while (seed % 0x100 < 0x3):
+            seed = random.randint(0x200, 0xffffff)
+        self.send_message(("RANDOM SEED: [%06x]" % seed))
 
 @Command.register("coin", "flip", "coinflip", usage="coin")
 class CoinFlipCommand(Command):
