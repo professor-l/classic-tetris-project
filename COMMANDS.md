@@ -20,6 +20,13 @@ Outputs the pb of the specified user, or you.
 Sets the given pb (of type NTSC or PAL) to yours in the database.
 
 ---
+#### `!setplaystyle <DAS|Hypertap|Hybrid>`
+**Platforms**: Twitch, Discord<br/>
+**Aliases**: `!setstyle`
+
+Sets your playstyle to DAS, Hypertap, or Hybrid.
+
+---
 #### `!country [username]`
 **Platforms**: Twitch, Discord<br/>
 **Aliases**: `!getcountry`

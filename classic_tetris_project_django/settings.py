@@ -35,6 +35,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = [
+    'dev.monthlytetris.info',
     'monthlytetris.info',
     'monthlytetris.com',
     '18.191.245.242',
