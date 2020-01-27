@@ -23,3 +23,4 @@ class GameInline(admin.TabularInline):
 @admin.register(Match)
 class MatchAdmin(admin.ModelAdmin):
     inlines = [GameInline]
+    list_display = ('__str__', 'player1', 'wins1', 'player2', 'wins2', 'channel', 'ended_at')
