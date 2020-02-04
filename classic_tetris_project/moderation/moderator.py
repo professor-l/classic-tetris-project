@@ -1,35 +1,32 @@
-class ModeratorContext:
-    pass
+from asgiref.sync import async_to_sync
 
-class DiscordModeratorContext:
+class DiscordModerator:
     def __init__(self, message):
         self.message = message
 
     def dispatch(self):
-        rule_class = DISCORD_MODERATION_MAP[self.message.channel.id]
+        rule_class = DISCORD_MODERATION_MAP[str(self.message.channel.id)]
         rule = rule_class(self)
         rule.apply()
 
     @staticmethod
     def is_rule(message):
-        print(len(list(DISCORD_MODERATION_MAP.keys())))
-        return message.channel.id in DISCORD_MODERATION_MAP.keys()
+        return str(message.channel.id) in DISCORD_MODERATION_MAP.keys()
 
 
 
-class Moderator:
-    pass
 
-class DiscordModerator(Moderator):
-    def __init__(self, context):
-        self.message = context.message
+class AllCapsRule:
+    def __init__(self, moderator):
+        self.moderator = moderator
+        self.message = self.moderator.message
 
-    @staticmethod
-    def register(channel_id):
-        def _register_rule(rule):
-            DISCORD_MODERATION_MAP[channel_id] = rule
-            return rule
-        return _register_rule
+    def apply(self):
+        if not self.message.content.isupper():
+            async_to_sync(self.message.delete)()
 
 
-DISCORD_MODERATION_MAP = {}
+DISCORD_MODERATION_MAP = {
+    "543873755202584587": AllCapsRule
+}
+
