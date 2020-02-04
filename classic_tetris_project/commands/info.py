@@ -31,7 +31,7 @@ class SeedGenerationCommand(Command):
             seed = random.randint(0x200, 0xffffff)
         self.send_message(("RANDOM SEED: [%06x]" % seed))
 
-@Command.register("coin", "flip", "coinflip", usage="coin")
+@Command.register("coin", "flip", "coinflip", usage="flip")
 class CoinFlipCommand(Command):
     def execute(self, *args):
         self.send_message(random.choice(["Heads!", "Tails!"]))
