@@ -6,6 +6,12 @@ Commands are listed with `<required parameters>` and `[optional parameters]`, wh
 
 ## User commands
 
+#### `!profile [username]`
+**Platforms**: Discord<br/>
+
+Prints most standard information stored in the bot belonging to the specified user, or you.
+ Also makes it pretty.
+
 #### `!pb [username]`
 **Platforms**: Twitch, Discord<br/>
 **Aliases**: `!getpb`
@@ -51,6 +57,20 @@ Outputs the preferred name of the specified user, or you.
 **Platforms**: Twitch, Discord
 
 Sets your preferred name to the specified name. Can contain letters, numbers, spaces, hyphens, underscores, and periods.
+
+---
+#### `!samepieces [username]`
+**Platforms**: Twitch, Discord<br/>
+**Aliases**: `!samepiecesets`
+
+Outputs whether the specified user (or you) can use the same piece sets romhack.
+
+---
+#### `!setsamepieces <Y/N>`
+**Platforms**: Twitch, Discord<br/>
+**Aliases**: `!setsamepiecesets`
+
+Sets your ability to run HydrantDude's same piece set romhack. Options are y/yes/t/true and n/no/f/false.
 
 ---
 
@@ -215,6 +235,20 @@ Call this command in a whisper to the bot to remove the bot from your channel.
 **Platforms**: Twitch
 
 Counts down from 3 before saying "Tetris!" in the chat. Works for any number from 3-10.
+
+---
+#### `!seed`
+**Platforms**: Twitch, Discord<br/>
+**Aliases**: `!hex`
+
+Prints a random 6-digit hex code that is a valid NEStris seed. Used for HydrantDude's same piece sets romhack.
+
+---
+#### `!flip`
+**Platforms**: Twitch, Discord<br/>
+**Aliases**: `!coin`, `!coinflip`
+
+Prints "Heads!" or "Tails!" randomly. There is no "side." The source code is available for you to verify this. If you spam this command, Elle herself will come to your house and hit you in the back of the head with a pen before scolding you in a motherly fashion. (Seriously though, please don't. I don't want to have to add a timeout.)
 
 ---
 #### `!help`
