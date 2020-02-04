@@ -34,10 +34,16 @@ class Command(BaseCommand):
             discord.logger.info("Connected to Discord")
 
         @discord.client.event
+        async def on_message_edit(before, after):
+            if DiscordModerator.is_rule(after):
+                moderator = DiscordModerator(after)
+                await sync_to_async(moderator.dispatch)()
+
+        @discord.client.event
         async def on_message(message):
             if DiscordModerator.is_rule(message):
-                context = DiscordModerator(message)
-                await sync_to_async(context.dispatch)()
+                moderator = DiscordModerator(message)
+                await sync_to_async(moderator.dispatch)()
                 
             if DiscordCommandContext.is_command(message.content):
                 context = DiscordCommandContext(message)
