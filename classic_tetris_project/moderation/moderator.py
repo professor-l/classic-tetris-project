@@ -1,5 +1,7 @@
 from asgiref.sync import async_to_sync
 
+from ..env import env
+
 class DiscordModerator:
     def __init__(self, message):
         self.message = message
@@ -22,11 +24,11 @@ class AllCapsRule:
         self.message = self.moderator.message
 
     def apply(self):
-        if not self.message.content.isupper():
+        if any(ch.islower() for ch in self.message.content):
             async_to_sync(self.message.delete)()
 
 
 DISCORD_MODERATION_MAP = {
-    "543873755202584587": AllCapsRule
+    env("DISCORD_CAPS_CHANNEL"): AllCapsRule
 }
 

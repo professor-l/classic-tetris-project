@@ -36,7 +36,6 @@ class Command(BaseCommand):
         @discord.client.event
         async def on_message(message):
             if DiscordModerator.is_rule(message):
-                print("Good so far")
                 context = DiscordModerator(message)
                 await sync_to_async(context.dispatch)()
                 
