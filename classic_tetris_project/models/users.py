@@ -21,12 +21,17 @@ class User(models.Model):
     }
 
     preferred_name = models.CharField(max_length=64, null=True)
+
     ntsc_pb = models.IntegerField(null=True)
     ntsc_pb_updated_at = models.DateTimeField(null=True)
     pal_pb = models.IntegerField(null=True)
     pal_pb_updated_at = models.DateTimeField(null=True)
+
     playstyle = models.CharField(max_length=16, null=True, choices=PLAYSTYLE_CHOICES.items())
+
     country = models.CharField(max_length=3, null=True)
+
+    same_piece_sets = models.BooleanField(default=False)
 
     def set_pb(self, pb, pb_type="ntsc"):
         if pb_type == "pal":
@@ -66,6 +71,21 @@ class User(models.Model):
             return True
         else:
             return False
+
+    def set_same_piece_sets(self, value):
+        accepted_y = ["true", "yes", "y", "t"]
+        accepted_n = ["false", "no", "n", "f"]
+        if value in accepted_y:
+            value = True
+        elif value in accepted_n:
+            value = False
+
+        else:
+            return False
+
+        self.same_piece_sets = value
+        self.save()
+        return True
 
     def merge(self, target_user):
         from ..util.merge import UserMerger
