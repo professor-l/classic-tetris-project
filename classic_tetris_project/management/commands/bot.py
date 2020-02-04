@@ -6,7 +6,7 @@ import yaml
 
 from ... import discord, twitch
 from ...commands.command_context import DiscordCommandContext, TwitchCommandContext
-from ...moderation.moderator import DiscordModeratorContext
+from ...moderation.moderator import DiscordModerator
 from ...env import env
 from ...logging import LoggingManager
 
@@ -35,9 +35,9 @@ class Command(BaseCommand):
 
         @discord.client.event
         async def on_message(message):
-            if DiscordModeratorContext.is_rule(message):
+            if DiscordModerator.is_rule(message):
                 print("Good so far")
-                context = DiscordModeratorContext(message)
+                context = DiscordModerator(message)
                 await sync_to_async(context.dispatch)()
                 
             if DiscordCommandContext.is_command(message.content):
