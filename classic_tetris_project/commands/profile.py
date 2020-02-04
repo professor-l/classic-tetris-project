@@ -26,6 +26,7 @@ class ProfileCommand(Command):
         pal_pb = user.pal_pb or "Not set"
         playstyle = user.get_playstyle_display() or "Not set"
         country = countries[user.country] if user.country else "Not set"
+        same_pieces = "Yes" if user.same_piece_sets else "No"
 
         if hasattr(user, "twitch_user"):
             twitch_channel = f"https://www.twitch.tv/{user.twitch_user.username}"
@@ -40,6 +41,7 @@ class ProfileCommand(Command):
              "        PAL: {pal_pb}\n"
              "    **Playstyle:** {playstyle}\n"
              "    **Country:** {country}\n"
+             "    **Hardware for Same Piece Romhack:** {same_pieces}\n"
              "    **Twitch:** {twitch_channel}"
              ).format(
                  name=name,
@@ -47,6 +49,7 @@ class ProfileCommand(Command):
                  pal_pb=pal_pb,
                  playstyle=playstyle,
                  country=country,
+                 same_pieces=same_pieces,
                  twitch_channel=twitch_channel
             )
         )
