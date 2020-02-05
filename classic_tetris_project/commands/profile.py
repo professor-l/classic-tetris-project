@@ -41,7 +41,7 @@ class ProfileCommand(Command):
              "        PAL: {pal_pb}\n"
              "    **Playstyle:** {playstyle}\n"
              "    **Country:** {country}\n"
-             "    **Hardware for Same Piece Romhack:** {same_pieces}\n"
+             "    **Same Piece Sets:** {same_pieces}\n"
              "    **Twitch:** {twitch_channel}"
              ).format(
                  name=name,
