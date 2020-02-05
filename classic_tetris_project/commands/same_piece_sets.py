@@ -30,10 +30,11 @@ class SetSamePiecesCommand(Command):
     def execute(self, value):
         print("EXECUTING")
         if self.context.user.set_same_piece_sets(value):
+            ability = "Yes" if self.context.user.same_piece_sets else "No"
             self.send_message(
-                "{tag} - Your ability to use same piece sets has been set to {a}.".format(
-                    tag=self.context.platform_user.user_tag,
-                    a="\"" + str(self.context.user.same_piece_sets).lower() + "\""
+                "{user_tag} - Your ability to use same piece sets has been set to: {ability}.".format(
+                    user_tag=self.context.platform_user.user_tag,
+                    ability="\"" + ability + "\""
             ))
 
         else:
