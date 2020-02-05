@@ -1,9 +1,11 @@
 import random
+from django.core.cache import cache
 
 from .command import Command
 from ..util import Platform
 
 COMMANDS_URL = "https://github.com/professor-l/classic-tetris-project/blob/master/COMMANDS.md"
+COIN_FLIP_TIMEOUT = 10
 
 @Command.register("help", usage="help")
 class HelpCommand(Command):
@@ -34,4 +36,7 @@ class SeedGenerationCommand(Command):
 @Command.register("coin", "flip", "coinflip", usage="flip")
 class CoinFlipCommand(Command):
     def execute(self, *args):
+        if cache.get(f"flip.{self.context.user.id}"):
+            return
+        cache.set(f"flip.{self.context.user.id}", True, timeout=COIN_FLIP_TIMEOUT)
         self.send_message(random.choice(["Heads!", "Tails!"]))

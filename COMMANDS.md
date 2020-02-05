@@ -248,7 +248,7 @@ Prints a random 6-digit hex code that is a valid NEStris seed. Used for HydrantD
 **Platforms**: Twitch, Discord<br/>
 **Aliases**: `!coin`, `!coinflip`
 
-Prints "Heads!" or "Tails!" randomly. There is no "side." The source code is available for you to verify this. If you spam this command, Elle herself will come to your house and hit you in the back of the head with a pen before scolding you in a motherly fashion. (Seriously though, please don't. I don't want to have to add a timeout.)
+Prints "Heads!" or "Tails!" randomly. There is no "side." The source code is available for you to verify this. Also, there is a 10 second timeout for this command to avoid spamming.
 
 ---
 #### `!help`
