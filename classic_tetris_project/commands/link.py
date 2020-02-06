@@ -13,7 +13,6 @@ REQUEST_TIMEOUT = 30 * 60
                           usage="link <twitch username>")
 class LinkCommand(Command):
     def execute(self, username):
-        self.check_private()
 
         twitch_user = Command.twitch_user_from_username(username)
         if not twitch_user:
@@ -52,7 +51,7 @@ class LinkCommand(Command):
             "not initiate this request, you may ignore this message."
         )
 
-        self.send_message(
+        self.context.platform_user.send_message(
             f"A token has been sent to \"{username}\" on twitch. To confirm "
             "this link, type `!linktoken <token>`. The token will expire in "
             "thirty minutes."
@@ -88,7 +87,6 @@ PAL PB: {self.context.user.pal_pb}
                   usage="unlink yesimsure")
 class UnlinkCommand(Command):
     def execute(self, sure=None):
-        self.check_private()
 
         if sure != "yesimsure":
             raise CommandException(
@@ -108,7 +106,7 @@ class UnlinkCommand(Command):
                 raise CommandException("No accounts to unlink!")
             self.context.platform_user.unlink_from_user()
 
-        self.send_message("This account has been successfully unlinked from all user data.")
+        self.context.platform_user.send_message("This account has been successfully unlinked from all user data.")
 
 
 class LinkRequest:
