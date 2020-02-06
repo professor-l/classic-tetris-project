@@ -1,37 +1,52 @@
 from django.core.exceptions import ObjectDoesNotExist
 
+from ..util import Platform
+
 from .command import Command, CommandException
 from .. import twitch
 
-@Command.register_twitch("summon",
+@Command.register("summon",
                          usage="summon")
 class SummonCommand(Command):
     def execute(self):
-        self.check_private()
+        if self.context.platform == Platform.TWITCH:
 
-        channel = self.context.platform_user.get_or_create_channel()
+            channel = self.context.platform_user.get_or_create_channel()
+            self.summon_bot(channel)
+
+        elif self.context.platform == Platform.DISCORD:
+            
+            if not self.context.user.twitch_user:
+                raise CommandException("You haven't linked your twitch account! Try `!link`.")
+
+            channel = self.context.user.twitch_user.get_or_create_channel()
+            self.summon_bot(channel)
+            
+        
+    def summon_bot(self, channel):
+
         if channel.connected:
             raise CommandException(f"I'm already in #{channel.name}!")
 
         channel.summon_bot()
-        self.send_message(f"Ok, I've joined #{channel.name}. Message me \"!pleaseleavemychannel\" "
-                          "at any time to make me leave.")
+        self.context.platform_user.send_message(f"Ok, I've joined #{channel.name}. Message me "
+                                                "\"!pleaseleavemychannel\" at any time to "
+                                                "make me leave.")
         channel.send_message(f"Hi, I'm {twitch.client.username}!")
 
-
-@Command.register_twitch("pleaseleavemychannel",
+@Command.register("pleaseleavemychannel",
                          usage="pleaseleavemychannel")
 class LeaveCommand(Command):
     def execute(self):
-        self.check_private()
 
         try:
-            channel = self.context.platform_user.channel
+            twitch_user = self.context.user.twitch_user
+            channel = twitch_user.channel
         except ObjectDoesNotExist:
             channel = None
 
         if not (channel and channel.connected):
-            raise CommandException(f"I'm not in #{self.context.platform_user.username}!")
+            raise CommandException(f"I'm not in #{twitch_user.username}!")
 
         channel.eject_bot()
         self.send_message("Bye!")
