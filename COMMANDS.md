@@ -81,7 +81,6 @@ Account linking is the newest feature of the bot, which comes with Discord integ
 #### `!link <twitch username>`
 **Platforms**: Discord<br/>
 **Aliases**: `!linkaccount`<br/>
-**Must be run in a private message**
 
 Sends a whisper (on twitch) to the specified twitch user containing a **token** that can be used to link the two accounts. This **token** is then used in the `!linktoken` command to complete the account linking process.
 
@@ -95,7 +94,6 @@ Links the twitch account specified in the `!link` command, provided that the **t
 ---
 #### `!unlink`
 **Platforms**: Twitch, Discord<br/>
-**Must be run in a private message**
 
 Whichever platform this is run on, it will unlink your account on that platform from all other accounts it has been linked to.  As of right now, only one Discord account can be associated with a twitch account, and vice versa.  However, this command will dissociate from *all other platforms* in the future (yes, there will eventually be other platforms).
 
@@ -218,10 +216,9 @@ Ends the current match, automatically determining the winner based on the match 
 ## Other commands
 
 #### `!summon`
-**Platforms**: Twitch<br/>
-**Must be run in a private message**
+**Platforms**: Twitch, Discord
 
-Call this command in a whisper to the bot to add the bot to your channel.
+Say this in a channel the bot is in to add the bot to your Twitch channel.  If you've `!link`ed your Twitch and Discord accounts through the bot, you can even summon the bot to your Twitch channel by messaging it on Discord.
 
 ---
 #### `!pleaseleavemychannel`
