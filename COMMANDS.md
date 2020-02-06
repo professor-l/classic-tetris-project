@@ -251,6 +251,12 @@ Prints a random 6-digit hex code that is a valid NEStris seed. Used for HydrantD
 Prints "Heads!" or "Tails!" randomly. There is no "side." The source code is available for you to verify this. Also, there is a 10 second timeout for this command to avoid spamming.
 
 ---
+#### `!stencil`
+**Platforms**: Twitch, Discord<br/>
+
+Prints out info on, and link to download, the (in)famous Stencil.
+
+---
 #### `!help`
 **Platforms**: Twitch, Discord
 
