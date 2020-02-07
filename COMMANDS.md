@@ -220,6 +220,8 @@ Ends the current match, automatically determining the winner based on the match 
 
 Say this in a channel the bot is in to add the bot to your Twitch channel.  If you've `!link`ed your Twitch and Discord accounts through the bot, you can even summon the bot to your Twitch channel by messaging it on Discord.
 
+**Note**: If you plan on using the countdown command (Or if you think the bot will be chatting often), make sure you make the bot a moderator to allow it to send more than one message per second.
+
 ---
 #### `!pleaseleavemychannel`
 **Platforms**: Twitch<br/>
@@ -229,9 +231,12 @@ Call this command in a whisper to the bot to remove the bot from your channel.
 
 ---
 #### `!3`
-**Platforms**: Twitch
+**Platforms**: Twitch<br/>
+**Moderator-only**
 
-Counts down from 3 before saying "Tetris!" in the chat. Works for any number from 3-10.
+Counts down from 3 before saying "Tetris!" in the chat. Works for any number from 3-10. 
+
+**Note:** If the bot is not a moderator in your Twitch channel, it will not be able to say more than one message per second, and this restriction (which is built into Twitch) will interfere with countdowns. You can make the bot a moderator by typing `/mod @ClassicTetrisBot` after you have `!summon`ed it.
 
 ---
 #### `!seed`
