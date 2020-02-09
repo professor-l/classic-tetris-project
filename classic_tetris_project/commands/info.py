@@ -39,4 +39,6 @@ class CoinFlipCommand(Command):
         if cache.get(f"flip.{self.context.user.id}"):
             return
         cache.set(f"flip.{self.context.user.id}", True, timeout=COIN_FLIP_TIMEOUT)
-        self.send_message(random.choice(["Heads!", "Tails!"]))
+        choices = ["Heads!", "Tails", "Edge!"]
+        result = random.choices(population=choices,weights=[0.45,0.45,0.1])
+        self.send_message(result)
