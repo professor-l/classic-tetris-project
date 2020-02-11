@@ -28,4 +28,9 @@ class Side(models.Model):
         self.timestamp = timezone.now()
         self.save()
 
-coin = Coin.objects.all()[0]
+coins = Coin.objects.all()
+if not coins:
+    coin = Coin()
+    coin.save()
+else:
+    coin = coins[0]
