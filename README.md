@@ -18,7 +18,7 @@ A full list of commands can be found in the [COMMANDS.md](https://github.com/pro
 
 ### Community Input
 
-We are also very open to community input, since that's of course the best way to improve a project like this. So feel free to [open an issue](https://github.com/professor-l/classic-tetris-project/issues) here on GitHub with any suggestions or bug reports. I also regularly check Discord, so if you don't have a GitHub account but have suggestions, I can be contacted there. The best place for suggestions is in the dedicated channel in the [CTM Discord Server](htpps://discord.gg/SYP37aV). You can also tag or DM me (I'm "Professor L" on Discord) _if something is urgent_. Just remember - I'm an amateur developer, not a professional, and this bot has been and continues to be a spectacular learning experience for me. So please be patient.
+We are also very open to community input, since that's of course the best way to improve a project like this. So feel free to [open an issue](https://github.com/professor-l/classic-tetris-project/issues) here on GitHub with any suggestions or bug reports. I also regularly check Discord, so if you don't have a GitHub account but have suggestions, I can be contacted there. The best place for suggestions is in the dedicated channel in the [CTM Discord Server](https://discord.gg/SYP37aV). You can also tag or DM me (I'm "Professor L" on Discord) _if something is urgent_. Just remember - I'm an amateur developer, not a professional, and this bot has been and continues to be a spectacular learning experience for me. So please be patient.
 
 ### Contributing
 
