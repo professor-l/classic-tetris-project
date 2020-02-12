@@ -5,7 +5,7 @@ from .command import Command
 from ..models.coin import Coin
 from ..util import Platform
 
-COMMANDS_URL = "https://github.com/professor-l/classic-tetris-project/blob/master/COMMANDS.md"
+COMMANDS_URL = "https://github.com/professor-l/classic-tetris-project/blob/master/docs/COMMANDS.md"
 COIN_FLIP_TIMEOUT = 10
 
 @Command.register("help", usage="help")
