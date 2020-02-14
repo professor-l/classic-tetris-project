@@ -40,7 +40,9 @@ class SeedGenerationCommand(Command):
 @Command.register("coin", "flip", "coinflip", usage="flip")
 class CoinFlipCommand(Command):
     def execute(self, *args):
-        if (self.context.message.guild and self.context.message.guild.id == guild_id):
+        if self.context.platform == Platform.TWITCH:
+            self.check_moderator()
+        elif (self.context.message.guild and self.context.message.guild.id == guild_id):
             self.context.platform_user.send_message("Due to abuse, `!flip` has been disabled in the CTM Discord server.")
 
             async_to_sync(self.context.message.delete)()
