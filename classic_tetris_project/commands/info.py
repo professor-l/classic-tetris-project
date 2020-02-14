@@ -1,5 +1,6 @@
 import random
 from django.core.cache import cache
+from asgiref.sync import async_to_sync
 
 from .command import Command
 from ..models.coin import Coin
@@ -41,6 +42,8 @@ class CoinFlipCommand(Command):
     def execute(self, *args):
         if (self.context.message.guild and self.context.message.guild.id == guild_id):
             self.context.platform_user.send_message("Due to abuse, `!flip` has been disabled in the CTM Discord server.")
+
+            async_to_sync(self.context.message.delete)()
             return
 
         if cache.get(f"flip.{self.context.user.id}"):
