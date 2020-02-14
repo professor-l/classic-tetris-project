@@ -4,6 +4,7 @@ from django.core.cache import cache
 from .command import Command
 from ..models.coin import Coin
 from ..util import Platform
+from ..discord import guild_id
 
 COMMANDS_URL = "https://github.com/professor-l/classic-tetris-project/blob/master/docs/COMMANDS.md"
 COIN_FLIP_TIMEOUT = 10
@@ -38,6 +39,10 @@ class SeedGenerationCommand(Command):
 @Command.register("coin", "flip", "coinflip", usage="flip")
 class CoinFlipCommand(Command):
     def execute(self, *args):
+        if (self.context.message.guild and self.context.message.guild.id == guild_id):
+            self.context.platform_user.send_message("Due to abuse, `!flip` has been disabled in the CTM Discord server.")
+            return
+
         if cache.get(f"flip.{self.context.user.id}"):
             return
         cache.set(f"flip.{self.context.user.id}", True, timeout=COIN_FLIP_TIMEOUT)
