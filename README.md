@@ -14,7 +14,7 @@ Here are some of the greater features the bot supports:
 * Miscellaneous commands (see [info.py](https://github.com/professor-l/classic-tetris-project/blob/master/classic_tetris_project/commands/info.py))
 * More to come - including a web interface, the development of which is just beginning
 
-A full list of commands can be found in the [COMMANDS.md](https://github.com/professor-l/classic-tetris-project/blob/master/COMMANDS.md) file.
+A full list of commands can be found in the [COMMANDS.md](https://github.com/professor-l/classic-tetris-project/blob/master/docs/COMMANDS.md) file.
 
 ### Community Input
 
