@@ -2,6 +2,7 @@ import irc.client
 import logging
 import re
 import requests
+import time
 
 from .env import env
 
@@ -111,6 +112,9 @@ class Client:
                                                                                        flat=True)))
         for channel in channel_names:
             self.join_channel(channel)
+            # Band-aid to prevent Twitch from disconnecting the bot for joining too many channels at
+            # once
+            time.sleep(0.1)
 
     def join_channel(self, channel_name):
         logger.info(f"Joining channel #{channel_name}")
