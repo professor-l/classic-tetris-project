@@ -25,6 +25,24 @@ class Queue:
         self._matches.append(match)
         self.save()
 
+    def insert_match(self, player1, player2, index):
+
+        try:
+            index = int(index)
+        except:
+            raise CommandException("Invalid index.")
+
+
+        if len(self._matches) < index:
+            self.add_match(player1, player2)
+            return
+
+        match = Match(player1=player1, player2=player2, channel=self.channel)
+        match.save()
+
+        self._matches.insert(index - 1, match)
+        self.save()
+
     def remove_match(self, index):
         match = self._matches.pop(index - 1)
         match.delete()
