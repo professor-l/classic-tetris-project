@@ -144,6 +144,26 @@ class AddMatchCommand(QueueCommand):
         self.send_message(f"A match has been added between {twitch_user1.user_tag} and {twitch_user2.user_tag}!")
 
 
+@Command.register_twitch("insertmatch",
+                         usage="insertmatch <player 1> <player 2> <index>")
+class InsertMatchCommand(QueueCommand):
+    def execute(self, player1, player2, index):
+        self.check_public()
+        self.check_moderator()
+
+        twitch_user1 = Command.twitch_user_from_username(player1)
+        twitch_user2 = Command.twitch_user_from_username(player2)
+
+        if twitch_user1 is None:
+            raise CommandException(f"The twitch user \"{player1}\" does not exist.")
+        if twitch_user2 is None:
+            raise CommandException(f"The twitch user \"{player2}\" does not exist.")
+
+        self.queue.insert_match(twitch_user1.user, twitch_user2.user, index)
+        self.send_message(f"A match has been added between {twitch_user1.user_tag} and "
+                          f"{twitch_user2.user_tag} at index {index}!")
+
+
 @Command.register_twitch("removematch",
                          usage="removematch <index>")
 class RemoveMatchCommand(QueueCommand):
