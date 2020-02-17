@@ -58,3 +58,4 @@ class CoinFlipCommand(Command):
 
         self.send_message(c)
         Coin.add_flip(c, self.context.user)
+
