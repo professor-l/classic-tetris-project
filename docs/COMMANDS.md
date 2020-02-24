@@ -155,7 +155,7 @@ Cancels your pending challenge to someone else, if you have issued one.
 #### `!open`
 **Platforms**: Twitch<br/>
 **Aliases**: `!openqueue`<br/>
-**Must be run in a public channel**
+**Must be run in a public channel**<br/>
 **Moderator-only**
 
 Opens the queue. This both allows players to challenge one another and allows moderators to add matches manually.
@@ -164,7 +164,7 @@ Opens the queue. This both allows players to challenge one another and allows mo
 #### `!close`
 **Platforms**: Twitch<br/>
 **Aliases**: `!closequeue`<br/>
-**Must be run in a public channel**
+**Must be run in a public channel**<br/>
 **Moderator-only**
 
 Closes the queue. This prevents challenges from being issued or accepted. Moderators may no longer add matches to the queue unless they reopen it.
@@ -172,7 +172,7 @@ Closes the queue. This prevents challenges from being issued or accepted. Modera
 ---
 #### `!addmatch <player 1> <player 2>`
 **Platforms**: Twitch<br/>
-**Must be run in a public channel**
+**Must be run in a public channel**<br/>
 **Moderator-only**
 
 Adds a match between the two specified players to the queue.
@@ -180,7 +180,7 @@ Adds a match between the two specified players to the queue.
 ---
 #### `!removematch <index>`<br/>
 **Platforms**: Twitch<br/>
-**Must be run in a public channel**
+**Must be run in a public channel**<br/>
 **Moderator-only**
 
 Removes a match at the specified index from the queue.
@@ -189,7 +189,7 @@ Removes a match at the specified index from the queue.
 #### `!clear`
 **Platforms**: Twitch<br/>
 **Aliases**: `!clearqueue`<br/>
-**Must be run in a public channel**
+**Must be run in a public channel**<br/>
 **Moderator-only**
 
 Clears the entire queue.
@@ -200,7 +200,7 @@ Clears the entire queue.
 #### `!winner <player> [losing score]`
 **Platforms**: Twitch<br/>
 **Aliases**: `!declarewinner`<br/>
-**Must be run in a public channel**
+**Must be run in a public channel**<br/>
 **Moderator-only**
 
 Declares the specified player the winner of a game, and stores that result (as well as the optionally provided losing score) in the current match data.
@@ -208,7 +208,7 @@ Declares the specified player the winner of a game, and stores that result (as w
 ---
 #### `!endmatch`
 **Platforms**: Twitch<br/>
-**Must be run in a public channel**
+**Must be run in a public channel**<br/>
 **Moderator-only**
 
 Ends the current match, automatically determining the winner based on the match data stored each time `!winner` was called.
@@ -239,6 +239,19 @@ Counts down from 3 before saying "Tetris!" in the chat. Works for any number fro
 **Note:** If the bot is not a moderator in your Twitch channel, it will not be able to say more than one message per second, and this restriction (which is built into Twitch) will interfere with countdowns. You can make the bot a moderator by typing `/mod @ClassicTetrisBot` after you have `!summon`ed it.
 
 ---
+#### `!stencil`
+**Platforms**: Twitch, Discord<br/>
+
+Prints out info on, and link to download, the (in)famous Stencil.
+
+---
+#### `!help`
+**Platforms**: Twitch, Discord
+
+Links the user to this page.
+
+### Utility Commands
+
 #### `!seed`
 **Platforms**: Twitch, Discord<br/>
 **Aliases**: `!hex`
@@ -253,13 +266,8 @@ Prints a random 6-digit hex code that is a valid NEStris seed. Used for HydrantD
 Prints "Heads!" or "Tails!" randomly. There is no "side." The source code is available for you to verify this. Also, there is a 10 second timeout for this command to avoid spamming.
 
 ---
-#### `!stencil`
-**Platforms**: Twitch, Discord<br/>
+#### `!utc`
+**Platforms**: Discord<br/>
+**Aliases**: `!time`
 
-Prints out info on, and link to download, the (in)famous Stencil.
-
----
-#### `!help`
-**Platforms**: Twitch, Discord
-
-Links the user to this page.
+Prints the current date and time in UTC. Used for scheduling matches with restreaamers and other players.j
