@@ -53,7 +53,7 @@ class CoinFlipCommand(Command):
             Side.log(self.context.user)
 
 
-@Command.register_discord("utc", usage="utc")
+@Command.register_discord("utc", "time", usage="utc")
 class UTCCommand(Command):
     def execute(self, *args):
         t = datetime.utcnow()
