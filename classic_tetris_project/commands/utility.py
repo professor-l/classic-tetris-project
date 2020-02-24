@@ -1,6 +1,7 @@
 import random
 from django.core.cache import cache
 from asgiref.sync import async_to_sync
+from datetime import datetime
 
 from .command import Command
 from ..models.coin import Side
@@ -51,3 +52,11 @@ class CoinFlipCommand(Command):
         if choice == SIDE:
             Side.log(self.context.user)
 
+
+@Command.register_discord("utc", usage="utc")
+class UTCCommand(Command):
+    def execute(self, *args):
+        t = datetime.utcnow()
+        l1 = t.strftime("%A, %b %d")
+        l2 = t.strftime("%H:%M (%I:%M %p)")
+        self.send_message(f"Current date/time in UTC:\n**{l1}**\n**{l2}**")
