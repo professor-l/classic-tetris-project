@@ -1,6 +1,10 @@
-from asgiref.sync import async_to_sync
-
 from ..env import env
+from ..models.users import DiscordUser
+from ..util import memoize
+
+# Explicitly importing all rules
+# We want to be very, very sure we WANT a rule before we add it
+from .all_caps import AllCapsRule
 
 class DiscordModerator:
     def __init__(self, message):
@@ -11,21 +15,14 @@ class DiscordModerator:
         rule = rule_class(self)
         rule.apply()
 
+    @property
+    @memoize
+    def user(self):
+        return DiscordUser.fetch_by_discord_id(self.message.author.id)
+
     @staticmethod
     def is_rule(message):
         return str(message.channel.id) in DISCORD_MODERATION_MAP.keys()
-
-
-
-
-class AllCapsRule:
-    def __init__(self, moderator):
-        self.moderator = moderator
-        self.message = self.moderator.message
-
-    def apply(self):
-        if any(ch.islower() for ch in self.message.content):
-            async_to_sync(self.message.delete)()
 
 
 DISCORD_MODERATION_MAP = {
