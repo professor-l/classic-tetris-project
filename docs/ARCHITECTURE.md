@@ -60,19 +60,29 @@ When all of this comes together, we end with a relatively seemless proccess for 
 
 ## The Database
 
-TODO
+With the command infrastructure in place, there was only one more major step before we could dive into feature d evelopment: the database. The former bot, because it was thrown together, because it had a small-ish userbase, and because Node.js ORM options are lacking, the original bot didn't use a database - it simply read and wrote JSON files that stored people's PBs or wins/losses. In programmers' circles, we call that "stupid." It did the j ob, but it didn't do it well, and it certainly wasn't sustainable.
+
+In the spirit of scalability, in construction of our new bot we decided to use a relational database. You know, properly. The advantage of using Django is that we have access to not only a decent [object-relational mapping tool (ORM)](https://en.wikipedia.org/wiki/Object-relational_mapping), but also a [migration](https://en.wikipedia.org/wiki/Schema_migration) management tool. Briefly, an **ORM** allows us to make database queries without writing raw SQL, and migrations are what allow us to change the structure of our database in a safe and systematic manner while maintaining identical database structures in all our development environments.
+
+The difficult part of designing our database was managing the bot's dual presence on both Twitch and Discord. We wanted to account for the possibility that we may have some users on only one of the two platforms, and some on both. To get around this, we elected to write a `User` model that was *separate* from the `TwitchUser` and `DiscordUser` models (see the models' [source code](https://github.com/professor-l/classic-tetris-project/blob/master/classic_tetris_project/models/users.py). Each Twitch and Discord user has a foreign key field pointing to the `User` model, which stores all meaningful data. This permits the account linking function we sought to implement, whereby people can update their data on either Twitch or Discord, and changes will be tracked on both platforms. It also has the added advantage of leaving doors open for further platform user models, should we ever add support for another.  We also have a `TwitchChannel` model for each channel on Twitch to which the bot has been summoned.
+
+The other function the database serves is storing match results, which introduces another hurdle: matches don't have a set number of games. Best-of-3 and best-of-5 are the two most common formats, but even then, a BO5 could have three games in a sweep or five with a decider. To address this, we added both `Match` and `Game` models, each with different fields. The `Match` table stores the two players (foreign keys to the `User` table), the two win counts, and other match metadata. Each `Game` has a foreign key to the `Match` of which it was a part, as well as a winner and an optional losing score. This structure allows the association of arbitrary numbers of `Game`s with a single `Match`.
+
+This database was our final major hurdle, and once we cleared it we begun aggressively implementing each of the commands on our list of necessities. From there, it rapidly evolved into production-ready software, and once we had our foundations in place, we commenced with rollout.
 
 ## Other Foundations
 
-TODO
+In building a house, you can make renovations and enhancements on the existing structure without extensively reworking everything. Adding new electrical outlets consists of connecting more wires to the existing electrical system of the house; replacing a sink or toilet requires only that you connect the new apparatus to existing pipes. Adding an external addition to the building, however, requires you to lay additional foundation. New additions, constructed properly, emulate the style and features of the rest of the house and connect to the same underlying infrastructure - electric, plumbing, or heat, for instance - but also provide new rooms that serve new purposes.
+
+Excusing the extended metaphor, this is the philosophy to which we subscribe in adding new features that need their own foundational code. Once the additions are complete, we want them to semi-seamlessly integrate with the rest of the code, or at the very least to play nice with it. We want it to look no different than what we've done already, in the same way that a home addition should not be immediately recognizable as "new" to the average homeowner once it is complete.
 
 ### Moderation
 
-TODO
+The only real addition we've made thus far that has required any kind of foundation beyond what we had was the moderation feature. It came about when we added an #all-caps channel to the [CTM Discord Server](https://discord.gg/SYP37aV). I wanted the bot to delete all messages with lowercase letters in them, including edited messages. Adding a feature like this, something that actually required a new Discord API event listener in the [management bot.py](https://github.com/professor-l/classic-tetris-project/blob/master/classic_tetris_project/management/commands/bot.py). The full list of events on the `discord` class can be found [here](https://discordpy.readthedocs.io/en/latest/api.html#event-reference), but we already had a listener for `on_message` - which just needed to be altered - and I only needed to add one for `on_message_edit`. 
 
-### The Admin Web Interface
+In the spirit of consistency, I wanted the code for moderation in the management file to look as similar as possible to the nearby code for command recognition and dispatch. This meant structuring moderation rules similarly to commands - we have a `DiscordModerator` class with metadata and mid-level helper methods (analogous to the `CommandContext` class), and a `DiscordRule` superclass with more abstract methods useful for specific rules. The moderation rule classes (of which there is currently only one) will each be subclasses of the aforementioned `DiscordRule`, just as specific command classes are subclasses of the `Command` superclass.
 
-TODO
+Previously, the structure was less robust - there weren't as many files, but the layout left much to be desired. However, in writing this very section, it dawned on me that what we had could be improved, so I did [just that](https://github.com/professor-l/classic-tetris-project/commit/077663895886f7eca881f2ce70aaf0d1ac1be9be).
 
 ### Looking Forward
 
