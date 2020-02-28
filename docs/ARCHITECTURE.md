@@ -86,4 +86,6 @@ Previously, the structure was less robust - there weren't as many files, but the
 
 ### Looking Forward
 
-TODO
+Soon, we will be adding a web interface to the CTM portion of the bot. To minimize security vulnerabilities, only the models associated with the web interface will be open source; our views and controllers will reside in a separate, private repository that we add as a [git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules) of this one. It will probably be added within seven days of the commit that added this paragraph.
+
+Aside from that, many future bot functions (other than a few relatively minor changes on our [to-do list](https://github.com/professor-l/classic-tetris-project/projects/1)) are still unknown to us. We take suggestions and input from the community, and when inspiration strikes, we jump on it, and that has created a very open-ended project. That's another reason we welcome contributors - the more minds we have, the more diverse our set of perspectives, the better our software will be.
