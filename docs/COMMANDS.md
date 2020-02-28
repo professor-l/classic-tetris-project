@@ -193,6 +193,7 @@ Adds a match between the two specified players to the queue at the specified ind
 
 Moves the match at the specified `start index` to the `end index`. 
 
+---
 #### `!removematch <index>`<br/>
 **Platforms**: Twitch<br/>
 **Must be run in a public channel**<br/>
