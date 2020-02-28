@@ -178,6 +178,21 @@ Closes the queue. This prevents challenges from being issued or accepted. Modera
 Adds a match between the two specified players to the queue.
 
 ---
+#### `!insertmatch <player 1> <player 2> <index>`
+**Platforms**: Twitch<br/>
+**Must be run in a public channel**<br/>
+**Moderator-only**
+
+Adds a match between the two specified players to the queue at the specified index, or at the end if the index is greater than the size of the queue.
+
+---
+#### `!movematch <start index> <end index>`
+**Platforms**: Twitch<br/>
+**Must be run in a public channel**<br/>
+**Moderator-only**
+
+Moves the match at the specified `start index` to the `end index`. 
+
 #### `!removematch <index>`<br/>
 **Platforms**: Twitch<br/>
 **Must be run in a public channel**<br/>

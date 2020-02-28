@@ -131,6 +131,7 @@ class AddMatchCommand(QueueCommand):
     def execute(self, player1, player2):
         self.check_public()
         self.check_moderator()
+        self.check_queue_exists()
 
         twitch_user1 = Command.twitch_user_from_username(player1)
         twitch_user2 = Command.twitch_user_from_username(player2)
@@ -150,6 +151,7 @@ class InsertMatchCommand(QueueCommand):
     def execute(self, player1, player2, index):
         self.check_public()
         self.check_moderator()
+        self.check_queue_exists()
 
         twitch_user1 = Command.twitch_user_from_username(player1)
         twitch_user2 = Command.twitch_user_from_username(player2)
@@ -159,9 +161,38 @@ class InsertMatchCommand(QueueCommand):
         if twitch_user2 is None:
             raise CommandException(f"The twitch user \"{player2}\" does not exist.")
 
-        self.queue.insert_match(twitch_user1.user, twitch_user2.user, index)
+        try:
+            index = int(index)
+        except:
+            raise CommandException("Invalid index.")
+
+
+        i = self.queue.insert_match(twitch_user1.user, twitch_user2.user, index)
         self.send_message(f"A match has been added between {twitch_user1.user_tag} and "
-                          f"{twitch_user2.user_tag} at index {index}!")
+                          f"{twitch_user2.user_tag} at index {i}!")
+
+
+@Command.register_twitch("movematch", "move",
+                         usage="move <current index> <new index>")
+class MoveMatchCommand(QueueCommand):
+    def execute(self, old_index, new_index):
+        self.check_public()
+        self.check_moderator()
+        self.check_queue_exists()
+
+        try:
+            i1 = int(old_index)
+            i2 = int(new_index)
+        except ValueError:
+            raise CommandException("One of your indicies is invalid.")
+
+        if i1 > len(self.queue):
+            raise CommandException(f"There's no match to move at index {i1}.")
+
+        self.queue.move_match(i1, i2)
+        self.send_message("Match moved! New queue: {queue}".format(
+            queue=self.format_queue(self.queue)
+        ))
 
 
 @Command.register_twitch("removematch",
