@@ -4,6 +4,7 @@ import traceback
 from inspect import signature
 from discord import ChannelType
 import django.db
+from abc import ABC
 
 from .. import discord, twitch
 from ..util import Platform
@@ -19,7 +20,7 @@ class CommandException(Exception):
         self.message = message
         self.send_usage = send_usage
 
-class Command:
+class Command(ABC):
     def __init__(self, context):
         self.context = context
         self.args = context.args
@@ -182,6 +183,7 @@ class Command:
     def register_discord(*args, **kwargs):
         return Command.register(*args, **kwargs, platforms=(Platform.DISCORD,))
 
-
+    def execute(self):
+        pass
 
 COMMAND_MAP = {}
