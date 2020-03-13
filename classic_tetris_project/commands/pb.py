@@ -13,19 +13,34 @@ class GetPBCommand(Command):
             return
 
         user = platform_user.user
-        if user.ntsc_pb and user.pal_pb:
-            self.send_message("{user_tag} has an NTSC PB of {ntsc:,} and a PAL PB of {pal:,}.".format(
+
+        ntsc, pal = False
+
+        if user.ntsc_pb or user.ntsc_pb_19:
+            ntsc = True
+            if not user.ntsc_pb_19:
+                ntsc_pb = "{pb:,}".format(pb=user.ntsc_pb)
+            elif not user.ntsc_pb:
+                ntsc_pb = "{pb:,} ({pb:,} 19 start)".format(pb=user.ntsc_pb_19)
+            else:
+                ntsc_pb = "{pb:,} ({pb19:,} 19 start)".format(pb=user.ntsc_pb, pb19=user.ntsc_pb_19)
+
+        if user.pal_pb:
+            pal = True
+
+        if ntsc or pal:
+            self.send_message("{user_tag} has an NTSC PB of {ntsc} and a PAL PB of {pal:,}.".format(
                 user_tag=platform_user.user_tag,
-                ntsc=user.ntsc_pb,
+                ntsc=ntsc_pb,
                 pal=user.pal_pb
             ))
         else:
-            if user.ntsc_pb:
-                self.send_message("{user_tag} has an NTSC PB of {ntsc:,}.".format(
+            if ntsc:
+                self.send_message("{user_tag} has an NTSC PB of {ntsc}.".format(
                     user_tag=platform_user.user_tag,
-                    ntsc=user.ntsc_pb
+                    ntsc=ntsc_pb
                 ))
-            elif user.pal_pb:
+            elif pal:
                 self.send_message("{user_tag} has a PAL PB of {pb:,}.".format(
                     user_tag=platform_user.user_tag,
                     pb=user.pal_pb
