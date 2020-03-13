@@ -14,11 +14,11 @@ class GetPBCommand(Command):
 
         user = platform_user.user
 
-        ntsc = False
-        pal = False
+        ntsc_exists = False
+        pal_exists = False
 
         if user.ntsc_pb or user.ntsc_pb_19:
-            ntsc = True
+            ntsc_exists = True
             if not user.ntsc_pb_19:
                 ntsc_pb = "{pb:,}".format(pb=user.ntsc_pb)
             elif not user.ntsc_pb:
@@ -27,21 +27,21 @@ class GetPBCommand(Command):
                 ntsc_pb = "{pb:,} ({pb19:,} 19 start)".format(pb=user.ntsc_pb, pb19=user.ntsc_pb_19)
 
         if user.pal_pb:
-            pal = True
+            pal_exists = True
 
-        if ntsc or pal:
+        if ntsc_exists and pal_exists:
             self.send_message("{user_tag} has an NTSC PB of {ntsc} and a PAL PB of {pal:,}.".format(
                 user_tag=platform_user.user_tag,
                 ntsc=ntsc_pb,
                 pal=user.pal_pb
             ))
         else:
-            if ntsc:
+            if ntsc_exists:
                 self.send_message("{user_tag} has an NTSC PB of {ntsc}.".format(
                     user_tag=platform_user.user_tag,
                     ntsc=ntsc_pb
                 ))
-            elif pal:
+            elif pal_exists:
                 self.send_message("{user_tag} has a PAL PB of {pb:,}.".format(
                     user_tag=platform_user.user_tag,
                     pb=user.pal_pb
