@@ -14,7 +14,8 @@ class GetPBCommand(Command):
 
         user = platform_user.user
 
-        ntsc, pal = False
+        ntsc = False
+        pal = False
 
         if user.ntsc_pb or user.ntsc_pb_19:
             ntsc = True
