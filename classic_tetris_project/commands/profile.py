@@ -23,6 +23,7 @@ class ProfileCommand(Command):
             name = discord.get_guild().get_member(int(user.discord_user.discord_id)).display_name
 
         ntsc_pb = user.ntsc_pb or "Not set"
+        ntsc_pb_19 = user.ntsc_pb_19 or "Not set"
         pal_pb = user.pal_pb or "Not set"
         playstyle = user.get_playstyle_display() or "Not set"
         country = countries[user.country] if user.country else "Not set"
@@ -38,6 +39,7 @@ class ProfileCommand(Command):
             ("**{name}'s profile:**\n\n"
              "    **Personal bests:**\n"
              "        NTSC: {ntsc_pb}\n"
+             "        NTSC (19): {ntsc_pb_19}\n"
              "        PAL: {pal_pb}\n"
              "    **Playstyle:** {playstyle}\n"
              "    **Country:** {country}\n"
@@ -46,6 +48,7 @@ class ProfileCommand(Command):
              ).format(
                  name=name,
                  ntsc_pb=ntsc_pb,
+                 ntsc_pb_19=ntsc_pb_19,
                  pal_pb=pal_pb,
                  playstyle=playstyle,
                  country=country,

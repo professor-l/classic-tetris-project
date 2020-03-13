@@ -10,3 +10,5 @@ logs/
 export.py
 pbs.csv
 
+/.vs/
+/.vscode/
