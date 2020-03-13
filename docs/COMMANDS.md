@@ -23,7 +23,7 @@ Outputs the pb of the specified user, or you.
 **Platforms**: Twitch, Discord<br/>
 **Aliases**: `!newpb`
 
-Sets the given pb (of type NTSC or PAL) to yours in the database.
+Sets the given pb (of type NTSC, 19/NTSC19, or PAL) to yours in the database.
 
 ---
 #### `!setplaystyle <DAS|Hypertap|Hybrid>`
