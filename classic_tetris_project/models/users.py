@@ -24,6 +24,9 @@ class User(models.Model):
 
     ntsc_pb = models.IntegerField(null=True)
     ntsc_pb_updated_at = models.DateTimeField(null=True)
+    ntsc_pb_19 = models.IntegerField(null=True)
+    ntsc_pb_19_updated_at = models.DateTimeField(null=True)
+
     pal_pb = models.IntegerField(null=True)
     pal_pb_updated_at = models.DateTimeField(null=True)
 
@@ -42,6 +45,11 @@ class User(models.Model):
         elif pb_type == "ntsc":
             self.ntsc_pb = pb
             self.ntsc_pb_updated_at = timezone.now()
+            self.save()
+            return True
+        elif pb_type in ["19", "ntsc19"]:
+            self.ntsc_pb_19 = pb
+            self.ntsc_pb_19_updated_at = timezone.now()
             self.save()
             return True
         else:
