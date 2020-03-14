@@ -42,16 +42,25 @@ class User(models.Model):
             self.pal_pb_updated_at = timezone.now()
             self.save()
             return True
+
         elif pb_type == "ntsc":
             self.ntsc_pb = pb
             self.ntsc_pb_updated_at = timezone.now()
             self.save()
             return True
+
         elif pb_type in ["19", "ntsc19"]:
             self.ntsc_pb_19 = pb
-            self.ntsc_pb_19_updated_at = timezone.now()
+            ts = timezone.now()
+            self.ntsc_pb_19_updated_at = ts
+
+            if self.ntsc_pb < pb:
+                self.ntsc_pb = pb
+                self.ntsc_pb_updated_at = ts
+
             self.save()
             return True
+
         else:
             return False
 
