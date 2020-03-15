@@ -22,11 +22,11 @@ We are also very open to community input, since that's of course the best way to
 
 ### Contributing
 
-If you have familiarity with Python and Django and are looking to give more than suggestions, you might consider contributing to the bot's ever-growing codebase. I am currently putting together `/docs` directory that will contain, among other things, the following:
+If you have familiarity with Python and Django and are looking to give more than suggestions, you might consider contributing to the bot's ever-growing codebase. I recently finished putting together a `/docs` directory that contains three highly valuable documents:
 
-* `ARCHITECTURE.md`: A somewhat comprehensive outline of the layout of our codebase, our thoughts behind its design, and the basics of adding to it in a way that preserves scalability and growth.
-* `CONTRIBUTING.md`: A guideline for those who wish to be either one-time, sporatic, or consistent contributors to our bot. We are _always_ looking for new team members.
-* `SETUP.md`: A detailed outline of what it takes to set up a development and testing environment, a necessary step if you want to submit pull requests and/or become a regular contributor.
+* [CONTRIBUTING.md](https://github.com/professor-l/classic-tetris-project/blob/master/docs/CONTRIBUTING.md): A guideline for those who wish to be either one-time, sporatic, or consistent contributors to our bot. We are _always_ looking for new team members.
+* [ARCHITECTURE.md](https://github.com/professor-l/classic-tetris-project/blob/master/docs/ARCHITECTURE.md): A somewhat comprehensive outline of the layout of our codebase, our thoughts behind its design, and the basics of adding to it in a way that preserves scalability and growth.
+* [SETUP.md](https://github.com/professor-l/classic-tetris-project/blobo/master/docs/SETUP.md): A detailed outline of what it takes to set up a development and testing environment, a necessary step if you want to submit pull requests and/or become a regular contributor.
 
 ## The team
 
