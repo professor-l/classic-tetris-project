@@ -109,7 +109,8 @@ class TwitchCommandContext(CommandContext):
         self.log(self.author, self.channel, self.message.content)
 
     def check_custom(self):
-        channel = self.platform_user.channel
+        channel = TwitchUser.from_username(self.channel.name).channel
+
         command = CustomCommand.get_command(channel, self.command_name)
         if command:
             self.dispach_custom(command)
