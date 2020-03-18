@@ -9,8 +9,8 @@ class CustomCommand(models.Model):
     twitch_channel = models.ForeignKey(TwitchChannel, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=20)
-    output = models.CharField(max_length=400, null=True)
-    alias_for = models.ForeignKey("self", null=True, on_delete=models.CASCADE)
+    output = models.CharField(max_length=400, null=True, blank=True)
+    alias_for = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
 
     class Meta:
         indexes = [
