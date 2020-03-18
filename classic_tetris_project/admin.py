@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import User, DiscordUser, TwitchUser, Match, Game
+from .models import User, DiscordUser, TwitchUser, Match, Game, TwitchChannel, CustomCommand
 
 
 class DiscordUserInline(admin.StackedInline):
@@ -24,3 +24,12 @@ class GameInline(admin.TabularInline):
 class MatchAdmin(admin.ModelAdmin):
     inlines = [GameInline]
     list_display = ('__str__', 'player1', 'wins1', 'player2', 'wins2', 'channel', 'ended_at')
+
+
+class CustomCommandInline(admin.TabularInline):
+    model = CustomCommand
+
+@admin.register(TwitchChannel)
+class TwitchChannelAdmin(admin.ModelAdmin):
+    inlines = [CustomCommandInline]
+    list_display = ("__str__", "twitch_user", "connected")
