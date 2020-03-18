@@ -24,3 +24,12 @@ class CustomCommand(models.Model):
                 name="unique channel plus command"
             )
         ]
+
+    @staticmethod
+    def get_command(channel, command_name):
+        try:
+            command = CustomCommand.objects.filter(twitch_channel=channel).get(name=command_name)
+        except CustomCommand.DoesNotExist:
+            return False
+        
+        return command
