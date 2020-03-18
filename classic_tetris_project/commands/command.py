@@ -186,4 +186,14 @@ class Command(ABC):
     def execute(self):
         pass
 
+class CustomTwitchCommand(Command):
+    def __init__(self, context, command_object):
+        super().__init__(context)
+        self.supported_platforms = [Platform.TWITCH]
+
+        self.output = command_object.output or command_object.alias_for.output
+
+    def execute(self, *args):
+        self.send_message(self.output)
+
 COMMAND_MAP = {}

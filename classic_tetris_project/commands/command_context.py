@@ -2,9 +2,11 @@ import discord as discordpy
 import logging
 import re
 from asgiref.sync import async_to_sync
-from .command import COMMAND_MAP
+
+from .command import CustomTwitchCommand, COMMAND_MAP
 from ..util import Platform, memoize
 from ..models.users import DiscordUser, TwitchUser
+from ..models.commands import CustomCommand
 from .. import discord
 from .. import twitch
 
@@ -27,9 +29,10 @@ class CommandContext:
         if command_class:
             command = command_class(self)
             command.check_support_and_execute()
+        
         else:
-            # Not a valid command
-            pass
+            # Check for custom command
+            self.check_custom()
 
     @classmethod
     def is_command(cls, message):
@@ -56,6 +59,9 @@ class DiscordCommandContext(CommandContext):
         self.logger = discord.logger
 
         self.log(self.author, self.channel, self.message.content)
+
+    def check_custom(self):
+        pass
 
     def send_message(self, message):
         async_to_sync(self.channel.send)(message)
@@ -101,6 +107,16 @@ class TwitchCommandContext(CommandContext):
         self.logger = twitch.logger
 
         self.log(self.author, self.channel, self.message.content)
+
+    def check_custom(self):
+        channel = self.platform_user.channel
+        command = CustomCommand.get_command(channel, self.command_name)
+        if command:
+            self.dispach_custom(command)
+
+    def dispach_custom(self, command):
+        cmd = CustomTwitchCommand(self, command)
+        cmd.check_support_and_execute()
 
     def send_message(self, message):
         self.channel.send_message(message)
