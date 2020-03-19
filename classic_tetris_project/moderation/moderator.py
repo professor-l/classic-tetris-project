@@ -25,7 +25,7 @@ class DiscordModerator:
         return str(message.channel.id) in DISCORD_MODERATION_MAP.keys()
 
 
-DISCORD_MODERATION_MAP = {
-    env("DISCORD_CAPS_CHANNEL"): AllCapsRule
-}
-
+DISCORD_MODERATION_MAP = {}
+discord_caps_channel = env("DISCORD_CAPS_CHANNEL", default=None)
+if discord_caps_channel:
+    DISCORD_MODERATION_MAP[discord_caps_channel] = AllCapsRule
