@@ -31,5 +31,9 @@ class CustomCommand(models.Model):
             command = CustomCommand.objects.filter(twitch_channel=channel).get(name=command_name)
         except CustomCommand.DoesNotExist:
             return False
-        
+
         return command
+
+    def wrap(self, context):
+        from ..commands.command import CustomTwitchCommand
+        return CustomTwitchCommand(context, self)

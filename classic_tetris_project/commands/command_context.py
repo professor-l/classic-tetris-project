@@ -3,10 +3,11 @@ import logging
 import re
 from asgiref.sync import async_to_sync
 
-from .command import CustomTwitchCommand, COMMAND_MAP
+from .command import COMMAND_MAP
 from ..util import Platform, memoize
 from ..models.users import DiscordUser, TwitchUser
 from ..models.commands import CustomCommand
+from ..models.twitch import TwitchChannel
 from .. import discord
 from .. import twitch
 
@@ -29,10 +30,6 @@ class CommandContext:
         if command_class:
             command = command_class(self)
             command.check_support_and_execute()
-        
-        else:
-            # Check for custom command
-            self.check_custom()
 
     @classmethod
     def is_command(cls, message):
@@ -60,9 +57,6 @@ class DiscordCommandContext(CommandContext):
         self.logger = discord.logger
 
         self.log(self.author, self.channel, self.message.content)
-
-    def check_custom(self):
-        pass
 
     def send_message(self, message):
         async_to_sync(self.channel.send)(message)
@@ -109,16 +103,26 @@ class TwitchCommandContext(CommandContext):
 
         self.log(self.author, self.channel, self.message.content)
 
-    def check_custom(self):
-        channel = TwitchUser.from_username(self.channel.name).channel
+    def dispatch(self):
+        if not self.dispatch_custom():
+            super().dispatch()
+
+    def dispatch_custom(self):
+        if self.channel.type != "channel":
+            return False
+
+        twitch_user = TwitchUser.from_username(self.channel.name)
+        try:
+            channel = twitch_user.channel
+        except TwitchChannel.DoesNotExist:
+            return False
 
         command = CustomCommand.get_command(channel, self.command_name)
         if command:
-            self.dispach_custom(command)
-
-    def dispach_custom(self, command):
-        cmd = CustomTwitchCommand(self, command)
-        cmd.check_support_and_execute()
+            command.wrap(self).check_support_and_execute()
+            return True
+        else:
+            return False
 
     def send_message(self, message):
         self.channel.send_message(message)
