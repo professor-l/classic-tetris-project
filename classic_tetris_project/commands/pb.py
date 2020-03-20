@@ -1,18 +1,27 @@
 from .command import Command, CommandException
+from .. import discord
 
 @Command.register("pb", "getpb",
                   usage="pb [username] (default username you)")
 class GetPBCommand(Command):
     def execute(self, *username):
         username = username[0] if len(username) == 1 else self.context.args_string
+        if username and not self.platform_user_from_username(username):
+            raise CommandException("User has not set a PB.")
+
         platform_user = (self.platform_user_from_username(username) if username
                          else self.context.platform_user)
 
         if not platform_user:
-            self.send_message("User has not set a PB.")
-            return
+            raise CommandException("Invalid specified user.")
 
         user = platform_user.user
+
+        # Get Discord nickname if it exists
+        try:
+            name = self.context.guild.get_member(int(platform_user.discord_id)).display_name
+        except AttributeError:
+            name = platform_user.username
 
         ntsc_exists = False
         pal_exists = False
@@ -30,20 +39,20 @@ class GetPBCommand(Command):
             pal_exists = True
 
         if ntsc_exists and pal_exists:
-            self.send_message("{user_tag} has an NTSC PB of {ntsc} and a PAL PB of {pal:,}.".format(
-                user_tag=platform_user.user_tag,
+            self.send_message("{name} has an NTSC PB of {ntsc} and a PAL PB of {pal:,}.".format(
+                name=name,
                 ntsc=ntsc_pb,
                 pal=user.pal_pb
             ))
         else:
             if ntsc_exists:
-                self.send_message("{user_tag} has an NTSC PB of {ntsc}.".format(
-                    user_tag=platform_user.user_tag,
+                self.send_message("{name} has an NTSC PB of {ntsc}.".format(
+                    name=name,
                     ntsc=ntsc_pb
                 ))
             elif pal_exists:
-                self.send_message("{user_tag} has a PAL PB of {pb:,}.".format(
-                    user_tag=platform_user.user_tag,
+                self.send_message("{name} has a PAL PB of {pb:,}.".format(
+                    name=name,
                     pb=user.pal_pb
                 ))
             else:

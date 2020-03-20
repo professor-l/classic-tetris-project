@@ -55,6 +55,7 @@ class DiscordCommandContext(CommandContext):
 
         self.message = message
         self.channel = message.channel
+        self.guild = message.guild
         self.author = message.author
         self.logger = discord.logger
 
