@@ -7,6 +7,7 @@ from .command import Command
 from ..models.coin import Side
 from ..util import Platform
 from ..discord import guild_id
+from ..words import words
 
 COIN_FLIP_TIMEOUT = 10
 
@@ -60,3 +61,8 @@ class UTCCommand(Command):
         l1 = t.strftime("%A, %b %d")
         l2 = t.strftime("%H:%M (%I:%M %p)")
         self.send_message(f"Current date/time in UTC:\n**{l1}**\n**{l2}**")
+
+@Command.register_twitch("word", usage="word")
+class WordCommand(Command):
+    def execute(self, *args):
+        self.send_message(random.choice(words))
