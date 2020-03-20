@@ -76,7 +76,7 @@ class SetPBCommand(Command):
             self.send_message("You wish, kid >.>")
         else:
             if self.context.user.set_pb(pb, pb_type):
-                self.send_message("{user_tag} has a new {pb_type} pb of {pb:,}!".format(
+                self.send_message("{user_tag} has a new {pb_type} PB of {pb:,}!".format(
                     user_tag=self.context.user_tag,
                     pb_type=pb_type.upper(),
                     pb=pb
