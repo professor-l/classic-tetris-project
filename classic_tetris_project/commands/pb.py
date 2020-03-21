@@ -6,10 +6,10 @@ from .. import discord
 class GetPBCommand(Command):
     def execute(self, *username):
         username = username[0] if len(username) == 1 else self.context.args_string
-        if username and not self.platform_user_from_username(username):
+        if username and not self.any_platform_user_from_username(username):
             raise CommandException("User has not set a PB.")
 
-        platform_user = (self.platform_user_from_username(username) if username
+        platform_user = (self.any_platform_user_from_username(username) if username
                          else self.context.platform_user)
 
         if not platform_user:
