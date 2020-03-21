@@ -123,14 +123,35 @@ class Command(ABC):
                     max_args += 1
         return min_args, max_args
 
+    def any_platform_user_from_username(self, username):
+        try: 
+            platform_user = Command.discord_user_from_username(username, self.context.guild)
+        except CommandException:
+            platform_user = None
+
+        if platform_user is not None:
+            return platform_user
+
+        try:
+            platform_user = Command.twitch_user_from_username(username)
+        except CommmandException:
+            platform_user = None
+
+        if platform_user is not None:
+            return platform_user
+
+        # Explicitly return None if no user was found
+        return None
+
+
     def platform_user_from_username(self, username):
         if self.context.platform == Platform.DISCORD:
-            return Command.discord_user_from_username(username)
+            return Command.discord_user_from_username(username, self.context.guild)
         elif self.context.platform == Platform.TWITCH:
             return Command.twitch_user_from_username(username)
 
     @staticmethod
-    def discord_user_from_username(username):
+    def discord_user_from_username(username, guild=None):
         match_mention = RE_DISCORD_MENTION.match(username)
         match_tag = RE_DISCORD_TAG.match(username)
 
@@ -141,14 +162,22 @@ class Command(ABC):
             except DiscordUser.DoesNotExist:
                 return None
         else:
-            guild = discord.get_guild()
-            member = guild.get_member_named(username)
-            if member:
+            if guild is None:
+                guild = discord.get_guild()
+
+            member = None
+            for user in guild.members:
+                if user.display_name.casefold() == username.casefold():
+                    member = user
+                    break
+
+            if member is not None:
                 try:
                     return DiscordUser.objects.get(discord_id=member.id)
                 except DiscordUser.DoesNotExist:
                     return None
             else:
+                print("UGH")
                 raise CommandException("Invalid username")
 
     @staticmethod
