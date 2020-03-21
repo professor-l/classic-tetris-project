@@ -125,7 +125,7 @@ class Command(ABC):
 
     def any_platform_user_from_username(self, username):
         try: 
-            guild = self.context.guild if self.context.platform == platform.DISCORD else None 
+            guild = self.context.guild if self.context.platform == Platform.DISCORD else None 
             platform_user = Command.discord_user_from_username(username, guild)
         except CommandException:
             platform_user = None
