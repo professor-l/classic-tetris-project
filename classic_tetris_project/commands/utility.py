@@ -62,7 +62,28 @@ class UTCCommand(Command):
         l2 = t.strftime("%H:%M (%I:%M %p)")
         self.send_message(f"Current date/time in UTC:\n**{l1}**\n**{l2}**")
 
-@Command.register_twitch("word", usage="word")
+
+@Command.register_discord("authhelp", usage="authhelp")
+class AuthHelpCommand(Command):
+    AUTH_HELP_STRING = (
+        "Qualification authentication is a new feature of this bot. "
+        "To generate a random 6-letter auth word, type `!authword`. "
+        "That word will be associated with your account for 2 hours. "
+        "Calling `!authword` again on any platform will return the same "
+        "word. It is used for authenticating qualification attempts. "
+        "You should **put the word you're assigned on the leaderboard** "
+        "when you complete your first game over 5000 points. This proves "
+        "that you're not playing a pre-recorded VOD.\n"
+        "**NOTE:** After invoking this command, you will be barred from "
+        "doing so for 48 hours. If the qualification attempt falls "
+        "through due to extenuating circumstances, you will need to wait "
+        "two full days before making another attempt."
+    )
+    def execute(self, *args):
+        self.send_message(self.AUTH_HELP_STRING)
+
+
+@Command.register_discord("auth", usage="auth")
 class WordCommand(Command):
     def execute(self, *args):
-        self.send_message(random.choice(words))
+        pass
