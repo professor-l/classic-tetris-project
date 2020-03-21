@@ -5,11 +5,10 @@ import logging.config
 import yaml
 
 from ... import discord, twitch
-from ...commands.command_context import DiscordCommandContext, TwitchCommandContext
+from ...commands.command_context import DiscordCommandContext, TwitchCommandContext, ReportCommandContext
 from ...moderation.moderator import DiscordModerator
 from ...env import env
 from ...logging import LoggingManager
-
 """
 The discord.py library uses asyncio coroutines for all event 
 handlers and blocking API calls. That's nice, but for now we
@@ -47,6 +46,10 @@ class Command(BaseCommand):
                 
             if DiscordCommandContext.is_command(message.content):
                 context = DiscordCommandContext(message)
+                await sync_to_async(context.dispatch)()
+                
+            if ReportCommandContext.is_command(message.content):
+                context = ReportCommandContext(message)
                 await sync_to_async(context.dispatch)()
 
         discord.client.run(env("DISCORD_TOKEN"))
