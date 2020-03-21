@@ -8,10 +8,10 @@ from ..countries import countries
 class ProfileCommand(Command):
     def execute(self, *username):
         username = username[0] if len(username) == 1 else self.context.args_string
-        if username and not self.platform_user_from_username(username):
+        if username and not self.any_platform_user_from_username(username):
             raise CommandException("Specified user has no profile.")
 
-        user = (self.platform_user_from_username(username).user if username
+        user = (self.any_platform_user_from_username(username).user if username
                          else self.context.platform_user.user)
 
         if not user:
