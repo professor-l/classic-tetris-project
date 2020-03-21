@@ -87,6 +87,17 @@ class DiscordCommandContext(CommandContext):
             message=message
         ))
 
+class ReportCommandContext(DiscordCommandContext):
+    prefix = ":redheart:"
+    platform = Platform.DISCORD_AJ
+    def __init__(self, message):
+        super().__init__(message)
+        
+    def dispatch(self):
+        command_class = COMMAND_MAP.get("reportmatch")
+        if command_class:
+            command = command_class(self)
+            command.check_support_and_execute()
 
 class TwitchCommandContext(CommandContext):
     platform = Platform.TWITCH
