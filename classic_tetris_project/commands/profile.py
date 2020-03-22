@@ -20,7 +20,7 @@ class ProfileCommand(Command):
         if user.preferred_name:
             name = user.preferred_name
         else:
-            name = discord.get_guild().get_member(int(user.discord_user.discord_id)).display_name
+            name = self.context.platform_user.display_name
 
         ntsc_pb = user.ntsc_pb or "Not set"
         ntsc_pb_19 = user.ntsc_pb_19 or "Not set"
