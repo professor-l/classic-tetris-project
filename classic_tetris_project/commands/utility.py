@@ -1,7 +1,7 @@
 import random
 from django.core.cache import cache
 from asgiref.sync import async_to_sync
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from .command import Command
 from ..models.coin import Side
@@ -83,7 +83,33 @@ class AuthHelpCommand(Command):
         self.send_message(self.AUTH_HELP_STRING)
 
 
-@Command.register_discord("auth", usage="auth")
-class WordCommand(Command):
+# @Command.register_discord("authword", usage="authword")
+class AuthWordCommand(Command):
+
+    EXPIRE_TIME = 60 * 60 * 2      # 2 hours
+    COOLDOWN_TIME = 60 * 60 * 48   # 48 hours
+
     def execute(self, *args):
-        pass
+        uid = self.context.user.id
+
+        word = cache.get(f"authword.{uid}")
+        if word is not None:
+            time_left = timedelta(seconds=cache.ttl(f"authword.{uid}"))
+            self.send_message(
+                f"Your qualification authword is: {word.upper()}. Expires in: {time_left}"
+            )
+            return
+
+        cooldown = cache.get(f"authcooldown.{uid}")
+        if cooldown is not None:
+            time_left = timedelta(seconds=cache.ttl(f"authcooldown.{uid}"))
+            self.send_message(f"Your authword expired. Try again in: {time_left}")
+            return
+
+        authword = random.choice(words)
+        cache.set(f"authword.{uid}", authword, timeout=self.EXPIRE_TIME)
+        cache.set(f"authcooldown.{uid}", True, timeout=self.COOLDOWN_TIME)
+        time_left = timedelta(seconds=cache.ttl(f"authword.{uid}"))
+        self.send_message(
+            f"Your qualification authword is: {authword.upper()}. Expires in: {time_left}"
+        )
