@@ -59,10 +59,19 @@ class DiscordCommandContext(CommandContext):
         self.log(self.author, self.channel, self.message.content)
 
     def send_message(self, message):
-        result = async_to_sync(self.channel.send)(message)        
+        result = async_to_sync(self.channel.send)(message)
         self.log(discord.client.user, self.channel, message)
         return result
     
+    def send_message_full(self, channel_id, *args, **kwargs):
+        channel = discord.get_channel(channel_id)
+        result = async_to_sync(channel.send)(*args, **kwargs)
+        
+        kwargList = [str(key) +":" + str(kwargs[key]) for key in kwargs]
+        logMsg = "\n".join(kwargList)        
+        self.log(discord.client.user, self.channel, logMsg)
+        return result
+
     def delete_message(self, message):
         async_to_sync(message.delete)()
     
@@ -71,7 +80,7 @@ class DiscordCommandContext(CommandContext):
         if channel is None:
             return None
         return async_to_sync(channel.fetch_message)(message_id)
-
+    
     @property
     def user_tag(self):
         return f"<@{self.author.id}>"
