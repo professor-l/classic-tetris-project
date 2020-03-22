@@ -20,7 +20,7 @@ class ProfileCommand(Command):
         if user.preferred_name:
             name = user.preferred_name
         else:
-            name = self.context.platform_user.username
+            name = user.platform_user.username
 
         ntsc_pb = user.ntsc_pb or "Not set"
         ntsc_pb_19 = user.ntsc_pb_19 or "Not set"
