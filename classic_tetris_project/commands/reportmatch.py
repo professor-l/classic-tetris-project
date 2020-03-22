@@ -24,4 +24,5 @@ class ReportMatch(Command):
         setupChannel(self.context, league)
         
     def executeUpdate(self, league):
-        print ("updating the channel image etc.")
+        print ("Updating the channel image etc.")
+        updateChannel(self.context, league)
