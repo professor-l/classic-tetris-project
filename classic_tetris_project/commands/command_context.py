@@ -59,9 +59,18 @@ class DiscordCommandContext(CommandContext):
         self.log(self.author, self.channel, self.message.content)
 
     def send_message(self, message):
-        async_to_sync(self.channel.send)(message)
+        result = async_to_sync(self.channel.send)(message)        
         self.log(discord.client.user, self.channel, message)
-
+        return result
+    
+    def delete_message(self, message):
+        async_to_sync(message.delete)()
+    
+    def fetch_message(self, channel_id, message_id):
+        channel = discord.get_channel(channel_id)
+        if channel is None:
+            return None
+        return async_to_sync(channel.fetch_message)(message_id)
 
     @property
     def user_tag(self):
