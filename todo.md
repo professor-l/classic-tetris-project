@@ -2,8 +2,8 @@
 
 ## Auth
 
-- Create `WebsiteUser` model
-- Discord commmand `!website`
++ Create `WebsiteUser` model
+- Discord command `!website`
   - Check if they have a `WebsiteUser` already
   - DM user custom auth link to create an account
 - Create `CreateAccountController` controller
@@ -13,8 +13,8 @@
     - Auth key expires 1 hour after generation
   - POST:
     - create AuthUser and WebsiteUser, linking to the User associated with auth token
-- Create `LoginController`
-  - GET: login page
-  - POST: do login
++ Create `LoginController`
+  + GET: login page
+  + POST: do login
 
 

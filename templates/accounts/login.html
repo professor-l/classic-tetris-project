@@ -1,0 +1,8 @@
+<html>
+  Hello world! I am a login page!
+  <form action="/accounts/login/" method="post">
+      {% csrf_token %}
+      {{ form }}
+      <input type="submit" value="Submit">
+  </form>
+</html>
