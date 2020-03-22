@@ -125,7 +125,8 @@ class Command(ABC):
 
     def any_platform_user_from_username(self, username):
         try: 
-            platform_user = Command.discord_user_from_username(username, self.context.guild)
+            guild = self.context.guild if self.context.platform == Platform.DISCORD else None 
+            platform_user = Command.discord_user_from_username(username, guild)
         except CommandException:
             platform_user = None
 
@@ -177,7 +178,6 @@ class Command(ABC):
                 except DiscordUser.DoesNotExist:
                     return None
             else:
-                print("UGH")
                 raise CommandException("Invalid username")
 
     @staticmethod
