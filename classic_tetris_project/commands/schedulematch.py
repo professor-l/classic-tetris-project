@@ -10,12 +10,10 @@ from ..reportmatchmodule.processrequest import (
 
 @Command.register_discord("schedulematch", usage="schedulematch, yadda yadda")
 class ScheduleMatch(Command):
-    def execute(self, *args):     
-        print("hello-schedule")   
+    def execute(self, *args):      
         self.executePeon(args)
 
     def executePeon(self, *args):
-        print("hello-schedule")
         # only accept reports in the reporting channel
         if not checkChannelPeon(self.context):
             return
@@ -25,5 +23,4 @@ class ScheduleMatch(Command):
             self.executeUpdate(league)
 
     def executeUpdate(self, league):
-        print("Updating the channel image etc.")
         updateChannel(self.context, league)
