@@ -116,6 +116,18 @@ class ReportCommandContext(DiscordCommandContext):
             command = command_class(self)
             command.check_support_and_execute()
 
+class ScheduleCommandContext(DiscordCommandContext):
+    prefix = ":fire:"
+    def __init__(self, message):
+        super().__init__(message)
+        
+    def dispatch(self):
+        print('got a dispatch...')
+        command_class = COMMAND_MAP.get("schedulematch")
+        if command_class:
+            command = command_class(self)
+            command.check_support_and_execute()
+
 class TwitchCommandContext(CommandContext):
     platform = Platform.TWITCH
     prefix = "!"
