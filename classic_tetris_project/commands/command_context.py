@@ -117,12 +117,11 @@ class ReportCommandContext(DiscordCommandContext):
             command.check_support_and_execute()
 
 class ScheduleCommandContext(DiscordCommandContext):
-    prefix = ":fire:"
+    prefix = "🔥" #jesus christ.
     def __init__(self, message):
         super().__init__(message)
         
     def dispatch(self):
-        print('got a dispatch...')
         command_class = COMMAND_MAP.get("schedulematch")
         if command_class:
             command = command_class(self)
