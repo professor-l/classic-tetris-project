@@ -3,10 +3,11 @@ from .. import discord
 from datetime import datetime
 from ..reportmatchmodule.processrequest import processRequest, updateChannel, setupChannel
 
-@Command.register_discord_aj("reportmatch", "yadda yadaa", usage="reportmatch, yadda yadda")
+@Command.register_discord("reportmatch", "Not sure what goes here", usage="reportmatch, yadda yadda")
 class ReportMatch(Command):
     def execute(self, *args):
         if len(args) > 1 and args[0] == "setup": #hackerman...
+            self.check_moderator()
             self.executeSetup(args)
         else:
             self.executePeon(args)
