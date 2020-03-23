@@ -1,4 +1,4 @@
-from .command import Command, CommandException
+﻿from .command import Command, CommandException
 from .. import discord
 from datetime import datetime
 from ..reportmatchmodule.processrequest import (
@@ -8,17 +8,14 @@ from ..reportmatchmodule.processrequest import (
     checkChannelPeon
 )
 
-
-@Command.register_discord("reportmatch", usage="reportmatch, yadda yadda")
-class ReportMatch(Command):
-    def execute(self, *args):
-        if len(args) > 1 and args[0] == "setup":  # hackerman...
-            self.check_moderator()
-            self.executeSetup(args)
-        else:
-            self.executePeon(args)
+@Command.register_discord("schedulematch", usage="schedulematch, yadda yadda")
+class ScheduleMatch(Command):
+    def execute(self, *args):     
+        print("hello-schedule")   
+        self.executePeon(args)
 
     def executePeon(self, *args):
+        print("hello-schedule")
         # only accept reports in the reporting channel
         if not checkChannelPeon(self.context):
             return
@@ -26,11 +23,6 @@ class ReportMatch(Command):
         self.send_message("```" + result + "```")
         if league is not None:
             self.executeUpdate(league)
-
-    # :redheart: setup cc
-    def executeSetup(self, *args):
-        league = args[0][1]
-        setupChannel(self.context, league)
 
     def executeUpdate(self, league):
         print("Updating the channel image etc.")
