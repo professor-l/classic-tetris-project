@@ -212,10 +212,6 @@ class Command(ABC):
     def register_discord(*args, **kwargs):
         return Command.register(*args, **kwargs, platforms=(Platform.DISCORD,))
 
-    @staticmethod
-    def register_discord_aj(*args, **kwargs):
-        return Command.register(*args, **kwargs, platforms=(Platform.DISCORD_AJ,))
-
     def execute(self):
         pass
 

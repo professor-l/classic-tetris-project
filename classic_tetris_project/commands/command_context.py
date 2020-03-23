@@ -107,7 +107,6 @@ class DiscordCommandContext(CommandContext):
 
 class ReportCommandContext(DiscordCommandContext):
     prefix = ":redheart:"
-    platform = Platform.DISCORD_AJ
     def __init__(self, message):
         super().__init__(message)
         
