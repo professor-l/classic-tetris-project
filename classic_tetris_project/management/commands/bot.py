@@ -5,7 +5,7 @@ import logging.config
 import yaml
 
 from ... import discord, twitch
-from ...commands.command_context import DiscordCommandContext, TwitchCommandContext, ReportCommandContext
+from ...commands.command_context import DiscordCommandContext, TwitchCommandContext, ReportCommandContext, ScheduleCommandContext
 from ...moderation.moderator import DiscordModerator
 from ...env import env
 from ...logging import LoggingManager
@@ -50,6 +50,10 @@ class Command(BaseCommand):
                 
             if ReportCommandContext.is_command(message.content):
                 context = ReportCommandContext(message)
+                await sync_to_async(context.dispatch)()
+
+            if ScheduleCommandContext.is_command(message.content):
+                context = ScheduleCommandContext(message)
                 await sync_to_async(context.dispatch)()
 
         discord.client.run(env("DISCORD_TOKEN"))
