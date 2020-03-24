@@ -135,7 +135,7 @@ class Command(ABC):
 
         try:
             platform_user = Command.twitch_user_from_username(username)
-        except CommmandException:
+        except CommandException:
             platform_user = None
 
         if platform_user is not None:
@@ -162,23 +162,29 @@ class Command(ABC):
                 return DiscordUser.objects.get(discord_id=discord_id)
             except DiscordUser.DoesNotExist:
                 return None
-        else:
-            if guild is None:
-                guild = discord.get_guild()
 
-            member = None
-            for user in guild.members:
-                if user.display_name.casefold() == username.casefold():
+        if guild is None:
+            guild = discord.get_guild()
+            
+        discriminator = None
+        if len(username) > 5 and username[-5] == "#":
+            discriminator = username[-4:]
+            username = username[:-5]
+
+        member = None
+        for user in guild.members:
+            if user.display_name.casefold() == username.casefold():
+                if (discriminator is not None and user.discriminator == discriminator) or discriminator is None:
                     member = user
                     break
 
-            if member is not None:
-                try:
-                    return DiscordUser.objects.get(discord_id=member.id)
-                except DiscordUser.DoesNotExist:
-                    return None
-            else:
-                raise CommandException("Invalid username")
+        if member is not None:
+            try:
+                return DiscordUser.objects.get(discord_id=member.id)
+            except DiscordUser.DoesNotExist:
+                return None
+        else:
+            raise CommandException("Invalid username")
 
     @staticmethod
     def twitch_user_from_username(username):
