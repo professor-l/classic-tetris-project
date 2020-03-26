@@ -1,7 +1,8 @@
 import discord as discordpy
 import logging
 import re
-from asgiref.sync import async_to_sync
+import time
+from asgiref.sync import async_to_sync, sync_to_async
 
 from .command import COMMAND_MAP
 from ..util import Platform, memoize
@@ -130,6 +131,7 @@ class ScheduleCommandContext(DiscordCommandContext):
 class TwitchCommandContext(CommandContext):
     platform = Platform.TWITCH
     prefix = "!"
+    MAX_MESSAGE_LENGTH = 400
 
     def __init__(self, message):
         super().__init__(message.content)
@@ -164,7 +166,7 @@ class TwitchCommandContext(CommandContext):
             return False
 
     def send_message(self, message):
-        self.channel.send_message(message)
+        self.channel.send_message(message[0:self.MAX_MESSAGE_LENGTH])
         self.log(self.channel.client.username, self.channel, message)
 
     def log(self, user, channel, message, level=logging.INFO):

@@ -11,16 +11,18 @@ class ProfileCommand(Command):
         if username and not self.any_platform_user_from_username(username):
             raise CommandException("Specified user has no profile.")
 
-        user = (self.any_platform_user_from_username(username).user if username
-                         else self.context.platform_user.user)
+        platform_user = (self.any_platform_user_from_username(username) if username
+                         else self.context.platform_user)
 
-        if not user:
+        if not platform_user:
             raise CommandException("Invalid specified user.")
 
-        if user.preferred_name:
-            name = user.preferred_name
-        else:
-            name = self.context.platform_user.display_name
+        user = platform_user.user
+
+        try:
+            name = self.context.guild.get_member(int(platform_user.discord_id)).display_name
+        except AttributeError:
+            name = platform_user.username
 
         ntsc_pb = user.ntsc_pb or "Not set"
         ntsc_pb_19 = user.ntsc_pb_19 or "Not set"
