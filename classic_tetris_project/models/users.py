@@ -54,7 +54,7 @@ class User(models.Model):
             ts = timezone.now()
             self.ntsc_pb_19_updated_at = ts
 
-            if self.ntsc_pb < pb:
+            if self.ntsc_pb is not None and self.ntsc_pb < pb:
                 self.ntsc_pb = pb
                 self.ntsc_pb_updated_at = ts
 
