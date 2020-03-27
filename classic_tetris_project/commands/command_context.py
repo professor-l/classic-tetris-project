@@ -60,10 +60,28 @@ class DiscordCommandContext(CommandContext):
         self.log(self.author, self.channel, self.message.content)
 
     def send_message(self, message):
-        async_to_sync(self.channel.send)(message)
+        result = async_to_sync(self.channel.send)(message)
         self.log(discord.client.user, self.channel, message)
+        return result
+    
+    def send_message_full(self, channel_id, *args, **kwargs):
+        channel = discord.get_channel(channel_id)
+        result = async_to_sync(channel.send)(*args, **kwargs)
+        
+        kwargList = [str(key) +":" + str(kwargs[key]) for key in kwargs]
+        logMsg = "\n".join(kwargList)        
+        self.log(discord.client.user, self.channel, logMsg)
+        return result
 
-
+    def delete_message(self, message):
+        async_to_sync(message.delete)()
+    
+    def fetch_message(self, channel_id, message_id):
+        channel = discord.get_channel(channel_id)
+        if channel is None:
+            return None
+        return async_to_sync(channel.fetch_message)(message_id)
+    
     @property
     def user_tag(self):
         return f"<@{self.author.id}>"
@@ -88,6 +106,27 @@ class DiscordCommandContext(CommandContext):
             message=message
         ))
 
+class ReportCommandContext(DiscordCommandContext):
+    prefix = ":redheart:"
+    def __init__(self, message):
+        super().__init__(message)
+        
+    def dispatch(self):
+        command_class = COMMAND_MAP.get("reportmatch")
+        if command_class:
+            command = command_class(self)
+            command.check_support_and_execute()
+
+class ScheduleCommandContext(DiscordCommandContext):
+    prefix = "🔥" #jesus christ.
+    def __init__(self, message):
+        super().__init__(message)
+        
+    def dispatch(self):
+        command_class = COMMAND_MAP.get("schedulematch")
+        if command_class:
+            command = command_class(self)
+            command.check_support_and_execute()
 
 class TwitchCommandContext(CommandContext):
     platform = Platform.TWITCH
