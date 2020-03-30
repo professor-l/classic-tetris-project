@@ -14,39 +14,39 @@ class ReportMatch(Command):
     def execute(self, *args):
         if len(args) > 1 and args[0] == "setup":  # hackerman...
             self.check_moderator()
-            self.executeSetup(args)
+            self.execute_setup(args)
         else:
-            self.executePeon(args)
+            self.execute_peon(args)
 
-    def executePeon(self, *args):
+    def execute_peon(self, *args):
         # only accept reports in the reporting channel
         if not checkChannelPeon(self.context):
             return
         league, result = processRequest(self.context.author.nick, self.context.message.content)
-        tempMessage = self.send_message("```" + result + "```")
-        print(tempMessage)
+        temp_message = self.send_message("```" + result + "```")
+
         if league is not None:
             self.context.add_reaction(self.context.message, '🇦')
             self.context.add_reaction(self.context.message, '🇮')
-            self.executeUpdate(league)
-            self.context.delete_message(tempMessage)
+            self.execute_update(league)
+            self.context.delete_message(temp_message)
         else:
             self.context.add_reaction(self.context.message, '🚫')
             time.sleep(10)
 
             items = ["5⃣","4⃣", "3⃣", "2⃣", "1⃣"]
             for i in range(5):
-                self.context.add_reaction(tempMessage, items[i])
+                self.context.add_reaction(temp_message, items[i])
                 time.sleep(1)
 
-            self.context.delete_message(tempMessage)
+            self.context.delete_message(temp_message)
         
 
     # :redheart: setup cc
-    def executeSetup(self, *args):
+    def execute_setup(self, *args):
         league = args[0][1]
         setupChannel(self.context, league)
 
-    def executeUpdate(self, league):
+    def execute_update(self, league):
         print("Updating the channel image etc.")
         updateChannel(self.context, league)

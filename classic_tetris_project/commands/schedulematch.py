@@ -1,6 +1,6 @@
 ﻿from .command import Command, CommandException
 from .. import discord
-from datetime import datetime
+import time
 from ..reportmatchmodule.processrequest import (
     processRequest,
     updateChannel,
@@ -11,16 +11,29 @@ from ..reportmatchmodule.processrequest import (
 @Command.register_discord("schedulematch", usage="schedulematch, yadda yadda")
 class ScheduleMatch(Command):
     def execute(self, *args):      
-        self.executePeon(args)
+        self.execute_peon(args)
 
-    def executePeon(self, *args):
+    def execute_peon(self, *args):
         # only accept reports in the reporting channel
         if not checkChannelPeon(self.context):
             return
         league, result = processRequest(self.context.author.nick, self.context.message.content)
-        self.send_message("```" + result + "```")
+        temp_message = self.send_message("```" + result + "```")
         if league is not None:
-            self.executeUpdate(league)
+            self.context.add_reaction(self.context.message, '🇦')
+            self.context.add_reaction(self.context.message, '🇮')
+            self.execute_update(league)
+            self.context.delete_message(temp_message)           
+        else:
+            self.context.add_reaction(self.context.message, '🚫')
+            time.sleep(10)
 
-    def executeUpdate(self, league):
+            items = ["5⃣","4⃣", "3⃣", "2⃣", "1⃣"]
+            for i in range(5):
+                self.context.add_reaction(temp_message, items[i])
+                time.sleep(1)
+
+            self.context.delete_message(temp_message)
+
+    def execute_update(self, league):
         updateChannel(self.context, league)
