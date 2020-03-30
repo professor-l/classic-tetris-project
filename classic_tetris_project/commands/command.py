@@ -52,7 +52,7 @@ class Command(ABC):
             self.send_message("Command not supported on this platform.")
 
     def send_message(self, message):
-        self.context.send_message(message)
+        return self.context.send_message(message)
 
     def send_usage(self):
         # Add `wrapper` if in Discord
