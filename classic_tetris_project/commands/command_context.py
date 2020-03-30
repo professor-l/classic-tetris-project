@@ -107,7 +107,7 @@ class DiscordCommandContext(CommandContext):
         ))
 
 class ReportCommandContext(DiscordCommandContext):
-    prefix = ":redheart:"
+    prefix = "<:redheart:545715946325540893>"
     def __init__(self, message):
         super().__init__(message)
         
