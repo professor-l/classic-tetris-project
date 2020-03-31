@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.utils import OperationalError
 
 from .twitch import TwitchChannel
 from .users import TwitchUser
@@ -29,8 +30,9 @@ class CustomCommand(models.Model):
     def get_command(channel, command_name):
         try:
             command = CustomCommand.objects.filter(twitch_channel=channel).get(name=command_name)
-        except CustomCommand.DoesNotExist:
+        except (CustomCommand.DoesNotExist, OperationalError):
             return False
+        
 
         return command
 
