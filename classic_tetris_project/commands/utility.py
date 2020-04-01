@@ -4,9 +4,9 @@ from asgiref.sync import async_to_sync
 from datetime import datetime, timedelta
 
 from .command import Command
-from ..models.coin import Side
+from ..models import Side, TwitchChannel
 from ..util import Platform
-from ..discord import guild_id
+from ..discord import guild_id, client as discord_client
 from ..words import words
 
 COIN_FLIP_TIMEOUT = 10
@@ -113,3 +113,15 @@ class AuthWordCommand(Command):
         self.send_message(
             f"Your qualification authword is: {authword.upper()}. Expires in: {time_left}"
         )
+
+
+@Command.register_discord("stats", usage="stats")
+class StatsCommand(Command):
+    def execute(self, *args):
+        self.check_moderator()
+
+        guilds = len(discord_client.guilds)
+        channels = TwitchChannel.objects.filter(connected=True).count()
+
+        self.send_message(f"I'm in {guilds} Discord servers and {channels} Twitch channels.")
+
