@@ -14,10 +14,16 @@ from ..countries import countries
 class User(models.Model):
     RE_PREFERRED_NAME = re.compile(r"^[A-Za-z0-9\-_. ]+$")
 
+    PRONOUN_CHOICES = {
+        "he": "He/him/his",
+        "she": "She/her/hers",
+        "they": "They/them/theirs",
+    }
+
     PLAYSTYLE_CHOICES = {
-        'das': 'DAS',
-        'hypertap': 'Hypertap',
-        'hybrid': 'Hybrid',
+        "das": "DAS",
+        "hypertap": "Hypertap",
+        "hybrid": "Hybrid",
     }
 
     preferred_name = models.CharField(max_length=64, null=True)
@@ -29,6 +35,8 @@ class User(models.Model):
 
     pal_pb = models.IntegerField(null=True)
     pal_pb_updated_at = models.DateTimeField(null=True)
+
+    pronouns = models.CharField(max_length=16, choices=PRONOUN_CHOICES.items(), default="they")
 
     playstyle = models.CharField(max_length=16, null=True, choices=PLAYSTYLE_CHOICES.items())
 
@@ -61,6 +69,15 @@ class User(models.Model):
             self.save()
             return True
 
+        else:
+            return False
+
+    def set_pronouns(self, pronoun):
+        pronoun = pronoun.lower()
+        if pronoun in self.PRONOUN_CHOICES:
+            self.pronouns = pronoun
+            self.save()
+            return True
         else:
             return False
 
