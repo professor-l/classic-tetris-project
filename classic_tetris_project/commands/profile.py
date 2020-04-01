@@ -27,6 +27,7 @@ class ProfileCommand(Command):
         ntsc_pb = user.ntsc_pb or "Not set"
         ntsc_pb_19 = user.ntsc_pb_19 or "Not set"
         pal_pb = user.pal_pb or "Not set"
+        pronouns = user.get_pronouns_display()
         playstyle = user.get_playstyle_display() or "Not set"
         country = countries[user.country] if user.country else "Not set"
         same_pieces = "Yes" if user.same_piece_sets else "No"
@@ -43,6 +44,7 @@ class ProfileCommand(Command):
              "        NTSC: {ntsc_pb}\n"
              "        NTSC (19): {ntsc_pb_19}\n"
              "        PAL: {pal_pb}\n"
+             "    **Pronouns:** {pronouns}\n"
              "    **Playstyle:** {playstyle}\n"
              "    **Country:** {country}\n"
              "    **Same Piece Sets:** {same_pieces}\n"
@@ -52,6 +54,7 @@ class ProfileCommand(Command):
                  ntsc_pb=ntsc_pb,
                  ntsc_pb_19=ntsc_pb_19,
                  pal_pb=pal_pb,
+                 pronouns=pronouns,
                  playstyle=playstyle,
                  country=country,
                  same_pieces=same_pieces,
