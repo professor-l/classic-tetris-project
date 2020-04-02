@@ -257,15 +257,17 @@ class DiscordUser(PlatformUser):
         if not discord.client.is_ready():
             return None
         user = discord.client.get_user(int(self.discord_id))
-        self.username = user.name # Update our username while we're getting this
-        self.save()
+
+        # Temporary critical fix for username bug in db
+        # self.username = user.name # Update our username while we're getting this
+        # self.save()
         return user
 
     def display_name(self, guild=None):
         if guild:
             return guild.get_member(int(self.discord_id)).display_name
-        else:
-            return self.username or (self.user_obj and self.user_obj.name)
+
+        return self.user_obj.name if self.user_obj is not None else None
 
     @property
     def user_tag(self):
