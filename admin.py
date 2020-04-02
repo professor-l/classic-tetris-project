@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from ..models import User, DiscordUser, TwitchUser, Match, Game, TwitchChannel, CustomCommand
+from ..models import User, DiscordUser, TwitchUser, WebsiteUser, Match, Game, TwitchChannel, CustomCommand
 
 
 class DiscordUserInline(admin.StackedInline):
@@ -9,9 +9,12 @@ class DiscordUserInline(admin.StackedInline):
 class TwitchUserInline(admin.StackedInline):
     model = TwitchUser
 
+class WebsiteUserInline(admin.StackedInline):
+    model = WebsiteUser
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    inlines = [DiscordUserInline, TwitchUserInline]
+    inlines = [DiscordUserInline, TwitchUserInline, WebsiteUserInline]
 
 admin.site.register(DiscordUser)
 admin.site.register(TwitchUser)

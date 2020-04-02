@@ -1,10 +1,14 @@
-from django.urls import path
+from django.urls import include, path
 
+from .views import oauth
 from .views.index import index
-from .views.accounts.login import LoginView
+
+oauth_patterns = ([
+    path("login/", oauth.login, name="login"),
+    path("authorize/", oauth.authorize, name="authorize"),
+], "oauth")
 
 urlpatterns = [
     path("", index, name="index"),
-
-    path("accounts/login/", LoginView.as_view()),
+    path("oauth/", include(oauth_patterns)),
 ]
