@@ -1,17 +1,23 @@
 from .command import Command, CommandException
 from .. import discord
 from ..models.users import User
-from ..reportmatchmodule.processrequest import (
-    processRequest,
-    updateChannel,
-    setupChannel,
-    checkChannelPeon
-)
+try:
+    from ..reportmatchmodule.processrequest import (
+        processRequest,
+        updateChannel,
+        setupChannel,
+        checkChannelPeon
+    )
+    REPORT_MATCH_LOADED = True
+except ModuleNotFoundError:
+    REPORT_MATCH_LOADED = False
 import time
 
 @Command.register_discord("reportmatch", usage="reportmatch, yadda yadda")
 class ReportMatch(Command):
     def execute(self, *args):
+        if not REPORT_MATCH_LOADED:
+            return
         if len(args) > 1 and args[0] == "setup":  # hackerman...
             self.check_moderator()
             self.execute_setup(args)
