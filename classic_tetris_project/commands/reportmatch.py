@@ -1,6 +1,6 @@
 from .command import Command, CommandException
 from .. import discord
-
+from ..models.users import User
 from ..reportmatchmodule.processrequest import (
     processRequest,
     updateChannel,
@@ -45,8 +45,16 @@ class ReportMatch(Command):
     # :redheart: setup cc
     def execute_setup(self, *args):
         league = args[0][1]
-        setupChannel(self.context, league)
+        setupChannel(self.context, league, self.all_users())
 
     def execute_update(self, league):
         print("Updating the channel image etc.")
-        updateChannel(self.context, league)
+        updateChannel(self.context, league, self.all_users())
+
+    def all_users(self):
+        query = list(User.objects.exclude(twitch_user=None).exclude(discord_user=None).all())
+        result = {}
+        for user in query:
+            result[user.twitch_user.username] = user.discord_user.username
+        print (result)
+        return result

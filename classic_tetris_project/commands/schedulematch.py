@@ -1,6 +1,7 @@
 ﻿from .command import Command, CommandException
 from .. import discord
 import time
+from ..models.users import TwitchUser
 from ..reportmatchmodule.processrequest import (
     processRequest,
     updateChannel,
@@ -36,4 +37,12 @@ class ScheduleMatch(Command):
             self.context.delete_message(temp_message)
 
     def execute_update(self, league):
-        updateChannel(self.context, league)
+        updateChannel(self.context, league, self.all_users())
+   
+    def all_users(self):
+        query = list(User.objects.exclude(twitch_user=None).exclude(discord_user=None).all())
+        result = {}
+        for user in query:
+            result[user.twitch_user.username] = user.discord_user.username
+        print (result)
+        return result
