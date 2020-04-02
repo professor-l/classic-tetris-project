@@ -1,7 +1,7 @@
 ﻿from .command import Command, CommandException
 from .. import discord
 import time
-from ..models.users import TwitchUser\
+from ..models.users import TwitchUser
 try:
     from ..reportmatchmodule.processrequest import (
         processRequest,
