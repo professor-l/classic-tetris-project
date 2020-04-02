@@ -1,17 +1,23 @@
 ﻿from .command import Command, CommandException
 from .. import discord
 import time
-from ..models.users import TwitchUser
-from ..reportmatchmodule.processrequest import (
-    processRequest,
-    updateChannel,
-    setupChannel,
-    checkChannelPeon
-)
+from ..models.users import TwitchUser\
+try:
+    from ..reportmatchmodule.processrequest import (
+        processRequest,
+        updateChannel,
+        setupChannel,
+        checkChannelPeon
+    )
+    SCHEDULE_MATCH_LOADED = True
+except ModuleNotFoundError:
+    SCHEDULE_MATCH_LOADED = False
 
 @Command.register_discord("schedulematch", usage="schedulematch, yadda yadda")
 class ScheduleMatch(Command):
-    def execute(self, *args):      
+    def execute(self, *args):
+        if not SCHEDULE_MATCH_LOADED:
+            return  
         self.execute_peon(args)
 
     def execute_peon(self, *args):
