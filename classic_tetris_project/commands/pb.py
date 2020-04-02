@@ -1,5 +1,7 @@
 from .command import Command, CommandException
 from .. import discord
+from ..util import Platform
+from ..models import DiscordUser
 
 @Command.register("pb", "getpb",
                   usage="pb [username] (default username you)")
@@ -16,12 +18,7 @@ class GetPBCommand(Command):
             raise CommandException("Invalid specified user.")
 
         user = platform_user.user
-
-        # Get Discord nickname if it exists
-        try:
-            name = self.context.guild.get_member(int(platform_user.discord_id)).display_name
-        except AttributeError:
-            name = platform_user.username
+        name = self.context.display_name(platform_user)
 
         ntsc_exists = False
         pal_exists = False

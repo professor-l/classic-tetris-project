@@ -22,7 +22,7 @@ class LinkCommand(Command):
         try:
             linked_discord_user = DiscordUser.objects.get(user_id=twitch_user.user_id)
             raise CommandException(
-                f"The twitch user \"{username}\" is linked to the Discord user \"{linked_discord_user.username}\"."
+                f"The twitch user \"{username}\" is linked to the Discord user \"{linked_discord_user.display_name()}\"."
             )
         except DiscordUser.DoesNotExist:
             pass
@@ -44,7 +44,7 @@ class LinkCommand(Command):
         cache.set(f"link_requests.{discord_user.user_id}", link_request, timeout=REQUEST_TIMEOUT)
 
         twitch_user.send_message(
-            f"The Discord user \"{discord_user.username}\" wants to link their Discord account to this twitch account."
+            f"The Discord user \"{discord_user.display_name()}\" wants to link their Discord account to this twitch account."
         )
         twitch_user.send_message(
             f"Your one-time 6-digit token is {link_request.token}. If you did "
