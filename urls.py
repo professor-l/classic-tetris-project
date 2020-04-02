@@ -6,6 +6,7 @@ from .views.index import index
 oauth_patterns = ([
     path("login/", oauth.login, name="login"),
     path("authorize/", oauth.authorize, name="authorize"),
+    path("logout/", oauth.logout, name="logout"),
 ], "oauth")
 
 urlpatterns = [
