@@ -122,6 +122,16 @@ class User(models.Model):
         self.save()
         return True
 
+    @property
+    @memoize
+    def display_name(self):
+        if self.preferred_name:
+            return self.preferred_name
+        elif hasattr(self, "twitch_user"):
+            return self.twitch_user.username
+        elif hasattr(self, "discord_user"):
+            return self.discord_user.display_name()
+
     def merge(self, target_user):
         from ..util.merge import UserMerger
         UserMerger(self, target_user).merge()
@@ -186,6 +196,9 @@ class TwitchUser(PlatformUser):
     def user_obj(self):
         return twitch.client.get_user(self.twitch_id)
 
+    def display_name(self):
+        return self.username
+
     @property
     def user_tag(self):
         return f"@{self.username}"
@@ -230,6 +243,7 @@ signals.pre_save.connect(TwitchUser.before_save, sender=TwitchUser)
 class DiscordUser(PlatformUser):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="discord_user")
     discord_id = models.CharField(max_length=64, unique=True, blank=False)
+    username = models.CharField(max_length=32, null=True) # nullable for now, we might change this later
 
     @staticmethod
     def fetch_by_discord_id(discord_id):
@@ -239,11 +253,19 @@ class DiscordUser(PlatformUser):
     @property
     @memoize
     def user_obj(self):
-        return discord.client.get_user(int(self.discord_id))
+        # TODO use Discord's HTTP API
+        if not discord.client.is_ready():
+            return None
+        user = discord.client.get_user(int(self.discord_id))
+        self.username = user.name # Update our username while we're getting this
+        self.save()
+        return user
 
-    @property
-    def username(self):
-        return self.user_obj.name
+    def display_name(self, guild=None):
+        if guild:
+            return guild.get_member(int(self.discord_id)).display_name
+        else:
+            return self.username or (self.user_obj and self.user_obj.name)
 
     @property
     def user_tag(self):

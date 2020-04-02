@@ -18,11 +18,7 @@ class ProfileCommand(Command):
             raise CommandException("Invalid specified user.")
 
         user = platform_user.user
-
-        try:
-            name = self.context.guild.get_member(int(platform_user.discord_id)).display_name
-        except AttributeError:
-            name = platform_user.username
+        name = self.context.display_name(platform_user)
 
         ntsc_pb = user.ntsc_pb or "Not set"
         ntsc_pb_19 = user.ntsc_pb_19 or "Not set"
