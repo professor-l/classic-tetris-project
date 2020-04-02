@@ -35,6 +35,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = [
+    'localhost',
     'dev.monthlytetris.info',
     'monthlytetris.info',
     'monthlytetris.com',
@@ -66,10 +67,13 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'classic_tetris_project_django.urls'
 
+LOGIN_REDIRECT_URL = '/'
+
+TEMPLATE_DIR = os.path.join(BASE_DIR, "classic_tetris_project", "private", "templates")
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -77,6 +81,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'classic_tetris_project.private.context_processors.session_processor',
             ],
         },
     },
@@ -122,6 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -140,4 +146,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'private/static/')
