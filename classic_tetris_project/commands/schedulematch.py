@@ -49,5 +49,5 @@ class ScheduleMatch(Command):
         query = list(User.objects.exclude(twitch_user=None).exclude(discord_user=None).all())
         result = {}
         for user in query:
-            result[user.twitch_user.username] = user.discord_user.username
+            result[user.twitch_user.username] = user.discord_user.display_name()
         return result
