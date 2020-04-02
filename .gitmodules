@@ -3,4 +3,4 @@
 	url = https://github.com/alex-ong/CTMEditor.git
 [submodule "classic_tetris_project/private"]
 	path = classic_tetris_project/private
-	url = git@github.com:professor-l/ctp-private.git
+	url = https://github.com/professor-l/ctp-private.git
