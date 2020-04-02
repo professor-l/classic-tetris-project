@@ -1,6 +1,7 @@
 import asyncio
 import re
 
+from django.contrib.auth.models import User as AuthUser
 from django.db import models
 # Used to add User upon creation of TwitchUser or DiscordUser
 from django.db.models import signals
@@ -223,6 +224,8 @@ class TwitchUser(PlatformUser):
     def __str__(self):
         return self.username
 
+signals.pre_save.connect(TwitchUser.before_save, sender=TwitchUser)
+
 
 class DiscordUser(PlatformUser):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="discord_user")
@@ -252,6 +255,23 @@ class DiscordUser(PlatformUser):
             discord.client.loop
         )
 
-
 signals.pre_save.connect(DiscordUser.before_save, sender=DiscordUser)
-signals.pre_save.connect(TwitchUser.before_save, sender=TwitchUser)
+
+
+class WebsiteUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="website_user")
+    auth_user = models.OneToOneField(AuthUser, on_delete=models.CASCADE, related_name="website_user")
+
+    @staticmethod
+    def fetch_by_user(user, username=None):
+        """
+        Creates or fetches a WebsiteUser from a given User object.
+        If the WebsiteUser does not exist, the given username is used for the
+        new auth User.
+        """
+        try:
+            return WebsiteUser.objects.get(user=user)
+        except WebsiteUser.DoesNotExist:
+            username = username or f"user_{user.id}"
+            auth_user = AuthUser.objects.create_user(username=username)
+            return WebsiteUser.objects.create(user=user, auth_user=auth_user)

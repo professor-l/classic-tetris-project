@@ -35,6 +35,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = [
+    'localhost',
     'dev.monthlytetris.info',
     'monthlytetris.info',
     'monthlytetris.com',
@@ -66,10 +67,13 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'classic_tetris_project_django.urls'
 
+LOGIN_REDIRECT_URL = '/'
+
+TEMPLATE_DIR = os.path.join(BASE_DIR, "classic_tetris_project", "private", "templates")
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,6 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
 
 
 # Internationalization
