@@ -14,10 +14,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from django.views.generic.base import TemplateView
+from django.urls import include, path
 
-urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", TemplateView.as_view(template_name="index.html"), name="index"),
-]
+try:
+    urlpatterns = [
+        path("admin/", admin.site.urls),
+        path("", include("classic_tetris_project.private.urls")),
+    ]
+except ModuleNotFoundError as e:
+    print("Private urls could not be loaded")
+    print(e)
+    # private not loaded, ignore all urls
+    urlpatterns = []
