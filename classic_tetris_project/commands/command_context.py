@@ -82,6 +82,9 @@ class DiscordCommandContext(CommandContext):
     def delete_message(self, message):
         async_to_sync(message.delete)()
     
+    def add_reaction(self, message, emoji):
+        async_to_sync(message.add_reaction)(emoji)
+
     def fetch_message(self, channel_id, message_id):
         channel = discord.get_channel(channel_id)
         if channel is None:
