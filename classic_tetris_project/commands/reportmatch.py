@@ -56,5 +56,4 @@ class ReportMatch(Command):
         result = {}
         for user in query:
             result[user.twitch_user.username] = user.discord_user.username
-        print (result)
         return result
