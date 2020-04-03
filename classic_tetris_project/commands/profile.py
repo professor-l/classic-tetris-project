@@ -23,7 +23,7 @@ class ProfileCommand(Command):
         ntsc_pb = user.ntsc_pb or "Not set"
         ntsc_pb_19 = user.ntsc_pb_19 or "Not set"
         pal_pb = user.pal_pb or "Not set"
-        pronouns = user.get_pronouns_display()
+        pronouns = user.get_pronouns_display() or "Not set"
         playstyle = user.get_playstyle_display() or "Not set"
         country = countries[user.country] if user.country else "Not set"
         same_pieces = "Yes" if user.same_piece_sets else "No"
