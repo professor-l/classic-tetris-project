@@ -18,7 +18,7 @@ TEMPLATE = ("""
     "fields": [
       {{
         "name": "Personal Bests",
-        "value": "NTSC: {ntsc_pb} \\n NTSC(19): {ntsc_pb_19}\\n PAL: {pal_pb}\\n"
+        "value": "```NTSC: {ntsc_pb} \\nNTSC(19): {ntsc_pb_19}\\nPAL: {pal_pb}```\\n"
       }},
       {{
         "name": "Pronouns",
@@ -74,10 +74,11 @@ class ProfileCommand(Command):
                 
         player_icon = self.get_player_icon(name, username)
         color = self.get_color(name, username)
-
-        ntsc_pb = user.ntsc_pb or "Not set"
-        ntsc_pb_19 = user.ntsc_pb_19 or "Not set"
-        pal_pb = user.pal_pb or "Not set"
+        
+        ntsc_pb = self.format_pb(user.ntsc_pb).rjust(13)
+        ntsc_pb_19 = self.format_pb(user.ntsc_pb_19).rjust(9)
+        pal_pb = self.format_pb(user.pal_pb).rjust(14)
+        
         pronouns = user.get_pronouns_display() or "Not set"
         
         playstyle = self.get_playstyle(user)
@@ -100,6 +101,12 @@ class ProfileCommand(Command):
 
         e = Embed.from_dict(json_message)
         self.send_message_full(self.context.channel.id, embed=e)
+
+    def format_pb(self, value):
+        if value:
+            return "{pb:,}".format(pb=value)
+        else:
+            return "Not set"
 
     def get_player_icon(self, name, username):
         # search for multiple members...
