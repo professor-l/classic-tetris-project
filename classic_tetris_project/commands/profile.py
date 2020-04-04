@@ -93,8 +93,8 @@ class ProfileCommand(Command):
             countr = "Not set"
 
         
-        check = str(get_emoji(self.context.guild.emojis,name="tetris_check") or ":green_square:")
-        cross = str(get_emoji(self.context.guild.emojis,name="tetris_x") or ":red_square:")
+        check = str(get_emoji(self.context.guild.emojis,name="tetrischeck") or ":green_square:")
+        cross = str(get_emoji(self.context.guild.emojis,name="tetrisx") or ":red_square:")
 
         same_pieces = (check + " Yes") if user.same_piece_sets else (cross + " No")
 
