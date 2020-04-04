@@ -128,7 +128,8 @@ class ProfileCommand(Command):
     def get_playstyle(self, user):        
         if user.playstyle:
             ps_emoji = get(self.context.guild.emojis,name=PLAYSTYLE_EMOJI[user.playstyle])
-            return str(ps_emoji) + " " + user.get_playstyle_display()
+            ps_emoji = str(ps_emoji) if ps_emoji else ""
+            return ps_emoji + " " + user.get_playstyle_display()
         else:
             return "Not set"
 
