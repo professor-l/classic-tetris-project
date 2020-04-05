@@ -1,7 +1,7 @@
 from discord import Embed
 from discord.utils import get
 
-from .. import discord #our discord.
+from ..discord import get_guild #our discord.
 from .command import Command, CommandException
 from ..countries import countries, THREE_TO_TWO
 
@@ -48,10 +48,14 @@ TEMPLATE = ("""
 """)
 
 PLAYSTYLE_EMOJI = {
-                   "das": "lovedas",
-                   "hypertap": "lovetap",
-                   "hybrid": "lovehyb"
+                   "das": "<:lovedas:602968808876933128>",
+                   "hypertap": "<:lovetap:694400998914916412>",
+                   "hybrid": "<:lovehyb:696135490776072212>"
                  }
+
+TETRIS_X = "<:tetrisx:547170153301803009>"
+TETRIS_CHECK = "<:tetrischeck:547169203963166760>"
+
 PLAYER_ICON = "https://cdn.discordapp.com/avatars/{id}/{avatar}.jpg"
 
 @Command.register_discord("profile",
@@ -101,7 +105,7 @@ class ProfileCommand(Command):
 
         e = Embed.from_dict(json_message)
         self.send_message_full(self.context.channel.id, embed=e)
-
+    
     def format_pb(self, value):
         if value:
             return "{pb:,}".format(pb=value)
@@ -109,8 +113,9 @@ class ProfileCommand(Command):
             return "Not set"
 
     def get_player_icon(self, name, username):
+        guild = self.context.guild or get_guild()
         # search for multiple members...
-        members = [self.context.guild.get_member_named(n) for n in [name,username]]
+        members = [guild.get_member_named(n) for n in [name,username]]
         for m in members:
             if m is not None and m.avatar is not None:
                 return PLAYER_ICON.format(id=m.id, avatar=m.avatar)
@@ -118,7 +123,9 @@ class ProfileCommand(Command):
         return ""
 
     def get_color(self, name, username):
-        members = [self.context.guild.get_member_named(n) for n in [name,username]]
+        guild = self.context.guild or get_guild()  
+
+        members = [guild.get_member_named(n) for n in [name,username]]
         for m in members:
             if m is not None and m.color is not None:
                 return m.color.value
@@ -126,9 +133,8 @@ class ProfileCommand(Command):
         return 0 # black
 
     def get_playstyle(self, user):        
-        if user.playstyle:
-            ps_emoji = get(self.context.guild.emojis,name=PLAYSTYLE_EMOJI[user.playstyle])
-            ps_emoji = str(ps_emoji) if ps_emoji else ""
+        if user.playstyle:            
+            ps_emoji = PLAYSTYLE_EMOJI[user.playstyle]            
             return ps_emoji + " " + user.get_playstyle_display()
         else:
             return "Not set"
@@ -141,11 +147,9 @@ class ProfileCommand(Command):
 
     def get_same_pieces(self, user):
         if user.same_piece_sets:
-            check = str(get(self.context.guild.emojis, name="tetrischeck") or ":green_square:")
-            return (check + " Yes")
-        else:
-            cross = str(get(self.context.guild.emojis, name="tetrisx") or ":red_square:")
-            return (cross + " No")
+            return (TETRIS_CHECK + " Yes")
+        else:            
+            return (TETRIS_X + " No")
 
     def get_twitch(self, user):
         if hasattr(user, "twitch_user"):
