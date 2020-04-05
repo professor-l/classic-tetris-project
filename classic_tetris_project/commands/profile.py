@@ -1,7 +1,7 @@
 from discord import Embed
 from discord.utils import get
 
-from .. import discord #our discord.
+from ..discord import get_guild #our discord.
 from .command import Command, CommandException
 from ..countries import countries, THREE_TO_TWO
 
@@ -113,10 +113,9 @@ class ProfileCommand(Command):
             return "Not set"
 
     def get_player_icon(self, name, username):
-        if not self.context.guild:
-            return ""
+        guild = self.context.guild or get_guild()
         # search for multiple members...
-        members = [self.context.guild.get_member_named(n) for n in [name,username]]
+        members = [guild.get_member_named(n) for n in [name,username]]
         for m in members:
             if m is not None and m.avatar is not None:
                 return PLAYER_ICON.format(id=m.id, avatar=m.avatar)
@@ -124,10 +123,9 @@ class ProfileCommand(Command):
         return ""
 
     def get_color(self, name, username):
-        if not self.context.guild:
-            return 0
+        guild = self.context.guild or get_guild()  
 
-        members = [self.context.guild.get_member_named(n) for n in [name,username]]
+        members = [guild.get_member_named(n) for n in [name,username]]
         for m in members:
             if m is not None and m.color is not None:
                 return m.color.value
@@ -151,7 +149,7 @@ class ProfileCommand(Command):
         if user.same_piece_sets:
             return (TETRIS_CHECK + " Yes")
         else:            
-            return (TETRIS_CROSS + " No")
+            return (TETRIS_X + " No")
 
     def get_twitch(self, user):
         if hasattr(user, "twitch_user"):
