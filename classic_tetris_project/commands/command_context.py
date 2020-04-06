@@ -202,6 +202,6 @@ class TwitchCommandContext(CommandContext):
     @property
     @memoize
     def platform_user(self):
-        twitch_user = TwitchUser.fetch_by_twitch_id(self.author.id)
+        twitch_user = TwitchUser.fetch_or_create_by_twitch_id(self.author.id)
         twitch_user.update_username(twitch_user.user_obj.username)
         return twitch_user

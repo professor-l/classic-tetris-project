@@ -175,6 +175,12 @@ class TwitchUser(PlatformUser):
 
     @staticmethod
     def fetch_by_twitch_id(twitch_id):
+        try:
+            return TwitchUser.objects.get(twitch_id=twitch_id)
+        except TwitchUser.DoesNotExist:
+            return None
+
+    def fetch_or_create_by_twitch_id(twitch_id):
         twitch_user, created = TwitchUser.objects.get_or_create(twitch_id=twitch_id)
         return twitch_user
 
@@ -184,8 +190,6 @@ class TwitchUser(PlatformUser):
             twitch_user = TwitchUser.objects.get(username__iexact=username)
             return twitch_user
         except TwitchUser.DoesNotExist:
-            if existing_only:
-                return None
             user_obj = twitch.API.user_from_username(username)
             if user_obj:
                 twitch_user = TwitchUser.fetch_by_twitch_id(user_obj.id)
