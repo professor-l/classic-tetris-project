@@ -179,11 +179,13 @@ class TwitchUser(PlatformUser):
         return twitch_user
 
     @staticmethod
-    def from_username(username):
+    def from_username(username, existing_only=False):
         try:
             twitch_user = TwitchUser.objects.get(username__iexact=username)
             return twitch_user
         except TwitchUser.DoesNotExist:
+            if existing_only:
+                return None
             user_obj = twitch.API.user_from_username(username)
             if user_obj:
                 twitch_user = TwitchUser.fetch_by_twitch_id(user_obj.id)
