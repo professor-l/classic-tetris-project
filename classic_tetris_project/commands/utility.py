@@ -7,7 +7,7 @@ from .command import Command
 from ..models import Side, TwitchChannel
 from ..util import Platform
 from ..discord import guild_id, client as discord_client
-from ..words import words
+from ..words import Words
 
 COIN_FLIP_TIMEOUT = 10
 
@@ -83,7 +83,7 @@ class AuthHelpCommand(Command):
         self.send_message(self.AUTH_HELP_STRING)
 
 
-# @Command.register_discord("authword", usage="authword")
+@Command.register_discord("authword", usage="authword")
 class AuthWordCommand(Command):
 
     EXPIRE_TIME = 60 * 60 * 2      # 2 hours
@@ -106,7 +106,7 @@ class AuthWordCommand(Command):
             self.send_message(f"Your authword expired. Try again in: {time_left}")
             return
 
-        authword = random.choice(words)
+        authword = Words.get_word()
         cache.set(f"authword.{uid}", authword, timeout=self.EXPIRE_TIME)
         cache.set(f"authcooldown.{uid}", True, timeout=self.COOLDOWN_TIME)
         time_left = timedelta(seconds=cache.ttl(f"authword.{uid}"))

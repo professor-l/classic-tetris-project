@@ -1,7 +1,7 @@
 import csv
-import os
+from pathlib import Path
 
-COUNTRIES_CSV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "countries.csv")
+COUNTRIES_CSV_PATH = Path(__file__).parent.resolve() / "data" / "countries.csv"
 
 class Country:
     ACCEPTED_MAPPINGS = {}
