@@ -3,7 +3,7 @@ from discord.utils import get
 
 from ..discord import get_guild #our discord.
 from .command import Command, CommandException
-from ..countries import countries, THREE_TO_TWO
+from ..countries import Country
 
 from ..util.json_template import match_template
     
@@ -140,9 +140,9 @@ class ProfileCommand(Command):
             return "Not set"
 
     def get_country(self, user):
-        if user.country:
-            emoji = ":flag_{}:".format(THREE_TO_TWO[user.country].lower())
-            return emoji + " " + countries[user.country]
+        if user.country is not None:
+            country = Country.get_country(user.country)
+            return country.get_flag() + " " + country.full_name
         return "Not set"
 
     def get_same_pieces(self, user):

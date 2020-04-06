@@ -10,7 +10,7 @@ from django.utils import timezone
 
 from .. import twitch, discord
 from ..util import memoize
-from ..countries import countries
+from ..countries import Country
 
 class User(models.Model):
     RE_PREFERRED_NAME = re.compile(r"^[A-Za-z0-9\-_. ]+$")
@@ -91,9 +91,10 @@ class User(models.Model):
         else:
             return False
 
-    def set_country(self, country_code):
-        if country_code.upper() in countries:
-            self.country = country_code.upper()
+    def set_country(self, country):
+        country = Country.get_country(country)
+        if country is not None:
+            self.country = country.abbreviation
             self.save()
             return True
         else:
