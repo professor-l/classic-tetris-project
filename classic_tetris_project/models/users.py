@@ -191,12 +191,13 @@ class TwitchUser(PlatformUser):
             return twitch_user
         except TwitchUser.DoesNotExist:
             user_obj = twitch.API.user_from_username(username)
-            if user_obj:
+            if user_obj is not None:
                 twitch_user = TwitchUser.fetch_by_twitch_id(user_obj.id)
-                twitch_user.update_username(user_obj.username)
-                return twitch_user
-            else:
-                return None
+                if twitch_user is not None:
+                    twitch_user.update_username(user_obj.username)
+                    return twitch_user
+
+            return None
 
     @property
     @memoize
