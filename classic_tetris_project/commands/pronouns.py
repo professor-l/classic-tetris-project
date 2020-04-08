@@ -1,6 +1,6 @@
 from .command import Command, CommandException
 
-@Command.register("setpronouns", "setpronoun", usage="!setpronoun <he/she/they>")
+@Command.register("setpronouns", "setpronoun", usage="setpronoun <he/she/they>")
 class SetPronounCommand(Command):
     def execute(self, pronoun):
         pronouns = ["he", "she", "they"]
