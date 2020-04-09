@@ -1,4 +1,4 @@
-from django.db.models import F
+from django.db.models import F, Max
 from django.db.models.functions import Abs
 
 from ..command import Command, CommandException
@@ -15,15 +15,16 @@ class MatchCommand(Command):
         self.check_public()
         target, num_results = self.parse_args(target_name, num_results)
 
-        if not target.user.ntsc_pb:
+        target_pb = target.user.get_pb("ntsc")
+        if not target_pb:
             raise CommandException(f"{target.username} has not set a PB.")
 
-        closest_users = self.closest_users(target.user, num_results)
+        closest_users = self.closest_users_with_pbs(target.user, target_pb, num_results)
         match_message = "Closest matches for {username} ({pb:,}): {matches}".format(
             username=target.username,
-            pb=target.user.ntsc_pb,
+            pb=target_pb,
             matches=", ".join(
-                [f"{user.twitch_user.username} ({user.ntsc_pb:,})" for user in closest_users]
+                [f"{user.twitch_user.username} ({pb:,})" for user, pb in closest_users]
             )
         )
         self.send_message(match_message)
@@ -59,15 +60,23 @@ class MatchCommand(Command):
         return (target, num_results)
 
 
-    def closest_users(self, target_user, n):
+    def closest_users_with_pbs(self, target_user, target_pb, n):
         # TODO: Handle PAL too?
-        target_pb = target_user.ntsc_pb
         usernames = twitch.API.usernames_in_channel(self.context.channel.name)
-        users = (User.objects.select_related("twitch_user")
-                 .filter(twitch_user__username__in=usernames,
-                         ntsc_pb__isnull=False)
-                 .exclude(ntsc_pb=0)
-                 .exclude(id=target_user.id)
-                 .order_by(Abs(F("ntsc_pb") - target_pb).asc())
-                 )[:n]
-        return sorted(users, key=lambda user: user.ntsc_pb)
+
+        user_ids_with_pbs = (User.objects
+                             .filter(twitch_user__username__in=usernames,
+                                     score_pb__current=True,
+                                     score_pb__console_type="ntsc")
+                             .values("id")
+                             .annotate(pb=Max("score_pb__score"))
+                             .exclude(pb=0)
+                             .exclude(id=target_user.id)
+                             .order_by(Abs(F("pb") - target_pb).asc())
+                             )[:n]
+        users = { user.id: user for user in list(
+            User.objects.filter(id__in=[row["id"] for row in user_ids_with_pbs])
+            .select_related("twitch_user")
+        ) }
+        return sorted([(users[row["id"]], row["pb"]) for row in user_ids_with_pbs],
+                      key=lambda row: row[1])

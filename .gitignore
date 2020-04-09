@@ -1,6 +1,7 @@
 .vscode/
 *.swp
 *.sqlite3
+.ackrc
 
 __pycache__/
 static/

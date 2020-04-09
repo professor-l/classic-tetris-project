@@ -79,9 +79,9 @@ class ProfileCommand(Command):
         player_icon = self.get_player_icon(name, username)
         color = self.get_color(name, username)
         
-        ntsc_pb = self.format_pb(user.ntsc_pb).rjust(13)
-        ntsc_pb_19 = self.format_pb(user.ntsc_pb_19).rjust(9)
-        pal_pb = self.format_pb(user.pal_pb).rjust(14)
+        ntsc_pb = self.format_pb(user.get_pb("ntsc")).rjust(13)
+        ntsc_pb_19 = self.format_pb(user.get_pb("ntsc", 19)).rjust(9)
+        pal_pb = self.format_pb(user.get_pb("pal")).rjust(14)
         
         pronouns = user.get_pronouns_display() or "Not set"
         
