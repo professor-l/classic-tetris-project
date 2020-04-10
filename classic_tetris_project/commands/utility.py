@@ -38,7 +38,7 @@ class CoinFlipCommand(Command):
         elif (self.context.message.guild and self.context.message.guild.id == guild_id):
             self.context.platform_user.send_message("Due to abuse, `!flip` has been disabled in the CTM Discord server.")
 
-            async_to_sync(self.context.message.delete)()
+            self.context.delete_message(self.context.message)
             return
 
         if cache.get(f"flip.{self.context.user.id}"):

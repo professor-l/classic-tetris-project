@@ -81,17 +81,25 @@ class Command(ABC):
             if role not in member.roles:
                 raise CommandException()
 
-    def check_private(self):
+    def check_private(self, sensitive=False):
         if self.context.platform == Platform.DISCORD:
             if self.context.channel.type != ChannelType.private:
+
+                warning = ""
+                if sensitive:
+                    self.context.delete_message(self.context.message)
+                    self.context.platform_user.send_message(
+                        "Your message in a public channel was deleted. Try here instead."
+                    )
+
                 raise CommandException(
-                    "This command only works in a direct message."
+                    "This command only works in a direct message. Try DMing me."
                 )
 
         elif self.context.platform == Platform.TWITCH:
             if self.context.channel.type != "whisper":
                 raise CommandException(
-                    "This command only works in a direct message."
+                    "This command only works in a direct message. Try whispering me."
                 )
 
     def check_public(self):
@@ -190,12 +198,14 @@ class Command(ABC):
             raise CommandException("Invalid username")
 
     @staticmethod
-    def twitch_user_from_username(username):
+    def twitch_user_from_username(username, existing_only=True):
         match = RE_TWITCH_USERNAME.match(username)
 
         if match:
             username = match.group(1)
-            user = TwitchUser.from_username(username)
+
+            user = TwitchUser.from_username(username, existing_only)
+
             if user and user.twitch_id == twitch.client.user_id:
                 raise CommandException("I'm a bot, silly!")
 

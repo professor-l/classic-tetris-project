@@ -5,6 +5,7 @@ from discord import ChannelType
 from .command import Command, CommandException
 from ..util import Platform
 from ..models.users import User, DiscordUser, TwitchUser
+from ..countries import Country
 
 
 REQUEST_TIMEOUT = 30 * 60
@@ -56,13 +57,14 @@ class LinkCommand(Command):
             "this link, type `!linktoken <token>`. The token will expire in "
             "thirty minutes."
         )
+        self.send_message("I sent you a DM with instructions!")
 
 
 @Command.register_discord("linktoken",
                           usage="linktoken <token>")
 class LinkTokenCommand(Command):
     def execute(self, token):
-        self.check_private()
+        self.check_private(sensitive=True)
 
         link_request = cache.get(f"link_requests.{self.context.user.id}")
 
@@ -71,13 +73,11 @@ class LinkTokenCommand(Command):
             twitch_user = target_user.twitch_user
             self.context.user.merge(target_user)
 
-            self.send_message(f"The twitch account \"{twitch_user.username}\" is now linked to this Discord account!")
-            self.send_message(f"""
-Preferred Name: {self.context.user.preferred_name}
-Country: {self.context.user.country}
-PB: {self.context.user.ntsc_pb}
-PAL PB: {self.context.user.pal_pb}
-            """)
+            self.send_message(
+                f"The twitch account \"{twitch_user.username}\" is now linked to this "
+                "Discord account! Try using the `!profile` command to see your profile "
+                "information!"
+            )
             cache.delete(f"link_requests.{self.context.user.id}")
         else:
             raise CommandException("No link request with that token was made.")

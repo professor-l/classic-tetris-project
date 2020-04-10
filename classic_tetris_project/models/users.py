@@ -100,6 +100,9 @@ class User(models.Model):
         else:
             return False
 
+    def get_country(self):
+        return Country.get_country(self.country)
+
     def set_preferred_name(self, name):
         if User.RE_PREFERRED_NAME.match(name):
             self.preferred_name = name
@@ -185,14 +188,19 @@ class TwitchUser(PlatformUser):
         return twitch_user
 
     @staticmethod
-    def from_username(username, existing_only=False):
+    def from_username(username, existing_only=True):
         try:
             twitch_user = TwitchUser.objects.get(username__iexact=username)
             return twitch_user
         except TwitchUser.DoesNotExist:
             user_obj = twitch.API.user_from_username(username)
             if user_obj is not None:
-                twitch_user = TwitchUser.fetch_by_twitch_id(user_obj.id)
+
+                if existing_only:
+                    twitch_user = TwitchUser.fetch_by_twitch_id(user_obj.id)
+                else:
+                    twitch_user = TwitchUser.fetch_or_create_by_twitch_id(user_obj.id)
+
                 if twitch_user is not None:
                     twitch_user.update_username(user_obj.username)
                     return twitch_user
