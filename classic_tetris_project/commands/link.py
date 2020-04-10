@@ -15,7 +15,7 @@ REQUEST_TIMEOUT = 30 * 60
 class LinkCommand(Command):
     def execute(self, username):
 
-        twitch_user = Command.twitch_user_from_username(username)
+        twitch_user = Command.twitch_user_from_username(username, existing_only=False)
         if not twitch_user:
             raise CommandException("That twitch user doesn't exist!")
         discord_user = self.context.platform_user
