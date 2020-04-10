@@ -1,9 +1,13 @@
 import time
+from django.core.cache import cache
 from random import randint
 
 from .command import Command, CommandException
 
-@Command.register_twitch(*map(str, range(3, 11)),
+MIN_COUNTDOWN = 3
+MAX_COUNTDOWN = 5
+
+@Command.register_twitch(*map(str, range(MIN_COUNTDOWN, MAX_COUNTDOWN + 1)),
                          usage=None)
 class Countdown(Command):
     @property
@@ -15,11 +19,18 @@ class Countdown(Command):
         self.check_moderator()
 
         n = int(self.context.command_name)
+        self.check_validity(n)
+
         for i in range(n, 0, -1):
             self.send_message(str(i))
             time.sleep(1)
 
-        if randint(1,100) == 42:
-            self.send_message("Texas!")
+        self.send_message("Texas!" if randint(1,100) == 42 else "Tetris!")
+
+    def check_validity(self, n):
+        channel = self.context.channel.name
+        if cache.get(f"countdown_in_progress.{channel}") is not None:
+            raise CommandException()
         else:
-            self.send_message("Tetris!")
+            cache.set(f"countdown_in_progress.{channel}", True, timeout=(n+1))
+
