@@ -8,7 +8,24 @@ from ..models.users import User, DiscordUser, TwitchUser
 from ..countries import Country
 
 
-REQUEST_TIMEOUT = 30 * 60
+REQUEST_TIMEOUT = 10 * 60
+
+WARNING_STRING = (
+    "Twitch whispers are broken.  This is a known issue and is on Twitch's end, not ours with the "
+    "bot.  Unfortunately, this means that for the time being, the !link function is almost entirely "
+    "broken.  There is a chance it will work better if you whisper the bot (ClassicTetrisBot) on "
+    "Twitch - just !pb or something, anything really - before you !link in Discord, then refresh the "
+    "Twitch page and check your whispers again.  However, I cannot guarantee that this will work. "
+    "Also, make sure you turn on \"Accept whispers from strangers\" in your Twitch settings. "
+    "Remember, to whisper the bot, all you have to do is click on the bot's name in any channel and "
+    "click \"whisper\".\n\n"
+
+    "In lieu of this dysfunction on Twitch's end, we have plans to refactor the !link command to use "
+    "Twitch's Oauth service and go through the in-development monthlytetris.info website, but for the "
+    "time being, Twitch and Discord account linking may be largely not an option. Also, the "
+    "timeout has been reduced from its usual 30 minutes to just 10. Sorry for the inconvenience, "
+    "everyone. Best of luck <3"
+)
 
 @Command.register_discord("link", "linkaccount",
                           usage="link <twitch username>")
@@ -39,6 +56,7 @@ class LinkCommand(Command):
 
         link_request = cache.get(f"link_requests.{self.context.user.id}")
         if link_request and link_request.target_user_id == twitch_user.user_id:
+            self.send_message(WARNING_STRING)
             raise CommandException(f"You've already sent a link request to the twitch user \"{username}\".")
 
         link_request = LinkRequest(discord_user.user_id, twitch_user.user_id)
@@ -58,6 +76,7 @@ class LinkCommand(Command):
             "thirty minutes."
         )
         self.send_message("I sent you a DM with instructions!")
+        self.send_message(WARNING_STRING)
 
 
 @Command.register_discord("linktoken",
