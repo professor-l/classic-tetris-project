@@ -12,3 +12,9 @@ def get_guild():
 
 def get_channel(id):
     return client.get_channel(id)
+
+def get_emote(name):
+    r = discord.utils.get(get_guild().emojis, name=name)
+    return str(r) if r else None
+def get_emoji(name):
+    return get_emote(name)

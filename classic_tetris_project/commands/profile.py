@@ -1,7 +1,7 @@
 from discord import Embed
 from discord.utils import get
 
-from ..discord import get_guild #our discord.
+from ..discord import *
 from .command import Command, CommandException
 from ..countries import Country
 
@@ -48,13 +48,13 @@ TEMPLATE = ("""
 """)
 
 PLAYSTYLE_EMOJI = {
-                   "das": "<:lovedas:602968808876933128>",
-                   "hypertap": "<:lovetap:694400998914916412>",
-                   "hybrid": "<:lovehyb:696135490776072212>"
+                   "das": "lovedas",
+                   "hypertap": "lovetap",
+                   "hybrid": "lovehyb"
                  }
 
-TETRIS_X = "<:tetrisx:547170153301803009>"
-TETRIS_CHECK = "<:tetrischeck:547169203963166760>"
+TETRIS_X = "tetrisx"
+TETRIS_CHECK = "tetrischeck"
 
 PLAYER_ICON = "https://cdn.discordapp.com/avatars/{id}/{avatar}.jpg"
 
@@ -134,8 +134,9 @@ class ProfileCommand(Command):
 
     def get_playstyle(self, user):        
         if user.playstyle:            
-            ps_emoji = PLAYSTYLE_EMOJI[user.playstyle]            
-            return ps_emoji + " " + user.get_playstyle_display()
+            emote = get_emote(PLAYSTYLE_EMOJI[user.playstyle])
+            display = user.get_playstyle_display()
+            return (emote + " " + display) if emote else display
         else:
             return "Not set"
 
@@ -147,9 +148,11 @@ class ProfileCommand(Command):
 
     def get_same_pieces(self, user):
         if user.same_piece_sets:
-            return (TETRIS_CHECK + " Yes")
+            emote = get_emote(TETRIS_CHECK)
+            return (emote + " Yes") if emote else "Yes"
         else:            
-            return (TETRIS_X + " No")
+            emote = get_emote(TETRIS_X)
+            return (emote + " No") if emote else "No"
 
     def get_twitch(self, user):
         if hasattr(user, "twitch_user"):
