@@ -38,7 +38,10 @@ class HzCommand(Command):
             gravity = 1
             if level < 29:
                 gravity = LEVELS[level]
-            self.send_message("Minimum: {min}\nEffective: {eff}".format(
+            self.send_message("At level {lvl}, tapping {tps} times over a height of {hght} needs a minimum rate of {min} or an effective rate of {eff}".format(
+                level = level,
+                tps = taps,
+                hght = height,
                 min = round(60 * (taps - 1) / (gravity * (19 - height) - 1), 2),
                 eff = round(60 * taps / (gravity * (19 - height)), 2)
             ))

@@ -250,7 +250,7 @@ Call this command in a whisper to the bot to remove the bot from your channel.
 **Platforms**: Twitch<br/>
 **Moderator-only**
 
-Counts down from 3 before saying "Tetris!" in the chat. Works for any number from 3-10.
+Counts down from 3 before saying "Tetris!" in the chat. Works for any number from 3-10. 
 
 **Note:** If the bot is not a moderator in your Twitch channel, it will not be able to say more than one message per second, and this restriction (which is built into Twitch) will interfere with countdowns. You can make the bot a moderator by typing `/mod @ClassicTetrisBot` after you have `!summon`ed it.
 
