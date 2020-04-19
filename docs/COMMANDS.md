@@ -191,7 +191,7 @@ Adds a match between the two specified players to the queue at the specified ind
 **Must be run in a public channel**<br/>
 **Moderator-only**
 
-Moves the match at the specified `start index` to the `end index`. 
+Moves the match at the specified `start index` to the `end index`.
 
 ---
 #### `!removematch <index>`<br/>
@@ -250,7 +250,7 @@ Call this command in a whisper to the bot to remove the bot from your channel.
 **Platforms**: Twitch<br/>
 **Moderator-only**
 
-Counts down from 3 before saying "Tetris!" in the chat. Works for any number from 3-10. 
+Counts down from 3 before saying "Tetris!" in the chat. Works for any number from 3-10.
 
 **Note:** If the bot is not a moderator in your Twitch channel, it will not be able to say more than one message per second, and this restriction (which is built into Twitch) will interfere with countdowns. You can make the bot a moderator by typing `/mod @ClassicTetrisBot` after you have `!summon`ed it.
 
@@ -267,6 +267,12 @@ Prints out info on, and link to download, the (in)famous Stencil.
 Links the user to this page.
 
 ### Utility Commands
+
+##### `!hz <level> <height> <taps>`
+**Platforms**: Twitch, Discord<br/>
+**Aliases**: `!hydrant`
+
+For the given level, provides the approximate tapping speed(s) required to clear a given height with the number of taps required.
 
 #### `!seed`
 **Platforms**: Twitch, Discord<br/>

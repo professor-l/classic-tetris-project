@@ -20,6 +20,29 @@ COIN_MESSAGES = {
     SIDE: "Side o.O"
 }
 
+LEVELS = {48, 43, 38, 33, 28, 23, 18, 13, 8, 6, 5, 5, 5, 4, 4, 4, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2}
+
+@Command.register("hz", "hydrant", usage="hz <level> <height> <taps>")
+class HzCommand(Command):
+    def execute(self, level, height, taps):
+        try:
+            level = int(level)
+            height = int(height)
+            taps = int(taps)
+        except ValueError:
+            raise CommandException(send_usage = True)
+
+        if level < 0 || height < 0 || height > 18 || taps < 0 || taps > 5:
+            self.send_message("Unrealistic inputs.")
+        else:
+            gravity = 1
+            if level < 29:
+                gravity = LEVELS[level]
+            self.send_message("Minimum: {min}\nEffective: {eff}".format(
+                min = round(60 * (taps - 1) / (gravity * (19 - height) - 1), 2),
+                eff = round(60 * taps / (gravity * (19 - height)), 2)
+            ))
+
 @Command.register("seed", "hex", usage="seed")
 class SeedGenerationCommand(Command):
     def execute(self, *args):
@@ -124,4 +147,3 @@ class StatsCommand(Command):
         channels = TwitchChannel.objects.filter(connected=True).count()
 
         self.send_message(f"I'm in {guilds} Discord servers and {channels} Twitch channels.")
-
