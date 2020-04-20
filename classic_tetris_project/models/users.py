@@ -37,7 +37,7 @@ class User(models.Model):
     pal_pb = models.IntegerField(null=True)
     pal_pb_updated_at = models.DateTimeField(null=True)
 
-    pronouns = models.CharField(max_length=16, choices=PRONOUN_CHOICES.items(), default="they")
+    pronouns = models.CharField(max_length=16, null=True, choices=PRONOUN_CHOICES.items())
 
     playstyle = models.CharField(max_length=16, null=True, choices=PLAYSTYLE_CHOICES.items())
 
