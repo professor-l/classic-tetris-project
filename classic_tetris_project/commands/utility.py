@@ -1,4 +1,5 @@
 import random
+import math
 from django.core.cache import cache
 from asgiref.sync import async_to_sync
 from datetime import datetime, timedelta
@@ -20,7 +21,7 @@ COIN_MESSAGES = {
     SIDE: "Side o.O"
 }
 
-LEVELS = {48, 43, 38, 33, 28, 23, 18, 13, 8, 6, 5, 5, 5, 4, 4, 4, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2}
+LEVELS = [48, 43, 38, 33, 28, 23, 18, 13, 8, 6, 5, 5, 5, 4, 4, 4, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
 
 @Command.register("hz", "hydrant", usage="hz <level> <height> <taps>")
 class HzCommand(Command):
@@ -32,19 +33,34 @@ class HzCommand(Command):
         except ValueError:
             raise CommandException(send_usage = True)
 
-        if level < 0 || height < 0 || height > 18 || taps < 0 || taps > 5:
+        if level < 0 or height < 0 or height > 18 or taps < 0 or taps > 5:
             self.send_message("Unrealistic inputs.")
         else:
             gravity = 1
-            if level < 29:
+            if (level % 256) < 29:
                 gravity = LEVELS[level]
+
+            frames = gravity * (19 - height)
+
             self.send_message("At level {lvl}, tapping {tps} times over a height of {hght} needs a minimum rate of {min} or an effective rate of {eff}".format(
-                level = level,
+                lvl = level,
                 tps = taps,
                 hght = height,
-                min = round(60 * (taps - 1) / (gravity * (19 - height) - 1), 2),
-                eff = round(60 * taps / (gravity * (19 - height)), 2)
+                min = round(60 * (taps - 1) / (frames - 1), 2),
+                eff = round(60 * taps / frames, 2)
             ))
+
+            mini = (frames - 1) / (taps - 1) - 0.1
+
+            sequence = list("O" * (frames - 1))
+            for i in range(0, taps):
+                sequence[math.floor(mini * i)] = 'X'
+
+            self.send_message("Sample input sequence: {seq}".format(
+                seq = "".join(sequence)
+            ))
+
+
 
 @Command.register("seed", "hex", usage="seed")
 class SeedGenerationCommand(Command):
