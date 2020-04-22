@@ -42,20 +42,22 @@ class HzCommand(Command):
 
 
         if level < 0 or height < 0 or height > 19 or taps < 1 or taps > 5:
-            raise CommandException("Unrealistic inputs.")
+            raise CommandException("Unrealistic parameters.")
 
         if taps == 1:
             raise CommandException("You have {fr} frames to time this tap (and maybe a rotation for polevault).".format(
                 fr = frames
             ))
 
+        if 2 * taps - 1 > frames:
+            raise CommandException("Not even TAS can do this.")
 
-        self.send_message("To tap {tps} times over a height of {hght} on level {lvl}, your speed was probably between {min} Hz and {max} Hz (exclusive).".format(
+        self.send_message("To tap {tps} times over a height of {hght} on level {lvl}, your speed was probably between {mini} Hz and {maxi} Hz (exclusive).".format(
             tps = taps,
             hght = height,
             lvl = level,
-            min = round(60 * (taps - 1) / frames, 2),
-            max = round(60 * taps / frames, 2)
+            mini = round(60 * (taps - 1) / frames, 2),
+            maxi = round(60 * taps / frames, 2)
         ))
 
 
