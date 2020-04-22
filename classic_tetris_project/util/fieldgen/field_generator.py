@@ -48,7 +48,8 @@ def save_image(img, frames):
                 append_images=frames,
                 delay=0.016,
                 loop=0)
-    return byte_array.getvalue()
+    byte_array.seek(0)
+    return byte_array
 
 def get_arrow(sequence, gray=False):
     target_column = get_target_column(sequence)
@@ -99,7 +100,7 @@ def generate_field(level, height, sequence):
     dot = ARROWS["DOT"]
     block = BLOCK_TILES.crop(get_block_rect([0,level%10]))
     seq_length = sequence[-1]+1
-    anim_length = seq_length+4*gravity
+    anim_length = seq_length+3*gravity
     for i in range(anim_length):
         new_frame = canvas.copy()
         
@@ -111,7 +112,7 @@ def generate_field(level, height, sequence):
         elif i < sequence[-1]+1:
             new_frame.paste(dot, coord)
         g_counter += 1
-        row_offset = 1 + g_counter // gravity
+        row_offset = 2 + g_counter // gravity
         
         piece_x = 6 + shifts * column_dir
         for j in range(4):
@@ -120,15 +121,6 @@ def generate_field(level, height, sequence):
                 new_frame.paste(block,(get_block_rect([piece_x,row])))
 
         frames.append(new_frame)
-    
-    # debug save.
-    canvas.save('test.gif',
-                format='gif',
-                save_all=True,
-                append_images=frames,
-                duration=60,
-                loop=0,
-                optimize=True)
     
     return save_image(canvas, frames)
     
