@@ -101,6 +101,10 @@ def generate_field(level, height, sequence):
     block = BLOCK_TILES.crop(get_block_rect([0,level%10]))
     seq_length = sequence[-1]+1
     anim_length = seq_length+3*gravity
+    stop_grav = None
+    if height < 4:
+        stop_grav = anim_length - (4 - height)*gravity
+    
     for i in range(anim_length):
         new_frame = canvas.copy()
         
@@ -111,7 +115,8 @@ def generate_field(level, height, sequence):
             shifts += 1
         elif i < sequence[-1]+1:
             new_frame.paste(dot, coord)
-        g_counter += 1
+        if stop_grav is None or g_counter < stop_grav:
+            g_counter += 1
         row_offset = 2 + g_counter // gravity
         
         piece_x = 6 + shifts * column_dir
