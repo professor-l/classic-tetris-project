@@ -4,7 +4,7 @@ from django.core.cache import cache
 from asgiref.sync import async_to_sync
 from datetime import datetime, timedelta
 
-from .command import Command
+from .command import Command, CommandException
 from ..models import Side, TwitchChannel
 from ..util import Platform
 from ..discord import guild_id, client as discord_client
@@ -25,6 +25,7 @@ LEVELS = [48, 43, 38, 33, 28, 23, 18, 13, 8, 6, 5, 5, 5, 4, 4, 4, 3, 3, 3, 2, 2,
 
 @Command.register("hz", "hydrant", usage="hz <level> <height> <taps>")
 class HzCommand(Command):
+
     def execute(self, level, height, taps):
         try:
             level = int(level)
@@ -33,32 +34,44 @@ class HzCommand(Command):
         except ValueError:
             raise CommandException(send_usage = True)
 
-        if level < 0 or height < 0 or height > 18 or taps < 0 or taps > 5:
-            self.send_message("Unrealistic inputs.")
-        else:
-            gravity = 1
-            if (level % 256) < 29:
-                gravity = LEVELS[level]
+        gravity = 1
+        if (level % 256) < 29:
+            gravity = LEVELS[level]
 
-            frames = gravity * (19 - height)
+        frames = gravity * (19 - height)
 
-            self.send_message("At level {lvl}, tapping {tps} times over a height of {hght} needs a minimum rate of {min} or an effective rate of {eff}".format(
-                lvl = level,
-                tps = taps,
-                hght = height,
-                min = round(60 * (taps - 1) / (frames - 1), 2),
-                eff = round(60 * taps / frames, 2)
+
+        if level < 0 or height < 0 or height > 19 or taps < 1 or taps > 5:
+            raise CommandException("Unrealistic inputs.")
+
+        if taps == 1:
+            raise CommandException("You have {fr} frames to time this tap (and maybe a rotation for polevault).".format(
+                fr = frames
             ))
 
-            mini = (frames - 1) / (taps - 1) - 0.1
 
-            sequence = list("O" * (frames - 1))
-            for i in range(0, taps):
-                sequence[math.floor(mini * i)] = 'X'
+        self.send_message("To tap {tps} times over a height of {hght} on level {lvl}, your speed was probably between {min} Hz and {max} Hz (exclusive).".format(
+            tps = taps,
+            hght = height,
+            lvl = level,
+            min = round(60 * (taps - 1) / frames, 2),
+            max = round(60 * taps / frames, 2)
+        ))
 
-            self.send_message("Sample input sequence: {seq}".format(
-                seq = "".join(sequence)
-            ))
+
+        self.send_message("Sample input sequence: {seq}".format(
+            seq = self.input_seq(frames, taps)
+        ))
+
+    def input_seq(self, frames, taps):
+        mini = frames / (taps - 1) - 0.1
+
+        sequence = list("O" * frames)
+        for i in range(0, taps):
+            sequence[math.floor(mini * i)] = 'X'
+
+        return "".join(sequence)
+
 
 
 
