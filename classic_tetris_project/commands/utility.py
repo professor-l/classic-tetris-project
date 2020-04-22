@@ -51,24 +51,31 @@ class HzCommand(Command):
 
         if 2 * taps - 1 > frames:
             raise CommandException("Not even TAS can do this.")
+        
+        mini = round(60 * (taps - 1) / frames, 2)
+        maxi = round(60 * taps / frames, 2)
+        
+        msg = "{tps} taps {hght} high on level {lvl}:\n{mini} - {maxi} Hz\n".format(
+            tps=taps,
+            hght=height,
+            lvl=level,
+            mini=mini,
+            maxi=maxi
+            )
+        
+        seq = self.input_seq(frames, taps)
 
-        self.send_message("To tap {tps} times over a height of {hght} on level {lvl}, your speed was probably between {mini} Hz and {maxi} Hz (exclusive).".format(
-            tps = taps,
-            hght = height,
-            lvl = level,
-            mini = round(60 * (taps - 1) / frames, 2),
-            maxi = round(60 * taps / frames, 2)
-        ))
+        if len(seq) <= 48:
+            msg += "Sample input sequence: {seq}".format(seq=seq)
+        
+        msg = "```"+msg+"```"
 
-
-        self.send_message("Sample input sequence: {seq}".format(
-            seq = self.input_seq(frames, taps)
-        ))
+        self.send_message(msg)
 
     def input_seq(self, frames, taps):
         mini = frames / (taps - 1) - 0.1
 
-        sequence = list("O" * frames)
+        sequence = list("." * frames)
         for i in range(0, taps):
             sequence[math.floor(mini * i)] = 'X'
 
