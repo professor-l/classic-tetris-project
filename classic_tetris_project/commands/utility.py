@@ -9,7 +9,8 @@ from ..models import Side, TwitchChannel
 from ..util import Platform
 from ..discord import guild_id, client as discord_client
 from ..words import Words
-
+from..util.fieldgen.field_generator import generate_field
+import discord as discordpy
 COIN_FLIP_TIMEOUT = 10
 
 HEADS = 0
@@ -42,15 +43,15 @@ class HzCommand(Command):
 
 
         if level < 0 or height < 0 or height > 19 or taps < 1 or taps > 5:
-            raise CommandException("Unrealistic parameters.")
+            raise CommandException("`Unrealistic parameters.`")
 
         if taps == 1:
-            raise CommandException("You have {fr} frames to time this tap (and maybe a rotation for polevault).".format(
+            raise CommandException("`You have {fr} frames to time this tap (and maybe a rotation for polevault).`".format(
                 fr = frames
             ))
 
         if 2 * taps - 1 > frames:
-            raise CommandException("Not even TAS can do this.")
+            raise CommandException("`Not even TAS can do this.`")
         
         mini = round(60 * (taps - 1) / frames, 2)
         maxi = round(60 * taps / frames, 2)
@@ -63,23 +64,31 @@ class HzCommand(Command):
             maxi=maxi
             )
         
-        seq = self.input_seq(frames, taps)
+        indices, seq = self.input_seq(frames, taps)
 
-        if len(seq) <= 48:
+        if len(seq) <= 49:
             msg += "Sample input sequence: {seq}".format(seq=seq)
-        
+        else:
+            msg += "Sample sequence too long. (GIF will not animate)"
+
         msg = "```"+msg+"```"
 
         self.send_message(msg)
+        # get the gif. for posterity
+        anim = generate_field(level, height, indices)
+        picture = discordpy.File(anim, "cool_anim.gif")
+        self.send_message_full(self.context.channel.id,file=picture)
 
     def input_seq(self, frames, taps):
         mini = frames / (taps - 1) - 0.1
 
         sequence = list("." * frames)
+        indices = []
         for i in range(0, taps):
-            sequence[math.floor(mini * i)] = 'X'
+            indices.append(math.floor(mini * i))
+            sequence[indices[i]] = 'X'
 
-        return "".join(sequence)
+        return indices, "".join(sequence)
 
 
 
