@@ -98,6 +98,9 @@ class TileManager(ImageLoader):
         file_path = os.path.join(self.asset_path, name)
         return Image.open(file_path)
     
+    def get_active_piece_tile(self, level):
+        return self.block_tiles.crop(TileMath.get_block_rect([0,level%10]))
+
     def get_block_tiles(self, level):
         # return non-i piece tiles for a given level
         block1 = self.block_tiles.crop(TileMath.get_block_rect([1,level%10]))

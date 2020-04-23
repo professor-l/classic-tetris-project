@@ -11,7 +11,7 @@ class BaseCanvas(object):
         return self.img.copy()
 
     def add_frame(self, other_image):
-        self.frames.append(other, image)
+        self.frames.append(other_image)
     
     def export_bytearray(self):
         byte_array = io.BytesIO()
@@ -21,8 +21,8 @@ class BaseCanvas(object):
             self.img.save(byte_array,
                     format='gif',
                     save_all=True,
-                    append_images=frames,
-                    delay=0.016,
+                    append_images=self.frames,
+                    delay=0.060,
                     loop=0)
         byte_array.seek(0)
         return byte_array

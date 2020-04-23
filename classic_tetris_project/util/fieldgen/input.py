@@ -36,7 +36,7 @@ class InputGenerator(object):
         else: 
             tile = self.tile_gen.get_arrow(InputTile.DOT)
         
-        if index < sequence[-1]:
+        if index <= sequence[-1]:
             self.paste_tile_on_index(image, index, tile)
    
     def paste_tile_on_index(self, image, index, tile):
