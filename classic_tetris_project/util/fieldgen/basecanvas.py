@@ -1,4 +1,5 @@
 ﻿import PIL
+import io
 
 class BaseCanvas(object):
     

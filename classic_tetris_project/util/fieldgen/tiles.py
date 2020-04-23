@@ -1,7 +1,8 @@
 from PIL import Image
-from enum import Enum
+from enum import IntEnum
+import os
 
-class InputTile(Enum):
+class InputTile(IntEnum):
     LEFT = 0
     DOT = 1
     RIGHT = 2
@@ -10,7 +11,7 @@ class InputTile(Enum):
     RIGHT_GRAY = 5
     COUNT = 6
 
-def TileMath(object):
+class TileMath(object):
     # maths support class for positioning tiles and pixels
     # since the position is global to the template, we store 
     # these values here, rather than inside their respective
@@ -26,39 +27,43 @@ def TileMath(object):
     # converting from tile-indice to pixel coordinates
     @staticmethod
     def get_block_rect(coord):
-        coord_tr = (coord[0]*BLOCK_SIZE, coord[1]*BLOCK_SIZE)
-        coord_br = (coord_tr[0]+BLOCK_SIZE-1, coord_tr[1] + BLOCK_SIZE-1)
+        coord_tr = (coord[0] * TileMath.BLOCK_SIZE, 
+                    coord[1] * TileMath.BLOCK_SIZE)
+        coord_br = (coord_tr[0] + TileMath.BLOCK_SIZE-1, 
+                    coord_tr[1] + TileMath.BLOCK_SIZE-1)
         return coord_tr + coord_br
     
     # managing locations    
     @staticmethod
-    def get_input_coord(self, index):
+    def get_input_coord(index):
         # returns the tile-index-coord of a given input index
-        x = index % INPUT_WIDTH
-        y = index // INPUT_WIDTH
-        result = [INPUT_START[0] + x, INPUT_START[1] + y] 
+        x = index % TileMath.INPUT_WIDTH
+        y = index // TileMath.INPUT_WIDTH
+        result = [TileMath.INPUT_START[0] + x, 
+                  TileMath.INPUT_START[1] + y] 
         return result
     
     @staticmethod
-    def get_playfield_coord(self, coord):
+    def get_playfield_coord(coord):
         # returns the tile-index-coord of a given playfield coordinate
         # coordinates are in x,y format
-        return (coord[0]+FIELD_START[0], coord[1]+FIELD_START[1])
+        return (coord[0]+TileMath.FIELD_START[0], 
+                coord[1]+TileMath.FIELD_START[1])
     
     @staticmethod
-    def tile_index_to_pixel(self, tile):
-        return tile * BLOCK_SIZE
+    def tile_index_to_pixel(tile):
+        return tile * TileMath.BLOCK_SIZE
     
     @staticmethod
-    def tile_indices_to_pixels(self, tile_indices):
+    def tile_indices_to_pixels( tile_indices):
         # modifies an tile-coordinate [x, y ..] in-place
         # returns the modified array
         for i, item in enumerate(tile_indices):
-            tile_indices[i] = item * BLOCK_SIZE
+            tile_indices[i] = item * TileMath.BLOCK_SIZE
         return tile_indices
 
 
-def ImageLoader(object):
+class ImageLoader(object):
     # base class that enables loading of images
     def __init__(self, asset_path):
         self.asset_path = asset_path
@@ -68,26 +73,25 @@ def ImageLoader(object):
         file_path = os.path.join(self.asset_path, name)
         return Image.open(file_path)
 
-def TemplateManager(ImageLoader):
+class TemplateManager(ImageLoader):
     # Since this isn't a tile, it belongs in its own class
     TEMPLATE = "template.png"
     def __init__(self, *args):
         super(TemplateManager, self).__init__(*args)
-        self.template = load_image(TEMPLATE)
+        self.template = self.load_image(self.TEMPLATE)
 
 
-def TileManager(ImageLoader):
+class TileManager(ImageLoader):
     # class that is in charge of providing image tiles 
     NUMBER_FILE = "numbers.png"
     BLOCK_FILE = "block_tiles.png"
     ARROW_FILE = "arrows.png"
 
-    def __init__(self):
-        print('wtf tilemanager')
-        #super(TileManager, self).__init__(*args)
-        self.numbers = self.load_image(NUMBER_FILE)
-        self.block_tiles = self.load_image(BLOCK_FILE)
-        self.arrows = ArrowTileManager(self.load_image(ARROW_FILE))
+    def __init__(self, *args):        
+        super(TileManager, self).__init__(*args)
+        self.numbers = self.load_image(self.NUMBER_FILE)
+        self.block_tiles = self.load_image(self.BLOCK_FILE)
+        self.arrows = ArrowTileManager(self.load_image(self.ARROW_FILE))
     
     # loading / caching our images
     def load_image(self,name):
@@ -99,27 +103,27 @@ def TileManager(ImageLoader):
         block1 = self.block_tiles.crop(TileMath.get_block_rect([1,level%10]))
         block2 = self.block_tiles.crop(TileMath.get_block_rect([2,level%10]))
         return (block1, block2)
-    
-    def get_arrow(self, tile_type):
-        # returns a copy of an arrow tile
-        return self.arrows[tile_type].copy()
+
+    def get_number_tile(self, number):
+        return self.numbers.crop(TileMath.get_block_rect([number%10,0]))
+
+    def get_arrow(self, tile_type):        
+        return self.arrows.get_tile(tile_type)
         
-def ArrowTileManager(object):
+class ArrowTileManager(object):
 
     def __init__(self, image):
-        self.tiles = split_tiles(image)
-    
+        self.tiles = self.split_tiles(image)
+        
     def split_tiles(self, image):        
         result = {}
-        for i in range(InputTile.COUNT):
+        for i in range(int(InputTile.COUNT)):
             rect = [i,0,i+1,1]
             rect = TileMath.tile_indices_to_pixels(rect)
             result[InputTile(i)] = image.crop(rect)
         return result
     
     def get_tile(self, tile_type):
+        # returns a copy of an arrow tile
         return self.tiles[tile_type].copy()
 
-
-if __name__ == '__main__':
-    atm = ArrowTileManager(None)

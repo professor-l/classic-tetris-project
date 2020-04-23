@@ -18,7 +18,7 @@ class Aesthetics(object):
     @staticmethod        
     def get_piece_shift_direction(sequence):
         # returns -1 or 1 depending on offset from centre column
-        left_right = -1 if is_odd(len(sequence)) else 1
+        left_right = -1 if Aesthetics.is_odd(len(sequence)) else 1
         return left_right
 
     @staticmethod
