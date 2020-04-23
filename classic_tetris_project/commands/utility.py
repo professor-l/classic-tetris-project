@@ -75,8 +75,8 @@ class HzCommand(Command):
 
         self.send_message(msg)
         # get the gif. for posterity
-        fg = FieldGenerator()
-        anim = fg.generate_image(level, height, indices)
+        fg = FieldGenerator(level, height, indices)
+        anim = fg.generate_image()
         picture = discordpy.File(anim, "cool_anim.gif")
         self.send_message_full(self.context.channel.id,file=picture)
 
