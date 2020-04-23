@@ -9,7 +9,7 @@ from ..models import Side, TwitchChannel
 from ..util import Platform
 from ..discord import guild_id, client as discord_client
 from ..words import Words
-from..util.fieldgen.field_generator import generate_field
+from..util.fieldgen.field_generator import FieldGenerator
 import discord as discordpy
 COIN_FLIP_TIMEOUT = 10
 
@@ -75,7 +75,8 @@ class HzCommand(Command):
 
         self.send_message(msg)
         # get the gif. for posterity
-        anim = generate_field(level, height, indices)
+        fg = FieldGenerator()
+        anim = fg.generate_image(level, height, indices)
         picture = discordpy.File(anim, "cool_anim.gif")
         self.send_message_full(self.context.channel.id,file=picture)
 
