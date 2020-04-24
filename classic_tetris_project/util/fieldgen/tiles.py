@@ -19,7 +19,7 @@ class TileMath(object):
     # these values here, rather than inside their respective
     # classes.
     BLOCK_SIZE = 8
-    FIELD_START = (1, 1)
+    FIELD_START = (1, 1)  # should we upgrade this to a class?
     FIELD_WIDTH = 10
     FIELD_HEIGHT = 20
 
@@ -42,6 +42,8 @@ class TileMath(object):
         # returns the tile-index-coord of a given input index
         x = index % TileMath.INPUT_WIDTH
         y = index // TileMath.INPUT_WIDTH
+        # upgrade to Point or Coord class? then addition will be natural
+        # or: tuple(map(lambda x, y: x + y, coord, TileMath.FIELD_START))
         result = [TileMath.INPUT_START[0] + x, TileMath.INPUT_START[1] + y]
         return result
 
@@ -49,6 +51,9 @@ class TileMath(object):
     def get_playfield_coord(coord):
         # returns the tile-index-coord of a given playfield coordinate
         # coordinates are in x,y format
+
+        # upgrade to Point or Coord class? then addition will be natural
+        # or: tuple(map(lambda x, y: x + y, coord, TileMath.FIELD_START))
         return (coord[0] + TileMath.FIELD_START[0], coord[1] + TileMath.FIELD_START[1])
 
     @staticmethod
@@ -57,11 +62,9 @@ class TileMath(object):
 
     @staticmethod
     def tile_indices_to_pixels(tile_indices):
-        # modifies an tile-coordinate [x, y ..] in-place
+        # converts from tile coordinates to pixel coordinates
         # returns the modified array
-        for i, item in enumerate(tile_indices):
-            tile_indices[i] = item * TileMath.BLOCK_SIZE
-        return tile_indices
+        return [TileMath.tile_index_to_pixel(item) for item in tile_indices]
 
 
 class ImageLoader(object):
