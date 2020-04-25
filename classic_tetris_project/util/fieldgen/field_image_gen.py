@@ -19,7 +19,7 @@ class FieldImageGenerator(object):
         return generator.generate_image()
 
     def __init__(self, simulation):
-        self.level = simulation.level
+        self.level = simulation.level % 256
         self.height = simulation.height
         self.sequence = simulation.sequence
 

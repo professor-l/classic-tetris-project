@@ -6,6 +6,7 @@ class LevelGenerator(object):
         self.tile_gen = tile_gen
 
     def draw_level(self, image, level):
+        level %= 256
         level %= 99
         first = self.tile_gen.get_number_tile(level // 10)
         second = self.tile_gen.get_number_tile(level % 10)

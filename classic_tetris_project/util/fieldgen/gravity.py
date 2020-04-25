@@ -34,6 +34,7 @@
     @staticmethod
     def get_gravityframes(level):
         result = 1
-        if (level % 256) < 29:
+        level %= 256
+        if level < 29:
             result = GravityFrames.LEVELS[level]
         return result
