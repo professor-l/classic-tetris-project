@@ -9,14 +9,19 @@ from .ai import Aesthetics
 from .activepiece import ActivePieceGenerator
 
 
-class FieldGenerator(object):
+class FieldImageGenerator(object):
     TILE_MANAGER = TileManager(AssetPath.get_asset_root())
     TEMPLATE_MANAGER = TemplateManager(AssetPath.get_asset_root())
 
-    def __init__(self, level, height, sequence):
-        self.level = level
-        self.height = height
-        self.sequence = sequence
+    @staticmethod
+    def image(simulation):
+        generator = FieldImageGenerator(simulation)
+        return generator.generate_image()
+
+    def __init__(self, simulation):
+        self.level = simulation.level
+        self.height = simulation.height
+        self.sequence = simulation.sequence
 
     def generate_image(self):
         bc = BaseCanvas(self.TEMPLATE_MANAGER.template)
