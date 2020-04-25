@@ -9,7 +9,7 @@ from ..models import Side, TwitchChannel
 from ..util import Platform
 from ..discord import guild_id, client as discord_client
 from ..words import Words
-from..util.fieldgen.field_generator import FieldGenerator
+from..util.fieldgen.hz_simulation import HzSimulation
 import discord as discordpy
 COIN_FLIP_TIMEOUT = 10
 
@@ -22,8 +22,6 @@ COIN_MESSAGES = {
     SIDE: "Side o.O"
 }
 
-LEVELS = [48, 43, 38, 33, 28, 23, 18, 13, 8, 6, 5, 5, 5, 4, 4, 4, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
-
 @Command.register("hz", "hydrant", usage="hz <level> <height> <taps>")
 class HzCommand(Command):
 
@@ -34,40 +32,24 @@ class HzCommand(Command):
             taps = int(taps)
         except ValueError:
             raise CommandException(send_usage = True)
-
-        gravity = 1
-        if (level % 256) < 29:
-            gravity = LEVELS[level]
-
-        frames = gravity * (19 - height)
-
-
-        if level < 0 or height < 0 or height > 19 or taps < 1 or taps > 5:
-            raise CommandException("`Unrealistic parameters.`")
-
-        if taps == 1:
-            raise CommandException("`You have {fr} frames to time this tap (and maybe a rotation for polevault).`".format(
-                fr = frames
-            ))
-
-        if 2 * taps - 1 > frames:
-            raise CommandException("`Not even TAS can do this.`")
         
-        mini = round(60 * (taps - 1) / frames, 2)
-        maxi = round(60 * taps / frames, 2)
-        
+        try:
+            hz = HzSimulation(level,height,taps)
+        except ValueError as e:
+            raise CommandException(str(e))
+                 
+        rate = hz.hertz()
         msg = "{tps} taps {hght} high on level {lvl}:\n{mini} - {maxi} Hz\n".format(
-            tps=taps,
-            hght=height,
-            lvl=level,
-            mini=mini,
-            maxi=maxi
+            tps=hz.taps,
+            hght=hz.height,
+            lvl=hz.level,
+            mini=rate[0],
+            maxi=rate[1]
             )
-        
-        indices, seq = self.input_seq(frames, taps)
 
-        if len(seq) <= 49:
-            msg += "Sample input sequence: {seq}".format(seq=seq)
+        printable_sequence = hz.printable_sequence()
+        if len(printable_sequence) <= 49:
+            msg += "Sample input sequence: {seq}".format(seq=printable_sequence)
         else:
             msg += "Sample sequence too long. (GIF will not animate)"
 
@@ -75,24 +57,9 @@ class HzCommand(Command):
 
         self.send_message(msg)
         # get the gif. for posterity
-        fg = FieldGenerator(level, height, indices)
-        anim = fg.generate_image()
+        anim = hz.image()
         picture = discordpy.File(anim, "cool_anim.gif")
         self.send_message_full(self.context.channel.id,file=picture)
-
-    def input_seq(self, frames, taps):
-        mini = frames / (taps - 1) - 0.1
-
-        sequence = list("." * frames)
-        indices = []
-        for i in range(0, taps):
-            indices.append(math.floor(mini * i))
-            sequence[indices[i]] = 'X'
-
-        return indices, "".join(sequence)
-
-
-
 
 @Command.register("seed", "hex", usage="seed")
 class SeedGenerationCommand(Command):
