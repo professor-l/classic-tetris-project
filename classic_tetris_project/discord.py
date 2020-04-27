@@ -3,8 +3,8 @@ import logging
 from .env import env
 
 client = discord.Client()
-guild_id = int(env("DISCORD_GUILD_ID"))
-moderator_role_id = int(env("DISCORD_MODERATOR_ROLE_ID"))
+guild_id = int(env("DISCORD_GUILD_ID", default=0))
+moderator_role_id = int(env("DISCORD_MODERATOR_ROLE_ID", default=0))
 logger = logging.getLogger("discord-bot")
 
 def get_guild():
