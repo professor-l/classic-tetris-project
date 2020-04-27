@@ -2,6 +2,7 @@ aw,Aruba,abw
 af,Afghanistan,afg
 ao,Angola,ago
 ai,Anguilla,aia
+ax,Åland Islands,ala,aland islands,aland,
 al,Albania,alb
 ad,Andorra,and
 ae,United Arab Emirates,are,emirates
@@ -15,12 +16,14 @@ az,Azerbaijan,aze
 bi,Burundi,bdi
 be,Belgium,bel
 bj,Benin,ben
+bq,Bonaire\, Sint Eustatius and Saba,bes,bonaire,sint eustatius,saba
 bf,Burkina Faso,bfa
 bd,Bangladesh,bgd
 bg,Bulgaria,bgr
 bh,Bahrain,bhr
 bs,Bahamas,bhs
 ba,Bosnia and Herzegovina,bih,bosnia
+bl,Saint Barthélemy,blm,saint barthelemy
 by,Belarus,blr
 bz,Belize,blz
 bm,Bermuda,bmu
@@ -29,20 +32,27 @@ br,Brazil,bra
 bb,Barbados,brb
 bn,Brunei Darussalam,brn
 bt,Bhutan,btn
+bv,Bouvet Island,bvt,bouvet
 bw,Botswana,bwa
 cf,Central African Republic,caf,central africa
 ca,Canada,can
+cc,Cocos (Keeling) Islands,cck,cocos islands,keeling islands
 ch,Switzerland,che
 cl,Chile,chl
 cn,China,chn
-ci,Côte d'Ivoire,civ,cote d'ivoire
+ci,Côte d'Ivoire,civ,cote d'ivoire,ivory coast
 cm,Cameroon,cmr
+cd,Democratic Republic of the Congo,cod
 cg,Congo,cog
+ck,Cook Islands,cok
 co,Colombia,col
 km,Comoros,com
 cv,Cabo Verde,cpv
 cr,Costa Rica,cri
 cu,Cuba,cub
+cw,Curaçao,cuw
+cx,Christmas Island,cxr
+ky,Cayman Islands,cym
 cy,Cyprus,cyp
 cz,Czechia,cze,czech republic,the czech republic
 de,Germany,deu
@@ -54,18 +64,23 @@ dz,Algeria,dza
 ec,Ecuador,ecu
 eg,Egypt,egy
 er,Eritrea,eri
+eh,Western Sahara,esh
 es,Spain,esp
 ee,Estonia,est
 et,Ethiopia,eth
 fi,Finland,fin
 fj,Fiji,fji
+fk,Falkland Islands,flk,malvinas
 fr,France,fra
 fo,Faroe Islands,fro
 fm,Micronesia,fsm,federated states of micronesia,the federated states of micronesia
 ga,Gabon,gab
 gb,United Kingdom,gbr,britain,great britain,uk
 ge,Georgia,geo
+gg,Guernsey,ggy
 gh,Ghana,gha
+gi,Gibraltar,gib
+gn,Guinea,gin
 gp,Guadeloupe,glp
 gm,Gambia,gmb
 gw,Guinea-Bissau,gnb,guinea bissau
@@ -76,14 +91,25 @@ gl,Greenland,grl
 gt,Guatemala,gtm
 gf,French Guiana,guf
 gu,Guam,gum
+gy,Guyana,guy
 hk,Hong Kong,hkg
+hm,Heard Island and McDonald Islands,hmd,heard island,mcdonald islands
 hn,Honduras,hnd
 hr,Croatia,hrv
 ht,Haiti,hti
+hu,Hungary,hun
 id,Indonesia,idn
+im,Isle of Man,imn
+in,India,ind
+io,British Indian Ocean Territory,iot
+ie,Ireland,irl
+ir,Iran,irn
 iq,Iraq,irq
 is,Iceland,isl
+il,Israel,isr
 it,Italy,ita
+jm,Jamaica,jam
+je,Jersey,jey
 jo,Jordan,jor
 jp,Japan,jpn
 kz,Kazakhstan,kaz
@@ -106,6 +132,7 @@ lt,Lithuania,ltu
 lu,Luxembourg,lux
 lv,Latvia,lva
 mo,Macao,mac
+mf,Saint Martin,maf
 ma,Morocco,mar
 mc,Monaco,mco
 md,Moldova,mda
@@ -113,9 +140,10 @@ mg,Madagascar,mdg
 mv,Maldives,mdv
 mx,Mexico,mex
 mh,Marshall Islands,mhl
+mk,North Macedonia,mkd
 ml,Mali,mli
 mt,Malta,mlt
-mm,Myanmar,mmr
+mm,Myanmar,mmr,burma
 me,Montenegro,mne
 mn,Mongolia,mng
 mp,Northern Mariana Islands,mnp
@@ -126,11 +154,14 @@ mq,Martinique,mtq
 mu,Mauritius,mus
 mw,Malawi,mwi
 my,Malaysia,mys
+yt,Mayotte,myt
 na,Namibia,nam
 nc,New Caledonia,ncl
 ne,Niger,ner
+nf,Norfolk Island,nfk
 ng,Nigeria,nga
 ni,Nicaragua,nic
+nu,Niue,niu
 nl,Netherlands,nld
 no,Norway,nor
 np,Nepal,npl
@@ -160,24 +191,32 @@ sa,Saudi Arabia,sau
 sd,Sudan,sdn
 sn,Senegal,sen
 sg,Singapore,sgp
+gs,South Georgia and the South Sandwich Islands,sgs,south georgia,south sandwich islands
+sh,Saint Helena\, Ascension and Tristan da Cunha,shn,saint helena,ascension,tristan da cunha
+sj,Svalbard and Jan Mayen,sjm,svalbard,jan mayen
 sb,Solomon Islands,slb
 sl,Sierra Leone,sle
 sv,El Salvador,slv
 sm,San Marino,smr
 so,Somalia,som
+pm,Saint Pierre and Miquelon,spm,saint pierre,miquelon
 rs,Serbia,srb
+ss,South Sudan,ssd
 st,Sao Tome and Principe,stp,sao tome,principe
 sr,Suriname,sur
 sk,Slovakia,svk
 si,Slovenia,svn
 se,Sweden,swe
 sz,Eswatini,swz
+sx,Sint Maarten,sxm
 sc,Seychelles,syc
 sy,Syrian Arab Republic,syr,syria
+tc,Turks and Caicos Islands,tca,turks and caicos
 td,Chad,tcd
 tg,Togo,tgo
 th,Thailand,tha
 tj,Tajikistan,tjk
+tk,Tokelau,tkl
 tm,Turkmenistan,tkm
 tl,Timor-Leste,tls,timor leste
 to,Tonga,ton
@@ -185,18 +224,22 @@ tt,Trinidad and Tobago,tto,trinidad,tobago
 tn,Tunisia,tun
 tr,Turkey,tur
 tv,Tuvalu,tuv
+tw,Taiwan,twn
 tz,Tanzania,tza
 ug,Uganda,uga
 ua,Ukraine,ukr
+um,United States Minor Outlying Islands,umi,us minor outlying islands,baker island,howland island,jarvis island,johnston atoll,kingman reef,midway atoll,navassa island,palmyra atoll,wake island
 uy,Uruguay,ury
 us,United States,usa,united states of america,america
 uz,Uzbekistan,uzb
+va,Holy See,vat,vatican,the vatican,vatican city,the vatican city
 vc,Saint Vincent and the Grenadines,vct,saint vincent,
 ve,Venezuela,ven
 vg,British Virgin Islands,vgb,
 vi,U.S. Virgin Islands,vir,virgin islands,us virgin islands
 vn,Vietnam,vnm,viet nam
 vu,Vanuatu,vut
+wf,Wallis and Futuna,wlf,wallis,futuna
 ws,Samoa,wsm
 ye,Yemen,yem
 za,South Africa,zaf
