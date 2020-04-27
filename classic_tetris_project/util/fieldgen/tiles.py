@@ -26,6 +26,9 @@ class TileMath(object):
     INPUT_START = (12, 0)
     INPUT_WIDTH = 7
     INPUT_HEIGHT = 7
+
+    LEVEL_START = (15, 16)
+    LEVEL_END = (16, 16)
     # converting from tile-indice to pixel coordinates
     @staticmethod
     def get_block_rect(coord):
@@ -114,7 +117,7 @@ class TileManager(ImageLoader):
         return (block1, block2)
 
     def get_number_tile(self, number):
-        return self.numbers.crop(TileMath.get_block_rect([number % 10, 0]))
+        return self.numbers.crop(TileMath.get_block_rect([number, 0]))
 
     def get_arrow(self, tile_type):
         return self.arrows.get_tile(tile_type)
