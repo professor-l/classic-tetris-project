@@ -175,10 +175,11 @@ class Whisper(Channel):
 
 
 
-API = APIClient(env("TWITCH_CLIENT_ID"))
+API = APIClient(env("TWITCH_CLIENT_ID", default=""))
 
-client = Client(
-    env("TWITCH_USERNAME"),
-    env("TWITCH_TOKEN"),
-    default_channels=[env("TWITCH_USERNAME")]
-)
+if API.client_id != "":
+    client = Client(
+        env("TWITCH_USERNAME", default=""),
+        env("TWITCH_TOKEN"),
+        default_channels=[env("TWITCH_USERNAME", default="")]
+    )
