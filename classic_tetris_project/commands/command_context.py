@@ -161,7 +161,7 @@ class TwitchCommandContext(CommandContext):
         if self.channel.type != "channel":
             return False
 
-        twitch_user = TwitchUser.from_username(self.channel.name)
+        twitch_user = TwitchUser.get_or_create_from_username(self.channel.name)
         try:
             channel = twitch_user.channel
         except TwitchChannel.DoesNotExist:
