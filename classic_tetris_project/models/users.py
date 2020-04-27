@@ -188,24 +188,33 @@ class TwitchUser(PlatformUser):
         return twitch_user
 
     @staticmethod
-    def from_username(username, existing_only=True):
+    def from_username(username):
         try:
             twitch_user = TwitchUser.objects.get(username__iexact=username)
             return twitch_user
         except TwitchUser.DoesNotExist:
             user_obj = twitch.API.user_from_username(username)
             if user_obj is not None:
-
-                if existing_only:
-                    twitch_user = TwitchUser.fetch_by_twitch_id(user_obj.id)
-                else:
-                    twitch_user = TwitchUser.fetch_or_create_by_twitch_id(user_obj.id)
-
+                twitch_user = TwitchUser.fetch_by_twitch_id(user_obj.id)
                 if twitch_user is not None:
                     twitch_user.update_username(user_obj.username)
                     return twitch_user
 
             return None
+
+    @staticmethod
+    def get_or_create_from_username(username):
+        twitch_user = TwitchUser.from_username(username)
+
+        if twitch_user is None:
+            user_obj = twitch.API.user_from_username(username)
+            if user_obj is not None:
+                twitch_user = TwitchUser.fetch_or_create_by_twitch_id(user_obj.id)
+
+        if twitch_user is None:
+            raise Exception(f"No Twitch account exists with username '{username}'.")
+        return twitch_user
+
 
     @property
     @memoize
