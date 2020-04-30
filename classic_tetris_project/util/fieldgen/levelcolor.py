@@ -38,4 +38,5 @@ class LevelColor(object):
     
     def get_colors(self, level):
         indices = self.DATA[level]
+        print(indices)
         return [self.palette.get_color(index) for index in indices]

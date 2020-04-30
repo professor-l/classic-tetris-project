@@ -1,5 +1,6 @@
 ﻿from .basecanvas import BaseCanvas
-from .tiles import TileManager, TemplateManager
+from .tiles import TemplateManager
+from .tilemanager import TileManager
 from .assetpath import AssetPath
 from .garbage import GarbageGenerator
 from .gravity import GravityFrames

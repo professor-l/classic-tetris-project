@@ -23,8 +23,8 @@ class Palette(ImageLoader):
     
     def get_color(self, hex_offset):
         # F3 = 15 across, 3 down, which is the last digit.
-        col = hex // 16
-        row = hex % 16
+        col = hex_offset // 16
+        row = hex_offset % 16
         return self.colors[row][col]
         
     def find_color_index(self, color):
