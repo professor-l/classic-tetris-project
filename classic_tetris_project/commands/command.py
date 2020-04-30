@@ -164,16 +164,18 @@ class Command(ABC):
         if guild is None:
             guild = discord.get_guild()
 
+        member = None
         if match_tag:
             username = match_tag.group("username")
             discriminator = match_tag.group("discriminator")
-
-        member = None
-        for user in guild.members:
-            if user.display_name.casefold() == username.casefold():
-                if (discriminator is not None and user.discriminator == discriminator) or discriminator is None:
+            for user in guild.members:
+                if (user.name.casefold() == username.casefold() and
+                        user.discriminator == discriminator):
                     member = user
-                    break
+        else:
+            for user in guild.members:
+                if user.display_name.casefold() == username.casefold():
+                    member = user
 
         if member is not None:
             try:
