@@ -4,6 +4,7 @@
 class ActivePieceGenerator(object):
     TETROMINO_OFFSETS = [[0, 1], [0, 0], [0, -1], [0, -2]]
     # TETROMINO_OFFSETS = [[0,0],[-1,-1],[0,-1],[1,-1]]
+
     def __init__(self, tile_gen):
         self.tile_gen = tile_gen
 

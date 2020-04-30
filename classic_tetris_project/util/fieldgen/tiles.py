@@ -46,7 +46,9 @@ class TileMath(object):
 
         # upgrade to Point or Coord class? then addition will be natural
         # or: tuple(map(lambda x, y: x + y, coord, TileMath.FIELD_START))
-        return (coord[0] + TileMath.FIELD_START[0], coord[1] + TileMath.FIELD_START[1])
+        x = coord[0] + TileMath.FIELD_START[0]
+        y = coord[1] + TileMath.FIELD_START[1]
+        return (x, y)
 
     @staticmethod
     def tile_index_to_pixel(tile):

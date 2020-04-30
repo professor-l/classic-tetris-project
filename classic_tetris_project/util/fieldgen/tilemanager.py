@@ -1,8 +1,7 @@
 ﻿from enum import IntEnum
-from PIL import Image
 from .tiles import ImageLoader, TileMath
 from .blocktile import BlockTile
-import os
+
 
 class InputTile(IntEnum):
     LEFT = 0
@@ -13,9 +12,10 @@ class InputTile(IntEnum):
     RIGHT_GRAY = 5
     COUNT = 6
 
+
 class TileManager(ImageLoader):
     # class that is in charge of providing image tiles
-    NUMBER_FILE = "numbers.png"    
+    NUMBER_FILE = "numbers.png"
     ARROW_FILE = "arrows.png"
 
     def __init__(self, *args):
@@ -35,6 +35,7 @@ class TileManager(ImageLoader):
 
     def get_arrow(self, tile_type):
         return self.arrows.get_tile(tile_type)
+
 
 class ArrowTileManager(object):
     def __init__(self, image):
