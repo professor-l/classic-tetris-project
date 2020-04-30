@@ -1,0 +1,1 @@
+The following folder contains a few scripts to generate the level/palette mappings
