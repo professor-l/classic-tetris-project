@@ -1,7 +1,12 @@
+# flake8: noqa
+# remove above line if you change it and require qa, flake8 does not yet
+# support noqa: for specific errors (E501)
+
 from .tiles import TileMath
 
 
 class LevelString(object):
+
     # fmt: off
     LEVELS = [
                 [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15],

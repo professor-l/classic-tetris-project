@@ -1,7 +1,7 @@
 ﻿import os.path
 
 
-# following is a hack to import Palette, which is in the directory above.
+# Original code from AgentBasey for original code
 # from https://meatfighter.com/nintendotetrisai/#Coloring_Tetriminos
 from ..palette import Palette
 from ..tiles import ImageLoader

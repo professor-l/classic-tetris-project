@@ -1,3 +1,6 @@
+# flake8: noqa
+# remove above line if you change it and require qa, flake8 does not yet
+# support noqa: for specific errors (E501)
 class LevelColor(object):
     # source: https://meatfighter.com/nintendotetrisai/#Coloring_Tetriminos
     # fmt: off
@@ -36,5 +39,4 @@ class LevelColor(object):
 
     def get_colors(self, level):
         indices = self.DATA[level]
-        print(indices)
         return [self.palette.get_color(index) for index in indices]
