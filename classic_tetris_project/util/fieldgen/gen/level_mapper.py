@@ -1,38 +1,82 @@
 ﻿import PIL
 import os.path
 import PIL.ImageDraw  
+import sys
 
-def get_palette(path, rect_width, rect_height, left_margin=0, top_margin=0, right_margin=0, bottom_margin=0):
-    image = PIL.Image.open(path).convert("RGB")
-    color_array = []
-    for x in range((image.width-left_margin-right_margin)/rect_width):
-        color_array.append([])
-        for y in range((image.height-top_margin-bottom_margin)/rect_height):
-            color_array[x].append(image.getpixel((x*rect_width+left_margin,y*rect_height+top_margin)))
-    image.close()
-    return color_array
 
-def find_palettes_from_array(palette_array, rgb):
-    for i in range(len(palette_array)):
-        for j in range(len(palette_array[0])):
-            if palette_array[i][j] == rgb:
-                return hex(16*i+j)
+# following is a hack to import Palette, which is in the directory above.
+# from https://meatfighter.com/nintendotetrisai/#Coloring_Tetriminos
+from ..palette import Palette
+from ..tiles import ImageLoader
+    
+class LevelMapper(ImageLoader):
+    START_COORD = (31, 26)
+    GROUP_WIDTH = 56
+    TILE_Y_OFFSET = 24
+    TILE_WIDTH = 17
+    
+    ROWS = 26
+    COLS = 10
+    LAST = 256
 
-def find_level_palettes(path, rect_width, rect_height, left_margin=0, top_margin=0, right_margin=0, bottom_margin=0):
-    level_color_array = []
-    paletteArray = get_palette(os.path.join(os.getcwd(),"9.png"), 32, 32, 16, 18, 16, 2)
-    image = PIL.Image.open(path).convert("RGB")
-    for y in range(((image.height-top_margin-bottom_margin)/rect_height)+1):
-        for x in range(((image.width-left_margin-right_margin)/rect_width)+1):
-            #print image.getpixel((x*rect_width+left_margin,y*rect_height+top_margin))
-            #print (x,y)
-            #print "\n"
-            level_color_array.append((
-                find_palettes_from_array(paletteArray, image.getpixel((x*rect_width+left_margin,y*rect_height+top_margin))),
-                find_palettes_from_array(paletteArray, image.getpixel((x*rect_width+left_margin+1,y*rect_height+top_margin))),
-                find_palettes_from_array(paletteArray, image.getpixel((x*rect_width+left_margin+19,y*rect_height+top_margin)))
-            ))
-    return level_color_array
+    COLORS_PER_LEVEL = 3
+
+    # construct with LevelMapper(LevelMapper.get_file_root())
+    def __init__(self, *args):
+        super(LevelMapper, self).__init__(*args)
+        self.palette = Palette(self.asset_path)
+    
+    @staticmethod
+    def get_file_root():
+        return os.path.dirname(os.path.abspath(__file__))
+    
+    def find_level_palettes(self):
+        ref_image = self.load_image("levelcolors.png").convert("RGB")
+        results = []
+        number = 0
+        for y in range(self.ROWS):
+            row_pos = self.START_COORD[1] + self.TILE_Y_OFFSET * y
+            for group_num in range(self.COLS):
+                group_x_pos = self.START_COORD[0] + self.GROUP_WIDTH * group_num
+                level_palette = self.find_level_palette(ref_image, row_pos, group_x_pos)
+                results.append(level_palette)
+                number += 1
+                if number >= self.LAST:
+                    break
+
+        return results
+
+    def find_level_palette(self, image, startY, startX):
+        result = []
+        for color_idx in range(self.COLORS_PER_LEVEL):
+            position = (startX + color_idx * self.TILE_WIDTH, startY)
+            color = image.getpixel(position)
+            idx = self.palette.find_color_index(color)
+            result.append("0x"+ "{:02x}".format(idx))
+        return result
+    
+    @staticmethod
+    def pretty_print_palette(level_palette):
+        return "[" + ", ".join(level_palette) + "]"
+    
+    @staticmethod
+    def pretty_print(level_palettes):
+        result = "[\n"
+        lines = []
+        for row in range(LevelMapper.ROWS):
+            first_index = row*LevelMapper.COLS
+            last_index = min((row+1)*LevelMapper.COLS, LevelMapper.LAST)
+            chunk = level_palettes[first_index:last_index]
+            line = ", ".join(LevelMapper.pretty_print_palette(p) for p in chunk)
+            lines.append(line)
+        return "[\n" + ",\n".join(lines) + "\n]"
+
+# run this by using
+# cd classic_tetris_project/util
+# python -m fieldgen.gen.level_mapper 
 
 if __name__ == '__main__':
-    find_level_palettes(os.path.join(os.getcwd(),"10.png"), 56, 24, 23, 18, 21, 2)
+    lm = LevelMapper(LevelMapper.get_file_root())
+    result = lm.find_level_palettes()
+    print(LevelMapper.pretty_print(result))
+    
