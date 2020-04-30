@@ -106,8 +106,8 @@ class DiscordCommandContext(CommandContext):
     def log(self, user, channel, message, level=logging.INFO):
         if (isinstance(channel, discordpy.DMChannel)):
             channel_name = f"@{channel.recipient.name}"
-        elif (isinstance(channel, discordpy.TextChannel)):
-            channel_name = f"#{channel.name}"
+        else:
+            channel_name = channel.name
 
         self.logger.log(level, "[{channel_name}] <{username}> {message}".format(
             channel_name=channel_name,
@@ -203,5 +203,5 @@ class TwitchCommandContext(CommandContext):
     @memoize
     def platform_user(self):
         twitch_user = TwitchUser.fetch_or_create_by_twitch_id(self.author.id)
-        twitch_user.update_username(twitch_user.user_obj.username)
+        twitch_user.update_username(self.author.username)
         return twitch_user

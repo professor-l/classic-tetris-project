@@ -39,7 +39,7 @@ class User(models.Model):
 
     def add_pb(self, score, console_type="ntsc", starting_level=None, lines=None):
         from .scores import ScorePB
-        return ScorePB.log(self, score=score, console_type=console_type,
+        return ScorePB.log(self, score=score, console_type=console_type.lower(),
                            starting_level=starting_level, lines=lines)
 
     def get_pb(self, console_type="ntsc", starting_level=None):
@@ -267,8 +267,8 @@ class DiscordUser(PlatformUser):
     def display_name(self, guild=None):
         if guild:
             return guild.get_member(int(self.discord_id)).display_name
-
-        return self.user_obj.name if self.user_obj is not None else None
+        else:
+            return self.username or (self.user_obj and self.user_obj.name)
 
     @property
     def user_tag(self):

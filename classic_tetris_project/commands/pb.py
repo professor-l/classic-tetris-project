@@ -8,14 +8,12 @@ from ..models import DiscordUser
 class GetPBCommand(Command):
     def execute(self, *username):
         username = username[0] if len(username) == 1 else self.context.args_string
-        if username and not self.any_platform_user_from_username(username):
-            raise CommandException("User has not set a PB.")
 
         platform_user = (self.any_platform_user_from_username(username) if username
                          else self.context.platform_user)
 
         if not platform_user:
-            raise CommandException("Invalid specified user.")
+            raise CommandException("User has not set a PB.")
 
         user = platform_user.user
         name = self.context.display_name(platform_user)
@@ -77,9 +75,14 @@ class SetPBCommand(Command):
         if console_type != "ntsc" and console_type != "pal":
             raise CommandException("Invalid PB type - must be NTSC or PAL (default NTSC)")
 
+        level_text = ""
+        if level is not None:
+            level_text = f" level {level}"
+
         pb = self.context.user.add_pb(score, console_type=console_type, starting_level=level)
-        self.send_message("{user_tag} has a new {console_type} PB of {score:,}!".format(
+        self.send_message("{user_tag} has a new {console_type}{level_text} PB of {score:,}!".format(
             user_tag=self.context.user_tag,
             console_type=pb.get_console_type_display(),
+            level_text=level_text,
             score=pb.score
         ))

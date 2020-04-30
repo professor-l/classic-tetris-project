@@ -2,6 +2,7 @@
 *.swp
 *.sqlite3
 .ackrc
+.coverage
 
 __pycache__/
 static/

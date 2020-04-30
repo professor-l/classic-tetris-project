@@ -135,26 +135,13 @@ class Command(ABC):
         return min_args, max_args
 
     def any_platform_user_from_username(self, username):
-        try: 
-            guild = self.context.guild if self.context.platform == Platform.DISCORD else None 
-            platform_user = Command.discord_user_from_username(username, guild)
-        except CommandException:
-            platform_user = None
-
-        if platform_user is not None:
-            return platform_user
-
-        try:
-            platform_user = Command.twitch_user_from_username(username)
-        except CommandException:
-            platform_user = None
-
-        if platform_user is not None:
-            return platform_user
-
-        # Explicitly return None if no user was found
-        return None
-
+        if self.context.platform == Platform.DISCORD:
+            guild = self.context.guild
+            return (Command.discord_user_from_username(username, guild, raise_invalid=False) or
+                    Command.twitch_user_from_username(username, raise_invalid=False))
+        elif self.context.platform == Platform.TWITCH:
+            return (Command.twitch_user_from_username(username, raise_invalid=False) or
+                    Command.discord_user_from_username(username, raise_invalid=False))
 
     def platform_user_from_username(self, username):
         if self.context.platform == Platform.DISCORD:
@@ -163,7 +150,7 @@ class Command(ABC):
             return Command.twitch_user_from_username(username)
 
     @staticmethod
-    def discord_user_from_username(username, guild=None):
+    def discord_user_from_username(username, guild=None, raise_invalid=True):
         match_mention = RE_DISCORD_MENTION.match(username)
         match_tag = RE_DISCORD_TAG.match(username)
 
@@ -176,11 +163,10 @@ class Command(ABC):
 
         if guild is None:
             guild = discord.get_guild()
-            
-        discriminator = None
-        if len(username) > 5 and username[-5] == "#":
-            discriminator = username[-4:]
-            username = username[:-5]
+
+        if match_tag:
+            username = match_tag.group("username")
+            discriminator = match_tag.group("discriminator")
 
         member = None
         for user in guild.members:
@@ -195,10 +181,13 @@ class Command(ABC):
             except DiscordUser.DoesNotExist:
                 return None
         else:
-            raise CommandException("Invalid username")
+            if raise_invalid:
+                raise CommandException("Invalid username")
+            else:
+                return None
 
     @staticmethod
-    def twitch_user_from_username(username, existing_only=True):
+    def twitch_user_from_username(username, existing_only=True, raise_invalid=True):
         match = RE_TWITCH_USERNAME.match(username)
 
         if match:
@@ -214,7 +203,10 @@ class Command(ABC):
 
             return user
         else:
-            raise CommandException("Invalid username")
+            if raise_invalid:
+                raise CommandException("Invalid username")
+            else:
+                return None
 
     @staticmethod
     def register(*aliases, usage, platforms=(Platform.DISCORD, Platform.TWITCH)):
