@@ -1,4 +1,4 @@
-﻿from .tiles import ImageLoader
+from .tiles import ImageLoader
 
 
 class Palette(ImageLoader):

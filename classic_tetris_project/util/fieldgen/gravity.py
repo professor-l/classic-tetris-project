@@ -1,4 +1,4 @@
-﻿class GravityFrames(object):
+class GravityFrames(object):
     LEVELS = [
         48,
         43,

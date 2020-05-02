@@ -1,4 +1,4 @@
-﻿from enum import IntEnum
+from enum import IntEnum
 from .tiles import ImageLoader, TileMath
 from .blocktile import BlockTile
 

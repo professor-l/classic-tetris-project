@@ -1,4 +1,4 @@
-﻿from .tiles import TileMath
+from .tiles import TileMath
 
 
 class ActivePieceGenerator(object):

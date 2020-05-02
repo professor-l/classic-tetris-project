@@ -1,4 +1,4 @@
-﻿import math
+import math
 from .gravity import GravityFrames
 from .field_image_gen import FieldImageGenerator
 
