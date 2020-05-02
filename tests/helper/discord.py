@@ -4,6 +4,11 @@ from classic_tetris_project.commands.command_context import DiscordCommandContex
 from ..factories import DiscordUserFactory
 
 
+class MockDiscordGuild:
+    def __init__(self, members):
+        self.members = members
+
+
 class MockDiscordChannel:
     def __init__(self, name="mock"):
         self.sent_messages = []
@@ -20,9 +25,11 @@ class MockDiscordChannel:
 
 
 class MockDiscordAPIUser:
-    def __init__(self, id, name):
+    def __init__(self, id, name, discriminator, display_name=None):
         self.id = id
         self.name = name
+        self.discriminator = discriminator
+        self.display_name = display_name or name
 
     def send(self, channel, content):
         message = MockDiscordMessage(self, content, channel)
@@ -42,6 +49,7 @@ class MockDiscordAPIUserFactory(factory.Factory):
         model = MockDiscordAPIUser
     id = factory.Sequence(lambda n: f"{n}")
     name = factory.Sequence(lambda n: f"Mock Discord User {n}")
+    discriminator = factory.Sequence(lambda n: f"{n:04}")
 
 
 class MockDiscordMessage:

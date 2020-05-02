@@ -1,4 +1,4 @@
-﻿from .command import Command, CommandException
+from .command import Command, CommandException
 from .. import discord
 import time
 from ..models.users import User
