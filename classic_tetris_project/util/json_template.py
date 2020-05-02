@@ -1,4 +1,4 @@
-﻿import json
+import json
 def match_template(template, **kwargs):
     str_message = template
     str_message = str_message.format(**kwargs)
