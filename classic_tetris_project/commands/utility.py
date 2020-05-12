@@ -1,6 +1,7 @@
 import random
 import math
 from django.core.cache import cache
+from discord import Embed
 from asgiref.sync import async_to_sync
 from datetime import datetime, timedelta
 
@@ -47,6 +48,9 @@ class HzCommand(Command):
             maxi=rate[1]
             )
 
+        # Eagerly cache the image instead of letting the web server handle it lazily
+        hz.cache_image()
+
         printable_sequence = hz.printable_sequence()
         if len(printable_sequence) <= 49:
             msg += "Sample input sequence: {seq}".format(seq=printable_sequence)
@@ -56,10 +60,8 @@ class HzCommand(Command):
         msg = "```"+msg+"```"
 
         self.send_message(msg)
-        # get the gif. for posterity
-        anim = hz.image()
-        picture = discordpy.File(anim, "cool_anim.gif")
-        self.send_message_full(self.context.channel.id,file=picture)
+        embed = Embed().set_image(url=hz.image_url)
+        self.send_message_full(self.context.channel.id, embed=embed)
 
 @Command.register("seed", "hex", usage="seed")
 class SeedGenerationCommand(Command):

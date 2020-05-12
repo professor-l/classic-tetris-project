@@ -9,7 +9,6 @@ from abc import ABC
 from .. import discord, twitch
 from ..util import Platform
 from ..models.users import DiscordUser, TwitchUser
-from ..env import env
 
 RE_DISCORD_MENTION = re.compile(r"^<@!?(\d+)>$")
 RE_DISCORD_TAG = re.compile(r"^@?((?P<username>[^@#:]+)#(?P<discriminator>\d+))$")

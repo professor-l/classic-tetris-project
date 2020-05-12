@@ -9,3 +9,7 @@ def memoize(f):
             setattr(self, var_name, result)
             return result
     return helper
+
+
+def lazy(f):
+    return property(memoize(f))
