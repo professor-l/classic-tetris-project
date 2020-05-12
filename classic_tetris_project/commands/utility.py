@@ -59,9 +59,8 @@ class HzCommand(Command):
 
         msg = "```"+msg+"```"
 
-        self.send_message(msg)
         embed = Embed().set_image(url=hz.image_url)
-        self.send_message_full(self.context.channel.id, embed=embed)
+        self.send_message_full(self.context.channel.id, msg, embed=embed)
 
 @Command.register("seed", "hex", usage="seed")
 class SeedGenerationCommand(Command):
