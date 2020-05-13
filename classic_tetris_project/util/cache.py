@@ -9,9 +9,12 @@ class FileCache:
         self.root = os.path.join(settings.BASE_DIR, "cache", name)
         os.makedirs(self.root, exist_ok=True)
 
+    def full_path(self, filename):
+        return os.path.join(self.root, filename)
+
     def has(self, filename):
-        return os.path.isfile(os.path.join(self.root, filename))
+        return os.path.isfile(self.full_path(filename))
 
     def put(self, filename, content):
-        with open(os.path.join(self.root, filename), "wb") as f:
+        with open(self.full_path(filename), "wb") as f:
             f.write(content)
