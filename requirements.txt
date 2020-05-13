@@ -8,6 +8,7 @@ django-redis==4.10.0
 django==2.2.10
 expects==0.9.0
 factory_boy==2.12.0
+furl==2.1.0
 ipdb==0.12
 ipython==7.5.0
 irc==17.1

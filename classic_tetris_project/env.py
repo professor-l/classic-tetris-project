@@ -1,3 +1,3 @@
-import environ
-env = environ.Env()
-environ.Env.read_env(".env")
+from django.conf import settings
+
+env = settings.ENV

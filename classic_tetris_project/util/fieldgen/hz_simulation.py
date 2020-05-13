@@ -1,9 +1,19 @@
 import math
+from django.conf import settings
+from django.urls import reverse
+from furl import furl
+
 from .gravity import GravityFrames
 from .field_image_gen import FieldImageGenerator
+from ..cache import FileCache
 
 
-class HzSimulation(object):
+class HzSimulation:
+    # VERSION is used for caching images.
+    # Increment this every time image generation visibly changes.
+    VERSION = 1
+    IMAGE_CACHE = FileCache("hz")
+
     def __init__(self, level, height, taps=None, sequence=None):
 
         self.level = int(level)
@@ -61,20 +71,30 @@ class HzSimulation(object):
 
         return (mini, maxi)
 
-    def image(self):
-        if self.is_cached():
-            return self.cached_image()
-        else:
-            return FieldImageGenerator.image(self)
-
     def printable_sequence(self):
         result = list("." * self.frames)
         for item in self.sequence:
             result[item] = "X"
         return "".join(result)
 
-    def is_cached(self):
-        return False  # stub
+    def cache_image(self):
+        if not self.IMAGE_CACHE.has(self.filename):
+            image = FieldImageGenerator.image(self)
+            self.IMAGE_CACHE.put(self.filename, image.read())
 
-    def cached_image(self):
-        return None  # stub
+    @property
+    def filename(self):
+        return "v{version}_l{level}_h{height}_t{taps}.gif".format(
+            version=self.VERSION,
+            level=self.level,
+            height=self.height,
+            taps=self.taps,
+        )
+
+    @property
+    def image_url(self):
+        return furl(
+            settings.BASE_URL,
+            path=reverse("simulations:hz"),
+            args={ "level": self.level, "height": self.height, "taps": self.taps }
+        ).url

@@ -11,11 +11,12 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import environ
-env = environ.Env(
+ENV = environ.Env(
     SECRET_KEY=(str, 'd0$j=wune9kn70srt1lt!g3a8fim7ug#j@x8+zmy0gi_mv7&dk'),
     DEBUG=(bool, True),
     DATABASE_URL=(str, 'sqlite:///db.sqlite3'),
-    CACHE_URL=(str, 'rediscache://')
+    CACHE_URL=(str, 'rediscache://'),
+    BASE_URL=(str, 'http://dev.monthlytetris.info:8000')
 )
 environ.Env.read_env('.env')
 
@@ -24,15 +25,17 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+BASE_URL = ENV('BASE_URL')
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = ENV('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = ENV('DEBUG')
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -96,7 +99,7 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    'default': env.db()
+    'default': ENV.db()
 }
 
 CACHES = {
@@ -107,6 +110,34 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "standard": {
+            "format": "%(asctime)s [%(name)s] %(levelname)s: %(message)s"
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+        "error": {
+            "level": "ERROR",
+            "class": "logging.FileHandler",
+            "filename": "logs/error.log",
+            "formatter": "standard",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console", "error"],
+            "level": "INFO",
+            "propagate": True
+        },
+    },
 }
 
 

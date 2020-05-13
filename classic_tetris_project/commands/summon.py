@@ -1,9 +1,11 @@
 from django.core.exceptions import ObjectDoesNotExist
 
 from ..util import Platform
-
 from .command import Command, CommandException
 from .. import twitch
+
+
+SUMMON_LINK = "https://discordapp.com/api/oauth2/authorize?client_id=544534930114347023&permissions=378944&redirect_uri=https%3A%2F%2Fmonthlytetris.info%2Foauth%2Fauthorize%2F&scope=bot"
 
 @Command.register("summon",
                          usage="summon")
@@ -15,13 +17,7 @@ class SummonCommand(Command):
             self.summon_bot(channel)
 
         elif self.context.platform == Platform.DISCORD:
-            
-            if not self.context.user.twitch_user:
-                raise CommandException("You haven't linked your twitch account! Try `!link`.")
-
-            channel = self.context.user.twitch_user.get_or_create_channel()
-            self.summon_bot(channel)
-            
+            self.send_message(f"Invite the bot to your server: <{SUMMON_LINK}>") 
         
     def summon_bot(self, channel):
 
