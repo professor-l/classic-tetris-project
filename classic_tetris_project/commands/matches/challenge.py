@@ -60,7 +60,7 @@ class ChallengeCommand(QueueCommand):
         if not self.is_queue_open():
             raise CommandException("The queue is not open.")
 
-        recipient = self.twitch_user_from_username(username)
+        recipient = self.twitch_user_from_username(username, existing_only=False)
         if not recipient:
             raise CommandException(f"Twitch user \"{username}\" does not exist.")
 
@@ -84,11 +84,8 @@ class ChallengeCommand(QueueCommand):
         challenge = Challenge(channel_name, sender, recipient)
         challenge.save()
 
-        # Send message to recipient
-        recipient.send_message(f"{sender.username} has challenged you to a match on twitch.tv/{channel_name}! You have 60 seconds to !accept or !decline.")
-
-        # Send confirmation message to sender in public chat
-        self.send_message(f"{sender.user_tag}: Your challenge to {recipient.username} has been sent.")
+        # Send public message announcing challenge
+        self.send_message(f"{recipient.user_tag} : {sender.username} has challenged you to a match on twitch.tv/{channel_name}! You have 60 seconds to !accept or !decline.")
 
         # Expire and send message to both after 1 minute
         # In the future, we may want to schedule this with Celery
@@ -96,8 +93,7 @@ class ChallengeCommand(QueueCommand):
             time.sleep(CHALLENGE_TIMEOUT)
             existing_challenge = Challenge.pending_challenge(challenge.recipient)
             if challenge == existing_challenge:
-                sender.send_message(f"Your challenge to {challenge.recipient.username} has expired.")
-                recipient.send_message(f"The challenge from {challenge.sender.username} has expired.")
+                self.send_message(f"The challenge from {challenge.sender.username} to {challenge.recipient.username} has expired.")
                 challenge.remove()
 
         expire_thread = Thread(target=send_delayed_expiration_message, args=(challenge,))
@@ -108,9 +104,6 @@ class ChallengeCommand(QueueCommand):
                          usage="accept")
 class AcceptChallengeCommand(Command):
     def execute(self):
-        # Check this is in a whisper
-        self.check_private()
-
         # Check that the challenge exists
         challenge = Challenge.pending_challenge(self.context.platform_user)
         if not challenge:
@@ -139,16 +132,12 @@ class AcceptChallengeCommand(Command):
                          usage="decline")
 class DeclineChallengeCommand(Command):
     def execute(self):
-        self.check_private()
-
         challenge = Challenge.pending_challenge(self.context.platform_user)
         if not challenge:
             raise CommandException("You have no pending challenge.")
 
         challenge.remove()
-        self.send_message(f"You have declined {challenge.sender.username}'s challenge.")
-        challenge.sender.send_message(f"{challenge.recipient.username} has declined your challenge.")
-
+        self.send_message(f"{challenge.recipient.username} has declined {challenge.sender.username} 's challenge.")
 
 @Command.register_twitch("cancel",
                          usage="cancel")
@@ -161,8 +150,7 @@ class CancelChallengeCommand(Command):
             raise CommandException("You have not challenged anyone.")
 
         challenge.remove()
-        self.send_message("{sender}: your challenge to {recipient} has been cancelled.".format(
-            sender=challenge.sender.user_tag,
+        self.send_message("The challenge from {sender} to {recipient} has been cancelled.".format(
+            sender=challenge.sender.username,
             recipient=challenge.recipient.username
         ))
-        challenge.recipient.send_message(f"{challenge.sender.username} has cancelled their challenge.")
