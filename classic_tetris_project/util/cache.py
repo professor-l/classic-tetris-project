@@ -1,3 +1,4 @@
+import io
 import os
 import os.path
 from django.conf import settings
@@ -21,3 +22,6 @@ class FileCache:
     def put(self, filename, content):
         with open(self.full_path(filename), "wb") as f:
             f.write(content)
+    
+    def get(self, filename):
+        return open(self.full_path(filename), "rb")
