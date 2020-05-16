@@ -66,7 +66,7 @@ class HzSimulation:
         return indices
 
     def hertz(self):
-        mini = round(60 * (self.taps - 1) / self.frames, 2)
+        mini = round(60 * (self.taps - 1) / (self.frames - 1), 2)
         maxi = round(60 * self.taps / self.frames, 2)
 
         return (mini, maxi)
