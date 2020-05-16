@@ -1,12 +1,12 @@
-from mock import patch
 from contextlib import contextmanager
 from django.test import TestCase
 from expects import *
+from unittest.mock import patch
 
 from classic_tetris_project.commands.command_context import *
 from classic_tetris_project.models import *
 from classic_tetris_project.util.memo import memoize, lazy
-from ..factories import *
+from .factories import *
 from .discord import *
 from .twitch import *
 from classic_tetris_project import twitch

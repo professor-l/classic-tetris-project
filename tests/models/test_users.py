@@ -1,4 +1,4 @@
-from ..helper import *
+from tests.helper import *
 
 
 class UserTestCase(TestCase):
