@@ -1,4 +1,4 @@
-from ..helper import *
+from tests.helper import *
 
 class TestCommandTestCase(CommandTestCase):
     def test_discord_sends_response(self):

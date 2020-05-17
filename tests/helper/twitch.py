@@ -1,7 +1,7 @@
 import factory
 
 from classic_tetris_project.commands.command_context import TwitchCommandContext
-from ..factories import TwitchUserFactory
+from .factories import TwitchUserFactory
 
 
 class MockTwitchClient:

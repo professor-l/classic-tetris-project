@@ -1,4 +1,4 @@
-from ..helper import *
+from tests.helper import *
 from classic_tetris_project.commands.command import Command, CommandException
 
 class CommandTestCase(TestCase):

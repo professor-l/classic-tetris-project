@@ -1,7 +1,7 @@
 import factory
 
 from classic_tetris_project.commands.command_context import DiscordCommandContext
-from ..factories import DiscordUserFactory
+from .factories import DiscordUserFactory
 
 
 class MockDiscordGuild:

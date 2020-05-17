@@ -1,4 +1,4 @@
-from ..helper import *
+from tests.helper import *
 
 class GetPBCommandTestCase(CommandTestCase):
     with describe("discord"):
