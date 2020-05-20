@@ -7,9 +7,10 @@ from django.db import models
 from django.db.models import signals
 from django.dispatch import receiver
 from django.utils import timezone
+import discord as discordpy
 
 from .. import twitch, discord
-from ..util import memoize
+from ..util import lazy
 from ..countries import Country
 
 class User(models.Model):
@@ -102,8 +103,7 @@ class User(models.Model):
         self.save()
         return True
 
-    @property
-    @memoize
+    @lazy
     def display_name(self):
         if self.preferred_name:
             return self.preferred_name
@@ -192,8 +192,7 @@ class TwitchUser(PlatformUser):
         return twitch_user
 
 
-    @property
-    @memoize
+    @lazy
     def user_obj(self):
         return twitch.client.get_user(self.twitch_id)
 
@@ -244,37 +243,64 @@ signals.pre_save.connect(TwitchUser.before_save, sender=TwitchUser)
 class DiscordUser(PlatformUser):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="discord_user")
     discord_id = models.CharField(max_length=64, unique=True, blank=False)
-    username = models.CharField(max_length=32, null=True) # nullable for now, we might change this later
+    username = models.CharField(max_length=32, blank=False)
+    discriminator = models.CharField(max_length=4, blank=False)
+
+    class Meta:
+        constraints = [
+            # Implicit indexes on these columns
+            models.UniqueConstraint(fields=["username", "discriminator"],
+                                    name="unique_username_discriminator"),
+        ]
 
     @staticmethod
-    def fetch_by_discord_id(discord_id):
-        discord_user, created = DiscordUser.objects.get_or_create(discord_id=discord_id)
-        return discord_user
+    def get_or_create_from_user_obj(user_obj):
+        try:
+            discord_user = DiscordUser.objects.get(discord_id=str(user_obj.id))
+            discord_user.update_fields(user_obj)
+            return discord_user
+        except DiscordUser.DoesNotExist:
+            return DiscordUser.objects.create(
+                discord_id=str(user_obj.id),
+                username=user_obj.name,
+                discriminator=user_obj.discriminator
+            )
 
-    @property
-    @memoize
+    @lazy
     def user_obj(self):
-        # TODO use Discord's HTTP API
-        if not discord.client.is_ready():
-            return None
-        user = discord.client.get_user(int(self.discord_id))
+        if discord.client.is_ready():
+            user = discord.client.get_user(int(self.discord_id))
+        else:
+            user = discord.API.user_from_id(self.discord_id)
 
-        # Temporary critical fix for username bug in db
-        # self.username = user.name # Update our username while we're getting this
-        # self.save()
+        if user:
+            self.update_fields(user)
+
         return user
+
+    def update_fields(self, user_obj):
+        if str(user_obj.id) != self.discord_id:
+            raise Exception("got wrong discord id")
+        # Only bother updating if name or discriminator have changed
+        if self.username != user_obj.name or self.discriminator != user_obj.discriminator:
+            self.username = user_obj.name
+            self.discriminator = user_obj.discriminator
+            self.save()
 
     def display_name(self, guild=None):
         if guild:
             return guild.get_member(int(self.discord_id)).display_name
         else:
-            return self.username or (self.user_obj and self.user_obj.name)
+            return self.username
 
     @property
     def user_tag(self):
         return f"<@{self.discord_id}>"
 
     def send_message(self, message):
+        if not isinstance(self.user_obj, discordpy.User):
+            raise Exception("can't send message from this context")
+        # TODO run this in an async task that's guaranteed to have a discord client connection
         asyncio.run_coroutine_threadsafe(
             self.user_obj.send(message),
             discord.client.loop

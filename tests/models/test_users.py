@@ -1,5 +1,7 @@
 from tests.helper import *
 
+from classic_tetris_project import discord
+patch.object(discord.APIClient, "_request", side_effect=Exception("discord API called")).start()
 
 class UserTestCase(TestCase):
     @lazy
@@ -79,3 +81,66 @@ class UserTestCase(TestCase):
             expect(self.user.get_pb(starting_level=18)).to(equal(400000))
             expect(self.user.get_pb(starting_level=19)).to(equal(300000))
             expect(self.user.get_pb(console_type="pal")).to(equal(500000))
+
+
+class DiscordUserTestCase(TestCase):
+    @lazy
+    def discord_user(self):
+        return DiscordUserFactory(discord_id="1001", username="User 1", discriminator="9001")
+
+    @lazy
+    def discord_user_old(self):
+        return DiscordUserFactory(discord_id="1001", username="User 1 old", discriminator="8001")
+
+    @lazy
+    def discord_user_other(self):
+        return DiscordUserFactory(discord_id="1002", username="User 2", discriminator="9002")
+
+    @lazy
+    def user_obj(self):
+        return discord.wrap_user_dict({ "id": "1001", "username": "User 1", "discriminator": "9001",
+                                       "avatar": "1001" })
+
+    with describe(".get_or_create_from_user_obj"):
+        def test_get_or_create_from_user_obj_returns_existing_user(self):
+            existing_discord_user = self.discord_user
+            discord_user = DiscordUser.get_or_create_from_user_obj(self.user_obj)
+
+            expect(discord_user).to(equal(existing_discord_user))
+
+        def test_get_or_create_from_user_obj_updates_existing_user(self):
+            existing_discord_user = self.discord_user_old
+            discord_user = DiscordUser.get_or_create_from_user_obj(self.user_obj)
+
+            expect(discord_user).to(equal(existing_discord_user))
+            existing_discord_user.refresh_from_db()
+            expect(existing_discord_user.username).to(equal("User 1"))
+            expect(existing_discord_user.discriminator).to(equal("9001"))
+
+        def test_get_or_create_from_user_obj_creates_user(self):
+            discord_user = DiscordUser.get_or_create_from_user_obj(self.user_obj)
+
+            expect(DiscordUser.objects.count()).to(equal(1))
+            expect(discord_user.discord_id).to(equal("1001"))
+            expect(discord_user.username).to(equal("User 1"))
+            expect(discord_user.discriminator).to(equal("9001"))
+
+    with describe("#update_fields"):
+        def test_update_fields_updates_fields(self):
+            self.discord_user_old.update_fields(self.user_obj)
+
+            self.discord_user_old.refresh_from_db()
+            expect(self.discord_user_old.username).to(equal("User 1"))
+            expect(self.discord_user_old.discriminator).to(equal("9001"))
+
+        def test_update_fields_doesnt_save_if_no_change(self):
+            self.discord_user
+            with patch.object(DiscordUser, "save") as save:
+                self.discord_user.update_fields(self.user_obj)
+
+            expect(self.discord_user.username).to(equal("User 1"))
+            expect(self.discord_user.discriminator).to(equal("9001"))
+            save.assert_not_called()
+
+        def test_update_fields_complains_given_wrong_id(self):
+            expect(lambda: self.discord_user_other.update_fields(self.user_obj)).to(raise_error)
