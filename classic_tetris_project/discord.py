@@ -20,6 +20,8 @@ class APIClient:
             "Authorization": f"Bot {self.discord_token}",
         }
 
+    # TODO Better respect Discord's rate limiting:
+    # https://discord.com/developers/docs/topics/rate-limits
     def _request(self, endpoint, params={}):
         response = requests.get(f"{DISCORD_API}{endpoint}", params=params, headers=self.headers)
         return response.json()
