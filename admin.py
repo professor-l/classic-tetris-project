@@ -16,7 +16,10 @@ class WebsiteUserInline(admin.StackedInline):
 class UserAdmin(admin.ModelAdmin):
     inlines = [DiscordUserInline, TwitchUserInline, WebsiteUserInline]
 
-admin.site.register(DiscordUser)
+@admin.register(DiscordUser)
+class DiscordUserAdmin(admin.ModelAdmin):
+    list_display = ("username", "discriminator", "discord_id")
+
 admin.site.register(TwitchUser)
 
 
