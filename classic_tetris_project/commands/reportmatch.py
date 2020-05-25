@@ -28,7 +28,13 @@ class ReportMatch(Command):
         # only accept reports in the reporting channel
         if not checkChannelPeon(self.context):
             return
-        league, result = processRequest(self.context.author.nick, self.context.message.content)
+        
+        # preference for names. Nickname, display_name.
+        name = (self.context.author.nick or 
+               self.context.author.display_name or 
+               str(self.context.author))
+        
+        league, result = processRequest(name, self.context.message.content)
         temp_message = self.send_message("```" + result + "```")
 
         if league is not None:
