@@ -1,35 +1,45 @@
+{% load static %}
+{% load render_bundle from webpack_loader %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+    {% render_bundle "main" %}
 
     <title>{% block title %}Classic Tetris Monthly{% endblock %}</title>
   </head>
   <body>
-    <nav class="navbar navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">Classic Tetris Monthly</a>
-      {% if user %}
-        <span class="navbar-text">
-          Hello, {{user.display_name}}.
-          <a href="{% url "oauth:logout" %}">Logout</a>
-        </span>
-      {% else %}
-        <span class="navbar-text">
-          <a href="{% url "oauth:login" %}">Login</a>
-        </span>
-      {% endif %}
+    <nav class="navbar">
+      <a class="navbar__item navbar__item--title" href="{% url "index" %}">Classic Tetris Monthly</a>
+
+      <div class="navbar__spacer"></div>
+
+      <a href="javascript:void(0);" class="navbar__item navbar__toggler" data-toggle="collapse" data-target="#navbar-collapse">
+        {% include "icons/hamburger.html" %}
+      </a>
+
+      <div class="collapse navbar__collapse" id="navbar-collapse">
+        {% if current_user %}
+        <div class="navbar__item">
+          Hello, <a href="{{ current_user.get_absolute_url }}">{{ current_user.display_name }}</a>.
+        </div>
+        <a href="{% url "oauth:logout" %}" class="navbar__item">Logout</a>
+        {% else %}
+        <a href="{% url "oauth:login" %}" class="navbar__item">Login</a>
+        {% endif %}
+      </div>
     </nav>
 
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-info">{{ message }}</div>
-      {% endfor %}
-    {% endif %}
+    {% for message in messages %}
+    <div class="alert alert--info">{{ message }}</div>
+    {% endfor %}
 
-    <div>
+    <div class="main-content">
       {% block content %}{% endblock %}
     </div>
   </body>

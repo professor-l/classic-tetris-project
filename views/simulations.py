@@ -1,13 +1,13 @@
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.views import View
 from django.views.static import serve
 
 from classic_tetris_project.util.fieldgen.hz_simulation import HzSimulation
 from classic_tetris_project.util.memo import lazy
+from .base import BaseView
 
 
-class HzView(View):
+class HzView(BaseView):
     def get(self, request):
         try:
             self.simulation.cache_image()

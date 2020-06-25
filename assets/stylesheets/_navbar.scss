@@ -1,0 +1,67 @@
+@use "colors";
+@use "media";
+
+.navbar {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+  min-height: 60px;
+  background-color: colors.$navbar-bg;
+  @include media.mobile-only {
+    flex-flow: row wrap;
+  }
+
+  &__collapse {
+    display: flex;
+    transition: height 0.5s;
+
+    @include media.tablet-and-desktop {
+      display: flex !important;
+    }
+
+    @include media.mobile-only {
+      flex: 0 0 100%;
+      flex-flow: column;
+      background-color: colors.$navbar-drawer-bg;
+    }
+  }
+
+  &__item {
+    flex: 0 0 auto;
+    padding: 15px 20px;
+    box-sizing: border-box;
+    height: 60px;
+    font-size: 18px;
+    line-height: 30px;
+    text-align: right;
+    color: colors.$navbar-text;
+    text-decoration: none;
+
+    a {
+      color: colors.$navbar-text;
+    }
+
+    &:hover {
+      color: colors.$navbar-text;
+      text-decoration: none;
+    }
+
+    &--title {
+      font-size: 24px;
+    }
+  }
+
+  &__spacer {
+    flex: 1 0 0px;
+  }
+
+  &__toggler {
+    @include media.tablet-and-desktop {
+      display: none;
+    }
+
+    .icon {
+      stroke: colors.$icon-white;
+    }
+  }
+}

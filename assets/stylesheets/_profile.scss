@@ -1,0 +1,65 @@
+@use "colors";
+
+.profile-header {
+  &__title {
+    margin: 0;
+  }
+
+  &__subtitle {
+  }
+}
+
+.profile-section {
+  margin-top: 30px;
+
+  &__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 6px;
+    border-bottom: 1px colors.$border-gray solid;
+  }
+
+  &__title {
+    margin: 0;
+  }
+
+  &__edit {
+    text-decoration: none;
+  }
+
+  &__body {
+    margin: 15px;
+  }
+}
+
+
+.field-list {
+  &__row {
+    display: table-row;
+  }
+
+  &__label {
+    display: table-cell;
+    padding: 5px;
+    text-align: right;
+    vertical-align: bottom;
+
+    &--input {
+      padding-bottom: 11px;
+    }
+  }
+
+  &__value {
+    display: table-cell;
+    padding: 5px;
+    vertical-align: bottom;
+  }
+}
+
+.errorlist {
+  margin: 0;
+  padding-inline-start: 20px;
+  color: colors.$error-text;
+  font-size: 14px;
+}

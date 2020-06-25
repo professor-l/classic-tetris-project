@@ -3,10 +3,10 @@ def session_processor(request):
         return {}
 
     if request.user.is_authenticated and hasattr(request.user, "website_user"):
-        user = request.user.website_user.user
+        current_user = request.user.website_user.user
     else:
-        user = None
+        current_user = None
 
     return {
-        "user": user,
+        "current_user": current_user,
     }

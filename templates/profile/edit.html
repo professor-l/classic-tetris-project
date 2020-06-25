@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="profile">
+  <div class="profile-section">
+    <div class="profile-section__header">
+      <h2 class="profile-section__title">
+        Edit Profile
+      </h2>
+    </div>
+    <form method="post">
+      {% csrf_token %}
+      <div class="profile-section__body">
+        {{ form.non_field_errors }}
+        <div class="field-list">
+          <div class="field-list__row">
+            <div class="field-list__label field-list__label--input">
+              <label for="{{ form.preferred_name.id_for_label }}">Preferred name:</label>
+            </div>
+            <div class="field-list__value">
+              {{ form.preferred_name.errors }}
+              {{ form.preferred_name }}
+            </div>
+          </div>
+
+          <div class="field-list__row">
+            <div class="field-list__label field-list__label--input">
+              <label for="{{ form.pronouns.id_for_label }}">Pronouns:</label>
+            </div>
+            <div class="field-list__value">
+              {{ form.pronouns.errors }}
+              {{ form.pronouns }}
+            </div>
+          </div>
+
+          <div class="field-list__row">
+            <div class="field-list__label field-list__label--input">
+              <label for="{{ form.country.id_for_label }}">Country:</label>
+            </div>
+            <div class="field-list__value">
+              {{ form.country.errors }}
+              {{ form.country }}
+            </div>
+          </div>
+
+          <div class="field-list__row">
+            <div class="field-list__label">
+              <label>Discord:</label>
+            </div>
+            <div class="field-list__value">
+              {% if user.discord_user %}
+              {{ user.discord_user.username_with_discriminator }}
+              {% else %}
+              <a href="{% url "oauth:login" provider="discord" %}?merge_accounts=true&next={% url "profile:edit" %}">Link your Discord account</a>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="field-list__row">
+            <div class="field-list__label">
+              <label>Twitch:</label>
+            </div>
+            <div class="field-list__value">
+              {% if user.twitch_user %}
+              <a href="{{ user.twitch_user.twitch_url }}">{{ user.twitch_user.username }}</a>
+              {% else %}
+              <a href="{% url "oauth:login" provider="twitch"%}?merge_accounts=true&next={% url "profile:edit" %}">Link your Twitch account</a>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="field-list__row">
+            <div class="field-list__label field-list__label--input">
+              <label for="{{ form.playstyle.id_for_label }}">Playstyle:</label>
+            </div>
+            <div class="field-list__value">
+              {{ form.playstyle.errors }}
+              {{ form.playstyle }}
+            </div>
+          </div>
+
+          <div class="field-list__row">
+            <div class="field-list__label"></div>
+            <div class="field-list__value">
+              <input type="submit" value="Update" class="btn btn--primary">
+            </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+@use 'colors';
+
+input[type="text"], select {
+  margin: 1px;
+  padding: 5px;
+  font-size: 16px;
+  line-height: 20px;
+  border: 1px solid colors.$border-gray;
+
+  &:focus {
+    outline: 2px solid colors.$border-blue;
+    //margin: 0;
+    //border: 2px solid colors.$border-blue;
+  }
+}
+
+select:after {
+  color: colors.$border-gray;
+}

@@ -1,0 +1,12 @@
+// Collapse
+.collapse {
+  &:not(.show) {
+    display: none;
+    height: 0;
+  }
+}
+
+.collapsing {
+  height: 0;
+  overflow: hidden;
+}

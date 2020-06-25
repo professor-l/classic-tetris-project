@@ -1,0 +1,33 @@
+@use 'media';
+
+body {
+  margin: 0;
+  font-family: "Roboto";
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.main-content {
+  max-width: 800px;
+  margin: auto;
+  padding: 30px 30px 0 30px;
+  @include media.tablet-and-desktop {
+    padding-top: 60px;
+  }
+}
+
+h1 {
+  font-size: 48px;
+  font-weight: normal;
+  line-height: 56px;
+}
+
+h2 {
+  font-size: 28px;
+  font-weight: normal;
+  line-height: 33px;
+}
+
+.center {
+  text-align: center;
+}
