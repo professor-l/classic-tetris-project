@@ -29,11 +29,10 @@ class UserTestCase(TestCase):
 ### Writing tests
 Your most important resource when writing tests is our [`tests.helper`](https://github.com/professor-l/classic-tetris-project/blob/master/tests/helper/__init__.py) module. This imports a bunch of useful testing tools for you so that you don't have to import a million things at the top of each of your test files. Every test file should begin with:
 ```python
-from tests.helper import *
+from classic_tetris_project.tests.helper import *
 ```
 
 Some of the tools included are:
-- [expects](https://expects.readthedocs.io/en/stable/) is an assertion library that we use in place of Django's assertions. In my opinion it results in cleaner and more expressive assertions, and it's more extensible and can build more complex conditions than Django's assertions. All expects matchers are included in `tests.helper`.
 - [factory_boy](https://factoryboy.readthedocs.io/en/latest/) is a substitute for Django's fixtures that makes building model instances during testing easier. Factories are defined in the `tests.helpers.factories` module. Each factory class can be called to create an instance of its associated model:
   ```python
   # creates a ScorePB with some default values and an associated User
@@ -62,7 +61,7 @@ Some of the tools included are:
               ...
   ```
   `describe` has no actual effect, but it can group related test methods together inside an indented block, which helps make the test suite more readable. I recommend naming instance methods as `#instance_method_name` and static and class methods as `.static_method_name`, though you may use `describe` to create other groupings (i.e. you could separate out testing the Discord and Twitch versions of commands).
-- When writing tests for bot commands, you should extend the `CommandTestCase` class. This stubs out logging and Twitch API calls, provides a bunch of lazy resources that are generally useful for testing commands, and defines the `expect_discord` and `expect_twitch` instance methods, which can be used to check that running a specific command string will result in the bot sending a message or sequence of messages.
+- When writing tests for bot commands, you should extend the `CommandTestCase` class. This stubs out logging and Twitch API calls, provides a bunch of lazy resources that are generally useful for testing commands, and defines the `assertDiscord` and `assertTwitch` instance methods, which can be used to check that running a specific command string will result in the bot sending a message or sequence of messages.
 
 I would recommend starting by looking at some of the tests in `tests/` to get a feel for how the existing test suite is written. Feel free to contact dexfore if you have any questions about writing tests.
 

@@ -17,3 +17,5 @@ class DiscordUserFactory(factory.django.DjangoModelFactory):
 class TwitchUserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TwitchUser
+    twitch_id = factory.Sequence(lambda n: str(n))
+    username = factory.Sequence(lambda n: f"user_{n}")

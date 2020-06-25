@@ -8,10 +8,12 @@ __pycache__/
 static/
 logs/
 cache/
+node_modules/
 .env
 
 export.py
 pbs.csv
+webpack-stats.json
 
 /.vs/
 /.vscode/

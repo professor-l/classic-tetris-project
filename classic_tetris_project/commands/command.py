@@ -195,7 +195,7 @@ class Command(ABC):
             username = match.group(1)
 
             if existing_only:
-                user = TwitchUser.from_username(username)
+                user = TwitchUser.from_username(username, refetch=True)
             else:
                 user = TwitchUser.get_or_create_from_username(username)
 

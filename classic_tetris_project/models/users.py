@@ -1,13 +1,14 @@
 import asyncio
+import discord as discordpy
 import re
-
+from django.conf import settings
 from django.contrib.auth.models import User as AuthUser
 from django.db import models
-# Used to add User upon creation of TwitchUser or DiscordUser
 from django.db.models import signals
 from django.dispatch import receiver
+from django.urls import reverse
 from django.utils import timezone
-import discord as discordpy
+from furl import furl
 
 from .. import twitch, discord
 from ..util import lazy
@@ -28,13 +29,16 @@ class User(models.Model):
         "hybrid": "Hybrid",
     }
 
-    preferred_name = models.CharField(max_length=64, null=True)
+    preferred_name = models.CharField(max_length=64, null=True, blank=True)
 
-    pronouns = models.CharField(max_length=16, null=True, choices=PRONOUN_CHOICES.items())
+    pronouns = models.CharField(max_length=16, null=True, blank=True,
+                                choices=PRONOUN_CHOICES.items())
 
-    playstyle = models.CharField(max_length=16, null=True, choices=PLAYSTYLE_CHOICES.items())
+    playstyle = models.CharField(max_length=16, null=True, blank=True,
+                                 choices=PLAYSTYLE_CHOICES.items())
 
-    country = models.CharField(max_length=3, null=True)
+    country = models.CharField(max_length=3, null=True, blank=True,
+                               choices=[(country.abbreviation, country.full_name) for country in Country.ALL])
 
     same_piece_sets = models.BooleanField(default=False)
 
@@ -111,16 +115,31 @@ class User(models.Model):
             return self.twitch_user.username
         elif hasattr(self, "discord_user"):
             return self.discord_user.display_name()
+        else:
+            return f"User {self.id}"
 
     def merge(self, target_user):
         from ..util.merge import UserMerger
         UserMerger(self, target_user).merge()
+
+    def profile_id(self):
+        if hasattr(self, "twitch_user"):
+            return self.twitch_user.username
+        else:
+            return self.id
 
     def __str__(self):
         if hasattr(self, "twitch_user"):
             return self.twitch_user.username
         else:
             return f"User<id={self.id}>"
+
+    def get_absolute_url(self, include_base=False):
+        path = reverse("user", kwargs={ "id": self.profile_id() })
+        if include_base:
+            return furl(settings.BASE_URL, path=path).url
+        else:
+            return path
 
 
 class PlatformUser(models.Model):
@@ -143,14 +162,14 @@ class PlatformUser(models.Model):
 
 class TwitchUser(PlatformUser):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="twitch_user")
-    twitch_id = models.CharField(max_length=64, unique=True, blank=False)
+    twitch_id = models.CharField(max_length=64, unique=True, blank=False) # unique index
     """
     username is set when:
     - a TwitchUser with no username is saved
     - a TwitchUser runs a command
-    - TwitchUser.from_username is called
+    - TwitchUser.from_username is called with fetch=True
     """
-    username = models.CharField(max_length=25, unique=True, blank=False)
+    username = models.CharField(max_length=25, unique=True, blank=False) # unique index
 
     @staticmethod
     def fetch_by_twitch_id(twitch_id):
@@ -159,22 +178,28 @@ class TwitchUser(PlatformUser):
         except TwitchUser.DoesNotExist:
             return None
 
+    @staticmethod
     def fetch_or_create_by_twitch_id(twitch_id):
         twitch_user, created = TwitchUser.objects.get_or_create(twitch_id=twitch_id)
         return twitch_user
 
     @staticmethod
-    def from_username(username):
+    def from_username(username, refetch=False):
+        """
+        If refetch is True and we can't find a TwitchUser with the given username, query Twitch's
+        API to check if an existing TwitchUser updated their username
+        """
         try:
             twitch_user = TwitchUser.objects.get(username__iexact=username)
             return twitch_user
         except TwitchUser.DoesNotExist:
-            user_obj = twitch.API.user_from_username(username)
-            if user_obj is not None:
-                twitch_user = TwitchUser.fetch_by_twitch_id(user_obj.id)
-                if twitch_user is not None:
-                    twitch_user.update_username(user_obj.username)
-                    return twitch_user
+            if refetch:
+                user_obj = twitch.API.user_from_username(username)
+                if user_obj is not None:
+                    twitch_user = TwitchUser.fetch_by_twitch_id(user_obj.id)
+                    if twitch_user is not None:
+                        twitch_user.update_username(user_obj.username)
+                        return twitch_user
 
             return None
 
@@ -185,11 +210,23 @@ class TwitchUser(PlatformUser):
         if twitch_user is None:
             user_obj = twitch.API.user_from_username(username)
             if user_obj is not None:
-                twitch_user = TwitchUser.fetch_or_create_by_twitch_id(user_obj.id)
+                twitch_user = TwitchUser.get_or_create_from_user_obj(user_obj)
 
         if twitch_user is None:
             raise Exception(f"No Twitch account exists with username '{username}'.")
         return twitch_user
+
+    @staticmethod
+    def get_or_create_from_user_obj(user_obj):
+        try:
+            twitch_user = TwitchUser.objects.get(twitch_id=str(user_obj.id))
+            twitch_user.update_username(user_obj.username)
+            return twitch_user
+        except TwitchUser.DoesNotExist:
+            return TwitchUser.objects.create(
+                twitch_id=str(user_obj.id),
+                username=user_obj.username
+            )
 
 
     @lazy
@@ -202,6 +239,10 @@ class TwitchUser(PlatformUser):
     @property
     def user_tag(self):
         return f"@{self.username}"
+
+    @property
+    def twitch_url(self):
+        return f"https://www.twitch.tv/{self.username}"
 
     def send_message(self, message):
         self.user_obj.send_message(message)
@@ -296,6 +337,10 @@ class DiscordUser(PlatformUser):
     @property
     def user_tag(self):
         return f"<@{self.discord_id}>"
+
+    @property
+    def username_with_discriminator(self):
+        return f"{self.username}#{self.discriminator}"
 
     def send_message(self, message):
         if not isinstance(self.user_obj, discordpy.User):
