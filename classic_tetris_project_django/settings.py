@@ -178,12 +178,7 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
-if DEBUG:
-    # Used for images
-    STATICFILES_DIRS.append(os.path.join(BASE_DIR, 'classic_tetris_project', 'private', 'assets'))
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 WEBPACK_LOADER = {
     'DEFAULT': {
