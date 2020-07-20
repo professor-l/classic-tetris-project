@@ -7,7 +7,7 @@ from ... import twitch
 
 @Command.register_twitch("pmatch",
                          usage="pmatch [user] [results=3]")
-class MatchCommand(Command):
+class PMatchCommand(Command):
     MIN_RESULTS = 3
     DEFAULT_RESULTS = 3
     MAX_RESULTS = 6
