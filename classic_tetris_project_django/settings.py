@@ -38,12 +38,11 @@ SECRET_KEY = ENV('SECRET_KEY')
 DEBUG = ENV('DEBUG')
 
 ALLOWED_HOSTS = [
-    'localhost',
-    'dev.monthlytetris.info',
     'monthlytetris.info',
     'monthlytetris.com',
-    '18.191.245.242',
 ]
+if DEBUG:
+    ALLOWED_HOSTS.append('*')
 
 
 # Application definition
@@ -57,6 +56,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_nose',
+    'django_extensions',
+    'webpack_loader',
 ]
 
 MIDDLEWARE = [
@@ -71,7 +72,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'classic_tetris_project_django.urls'
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/oauth/login/'
 
 TEMPLATE_DIR = os.path.join(BASE_DIR, "classic_tetris_project", "private", "templates")
 TEMPLATES = [
@@ -140,6 +141,8 @@ LOGGING = {
     },
 }
 
+SHELL_PLUS_PRINT_SQL = True
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -174,9 +177,12 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
-
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'private/static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'bundles/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+    }
+}

@@ -8,6 +8,7 @@ from .env import env
 
 
 TWITCH_API = "https://api.twitch.tv/kraken/"
+TWITCH_API_HELIX = "https://api.twitch.tv/helix/"
 TWITCH_SERVER = "irc.chat.twitch.tv"
 TWITCH_PORT = 6667
 
@@ -21,8 +22,9 @@ class APIClient:
             "Client-ID": client_id
         }
 
-    def _request(self, endpoint, params={}, api=TWITCH_API):
-        response = requests.get(f"{api}{endpoint}", params=params, headers=self.headers)
+    def _request(self, endpoint, params={}, headers={}, api=TWITCH_API):
+        response = requests.get(f"{api}{endpoint}", params=params,
+                                headers={**self.headers, **headers})
         return response.json()
 
     def user_from_username(self, username, client=None):
@@ -30,29 +32,38 @@ class APIClient:
         user_list = response["users"]
         if user_list:
             user_obj = user_list[0]
-            return User(
-                client=client,
-                username=user_obj["name"],
-                id=user_obj["_id"],
-                display_name=user_obj["display_name"],
-                tags=user_obj
-            )
+            return self.wrap_user_dict(user_obj, client)
         else:
             return None
 
     def user_from_id(self, user_id, client=None):
         user_obj = self._request(f"users/{user_id}")
+        return self.wrap_user_dict(user_obj, client)
+
+    def own_user(self, token, client=None):
+        user_data = self._request(f"users", api=TWITCH_API_HELIX,
+                                  headers={"Authorization": f"Bearer {token}"})
+        user_dict = user_data["data"][0]
         return User(
             client=client,
-            username=user_obj["name"],
-            id=user_obj["_id"],
-            display_name=user_obj["display_name"],
-            tags=user_obj
+            username=user_dict["login"],
+            id=user_dict["id"],
+            display_name=user_dict["display_name"],
+            tags=user_dict
         )
 
     def usernames_in_channel(self, channel):
         response = self._request(f"group/user/{channel}/chatters", api="http://tmi.twitch.tv/")
         return sum((group for group in response["chatters"].values()), [])
+
+    def wrap_user_dict(self, user_dict, client=None):
+        return User(
+            client=client,
+            username=user_dict["name"],
+            id=user_dict["_id"],
+            display_name=user_dict["display_name"],
+            tags=user_dict
+        )
 
 
 

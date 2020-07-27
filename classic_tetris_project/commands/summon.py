@@ -5,7 +5,7 @@ from .command import Command, CommandException
 from .. import twitch
 
 
-SUMMON_LINK = "https://discordapp.com/api/oauth2/authorize?client_id=544534930114347023&permissions=378944&redirect_uri=https%3A%2F%2Fmonthlytetris.info%2Foauth%2Fauthorize%2F&scope=bot"
+SUMMON_LINK = "https://discord.com/api/oauth2/authorize?client_id=544534930114347023&permissions=378944&redirect_uri=https%3A%2F%2Fmonthlytetris.info%2Foauth%2Fauthorize%2Fdiscord%2F&scope=bot"
 
 @Command.register("summon",
                          usage="summon")

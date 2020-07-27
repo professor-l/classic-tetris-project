@@ -46,7 +46,7 @@ class MockTwitchAPIUser:
 class MockTwitchAPIUserFactory(factory.Factory):
     class Meta:
         model = MockTwitchAPIUser
-    id = factory.Sequence(lambda n: f"{n}")
+    id = factory.Sequence(lambda n: f"mock_{n}")
     username = factory.Sequence(lambda n: f"mock_twitch_user_{n}")
 
 

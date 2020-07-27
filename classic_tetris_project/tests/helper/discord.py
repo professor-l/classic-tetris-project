@@ -47,7 +47,7 @@ class MockDiscordAPIUser:
 class MockDiscordAPIUserFactory(factory.Factory):
     class Meta:
         model = MockDiscordAPIUser
-    id = factory.Sequence(lambda n: f"{n}")
+    id = factory.Sequence(lambda n: f"mock_{n}")
     name = factory.Sequence(lambda n: f"Mock Discord User {n}")
     discriminator = factory.Sequence(lambda n: f"{n:04}")
 

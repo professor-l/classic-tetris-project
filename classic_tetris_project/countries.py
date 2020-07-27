@@ -5,6 +5,7 @@ COUNTRIES_CSV_PATH = Path(__file__).parent.resolve() / "data" / "countries.csv"
 
 class Country:
     ACCEPTED_MAPPINGS = {}
+    ALL = []
 
     def __init__(self, two_letter, full_name):
         self.abbreviation = two_letter
@@ -19,8 +20,10 @@ class Country:
             rows = csv.reader(f)
             for row in rows:
                 country = Country(row[0], row[1])
+                Country.ALL.append(country)
                 for column in row:
                     Country.ACCEPTED_MAPPINGS[column.lower()] = country
+        Country.ALL.sort(key=lambda country: country.full_name)
 
 
     @staticmethod

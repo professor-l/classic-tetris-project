@@ -12,7 +12,7 @@ TEMPLATE = ("""
     "color": {color},   
     "author": {{
       "name": "{name}",
-      "url": "https://github.com/professor-l/classic-tetris-project/",
+      "url": "{url}",
       "icon_url": "{player_icon}"
     }},
     "fields": [
@@ -75,6 +75,7 @@ class ProfileCommand(Command):
 
         user = platform_user.user
         name = self.context.display_name(platform_user)
+        url = user.get_absolute_url(True)
                 
         player_icon = self.get_player_icon(name, username)
         color = self.get_color(name, username)
@@ -92,6 +93,7 @@ class ProfileCommand(Command):
         
         json_message = match_template(TEMPLATE,
                                       name=name,
+                                      url=url,
                                       color=color,
                                       player_icon=player_icon,
                                       ntsc_pb=ntsc_pb,

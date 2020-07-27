@@ -98,7 +98,7 @@ class DiscordCommandContext(CommandContext):
     @property
     @memoize
     def platform_user(self):
-        return DiscordUser.fetch_by_discord_id(self.author.id)
+        return DiscordUser.get_or_create_from_user_obj(self.author)
 
     def format_code(self, message):
         return f"`{message}`"

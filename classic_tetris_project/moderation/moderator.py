@@ -18,7 +18,7 @@ class DiscordModerator:
     @property
     @memoize
     def user(self):
-        return DiscordUser.fetch_by_discord_id(self.message.author.id)
+        return DiscordUser.get_or_create_from_user_ob(self.message.author)
 
     @staticmethod
     def is_rule(message):
