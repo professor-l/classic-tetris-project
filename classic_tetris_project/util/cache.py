@@ -23,5 +23,9 @@ class FileCache:
         with open(self.full_path(filename), "wb") as f:
             f.write(content)
     
-    def get(self, filename):
-        return open(self.full_path(filename), "rb")
+    def get(self, filename):        
+        with open(self.full_path(filename), "rb") as f:
+            myBytesIO = io.BytesIO(f)
+            myBytesIO.seek(0)
+
+        return myBytesIO
