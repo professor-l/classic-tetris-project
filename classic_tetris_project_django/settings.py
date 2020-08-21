@@ -38,6 +38,7 @@ SECRET_KEY = ENV('SECRET_KEY')
 DEBUG = ENV('DEBUG')
 
 ALLOWED_HOSTS = [
+    'ctm.gg',
     'monthlytetris.info',
     'monthlytetris.com',
 ]
