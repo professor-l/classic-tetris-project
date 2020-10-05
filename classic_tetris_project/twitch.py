@@ -3,6 +3,7 @@ import logging
 import re
 import requests
 import time
+from threading import Thread
 
 from .env import env
 
@@ -82,7 +83,8 @@ class Client:
     def handle_welcome(self):
         self.connection.cap("REQ", ":twitch.tv/tags")
         self.connection.cap("REQ", ":twitch.tv/commands")
-        self.join_channels()
+
+        Thread(target=self.join_channels).start()
 
     def start(self):
         self.connection.connect(TWITCH_SERVER, TWITCH_PORT, self.username, self.token)
@@ -125,7 +127,7 @@ class Client:
             self.join_channel(channel)
             # Band-aid to prevent Twitch from disconnecting the bot for joining too many channels at
             # once
-            time.sleep(0.1)
+            time.sleep(0.5)
 
     def join_channel(self, channel_name):
         logger.info(f"Joining channel #{channel_name}")
