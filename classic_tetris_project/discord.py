@@ -1,6 +1,8 @@
 import discord
 import logging
 import requests
+
+from asgiref.sync import async_to_sync
 from .env import env
 
 DISCORD_API = "https://discord.com/api/"
@@ -34,6 +36,9 @@ API = APIClient(env("DISCORD_TOKEN", default=""))
 
 def get_guild():
     return client.get_guild(guild_id)
+
+def get_guild_member(guild=get_guild(), id=0):
+    return async_to_sync(guild.fetch_member)(id)
 
 def get_channel(id):
     return client.get_channel(id)

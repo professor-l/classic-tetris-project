@@ -74,11 +74,13 @@ class ProfileCommand(Command):
             raise CommandException("Invalid specified user.")
 
         user = platform_user.user
+        guild = self.context.guild or get_guild()
+        member = get_guild_member(guild=guild, id=platform_user.platform_id)
         name = self.context.display_name(platform_user)
         url = user.get_absolute_url(True)
                 
-        player_icon = self.get_player_icon(name, username)
-        color = self.get_color(name, username)
+        player_icon = self.get_player_icon(member)
+        color = self.get_color(member)
         
         ntsc_pb = self.format_pb(user.get_pb("ntsc")).rjust(13)
         ntsc_pb_19 = self.format_pb(user.get_pb("ntsc", 19)).rjust(9)
@@ -114,24 +116,17 @@ class ProfileCommand(Command):
         else:
             return "Not set"
 
-    def get_player_icon(self, name, username):
-        guild = self.context.guild or get_guild()
-        # search for multiple members...
-        members = [guild.get_member_named(n) for n in [name,username]]
-        for m in members:
-            if m is not None and m.avatar is not None:
-                return PLAYER_ICON.format(id=m.id, avatar=m.avatar)
-        
+    def get_player_icon(self, member):
+
+        if member is not None and member.avatar is not None:
+            return PLAYER_ICON.format(id=member.id, avatar=member.avatar)
+
         return ""
 
-    def get_color(self, name, username):
-        guild = self.context.guild or get_guild()  
+    def get_color(self, member):
+        if member is not None and member.color is not None:
+            return member.color.value
 
-        members = [guild.get_member_named(n) for n in [name,username]]
-        for m in members:
-            if m is not None and m.color is not None:
-                return m.color.value
-        
         return 0 # black
 
     def get_playstyle(self, user):        

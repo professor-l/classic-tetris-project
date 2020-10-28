@@ -241,6 +241,10 @@ class TwitchUser(PlatformUser):
         return f"@{self.username}"
 
     @property
+    def platform_id(self):
+        return int(self.twitch_id)
+
+    @property
     def twitch_url(self):
         return f"https://www.twitch.tv/{self.username}"
 
@@ -330,13 +334,17 @@ class DiscordUser(PlatformUser):
 
     def display_name(self, guild=None):
         if guild:
-            return guild.get_member(int(self.discord_id)).display_name
+            return discord.get_guild_member(guild=guild, id=self.platform_id)
         else:
             return self.username
 
     @property
     def user_tag(self):
         return f"<@{self.discord_id}>"
+
+    @property
+    def platform_id(self):
+        return int(self.discord_id)
 
     @property
     def username_with_discriminator(self):

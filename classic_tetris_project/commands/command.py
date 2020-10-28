@@ -74,7 +74,7 @@ class Command(ABC):
 
         elif self.context.platform == Platform.DISCORD:
             guild = discord.get_guild()
-            member = guild.get_member(self.context.author.id)
+            member = discord.get_guild_member(guild=guild, id=self.context.author.id)
             role = guild.get_role(discord.moderator_role_id)
 
             if role not in member.roles:
