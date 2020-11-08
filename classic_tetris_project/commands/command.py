@@ -52,7 +52,7 @@ class Command(ABC):
 
     def send_message(self, message):
         return self.context.send_message(message)
-    
+
     def send_message_full(self, channel_id, *args, **kwargs):
         return self.context.send_message_full(channel_id, *args, **kwargs) 
 

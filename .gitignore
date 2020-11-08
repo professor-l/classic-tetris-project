@@ -11,7 +11,7 @@ cache/
 node_modules/
 .env
 
-export.py
+/export.py
 pbs.csv
 webpack-stats.json
 

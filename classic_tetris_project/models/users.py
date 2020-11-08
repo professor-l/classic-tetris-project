@@ -47,12 +47,16 @@ class User(models.Model):
         return ScorePB.log(self, score=score, console_type=console_type.lower(),
                            starting_level=starting_level, lines=lines)
 
-    def get_pb(self, console_type="ntsc", starting_level=None):
+    def get_pb_object(self, console_type="ntsc", starting_level=None):
         scope = self.score_pbs.filter(console_type=console_type, current=True)
         if starting_level is not None:
             scope = scope.filter(starting_level=starting_level)
         score_pb = scope.order_by("-score").first()
-        return score_pb.score if score_pb else None
+        return score_pb
+
+    def get_pb(self, console_type="ntsc", starting_level=None):
+        pb = self.get_pb_object(console_type, starting_level)
+        return pb.score if pb else None
 
     def set_pronouns(self, pronoun):
         pronoun = pronoun.lower()
@@ -82,6 +86,8 @@ class User(models.Model):
             return False
 
     def get_country(self):
+        if self.country is None:
+            return None
         return Country.get_country(self.country)
 
     def set_preferred_name(self, name):
