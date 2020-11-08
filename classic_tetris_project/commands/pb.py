@@ -65,7 +65,7 @@ class SetPBCommand(Command):
         if score < 0:
             raise CommandException("Invalid PB.")
 
-        if score > 1400000:
+        if score > 1500000:
             raise CommandException("You wish, kid >.>")
 
         if level is not None and (level < 0 or level > 29):
