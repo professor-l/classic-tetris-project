@@ -317,6 +317,25 @@ class DiscordUser(PlatformUser):
                 discriminator=user_obj.discriminator
             )
 
+    @staticmethod
+    def get_from_username(username, discriminator=None):
+        try:
+            query = DiscordUser.objects.filter(username__iexact=username)
+            if discriminator is not None:
+                query = query.filter(discriminator=discriminator)
+
+        except DiscordUser.DoesNotExist:
+            return None
+
+        if not query.count():
+            return None
+
+        # TODO: Address multiple results
+        return query.first()
+
+    def get_member(self, guild_id=discord.guild_id):
+        return discord.get_guild_member(guild_id, self.discord_id)
+
     @lazy
     def user_obj(self):
         if discord.client.is_ready():
@@ -338,11 +357,9 @@ class DiscordUser(PlatformUser):
             self.discriminator = user_obj.discriminator
             self.save()
 
-    def display_name(self, guild=None):
-        if guild:
-            return discord.get_guild_member(guild=guild, id=self.platform_id)
-        else:
-            return self.username
+    def display_name(self, guild_id=None):
+        member = self.get_member(guild_id)
+        return member.display_name if member else self.username
 
     @property
     def user_tag(self):

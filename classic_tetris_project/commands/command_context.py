@@ -42,7 +42,7 @@ class CommandContext:
 
     def display_name(self, platform_user):
         if (self.platform == Platform.DISCORD and isinstance(platform_user, DiscordUser) and self.guild):
-            return platform_user.display_name(self.guild)
+            return platform_user.display_name(self.guild.id)
         else:
             return platform_user.display_name()
 

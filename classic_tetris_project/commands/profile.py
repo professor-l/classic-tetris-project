@@ -61,7 +61,7 @@ PLAYER_ICON = "https://cdn.discordapp.com/avatars/{id}/{avatar}.jpg"
 @Command.register_discord("profile",
                   usage="profile [username] (default username you)")
 class ProfileCommand(Command):
-    
+
     def execute(self, *username):
         username = username[0] if len(username) == 1 else self.context.args_string
         if username and not self.any_platform_user_from_username(username):
@@ -74,25 +74,24 @@ class ProfileCommand(Command):
             raise CommandException("Invalid specified user.")
 
         user = platform_user.user
-        guild = self.context.guild or get_guild()
-        member = get_guild_member(guild=guild, id=platform_user.platform_id)
+        guild_id = self.context.guild.id if self.context.guild else None
+        member = platform_user.get_member(guild_id)
         name = self.context.display_name(platform_user)
-        url = user.get_absolute_url(True)
-                
         player_icon = self.get_player_icon(member)
         color = self.get_color(member)
-        
+        url=user.get_absolute_url(True)
+
         ntsc_pb = self.format_pb(user.get_pb("ntsc")).rjust(13)
         ntsc_pb_19 = self.format_pb(user.get_pb("ntsc", 19)).rjust(9)
         pal_pb = self.format_pb(user.get_pb("pal")).rjust(14)
-        
+
         pronouns = user.get_pronouns_display() or "Not set"
-        
+
         playstyle = self.get_playstyle(user)
-        country = self.get_country(user)        
-        same_pieces = self.get_same_pieces(user)        
-        twitch_channel = self.get_twitch(user)       
-        
+        country = self.get_country(user)
+        same_pieces = self.get_same_pieces(user)
+        twitch_channel = self.get_twitch(user)
+
         json_message = match_template(TEMPLATE,
                                       name=name,
                                       url=url,

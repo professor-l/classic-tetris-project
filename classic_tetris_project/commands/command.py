@@ -74,7 +74,7 @@ class Command(ABC):
 
         elif self.context.platform == Platform.DISCORD:
             guild = discord.get_guild()
-            member = discord.get_guild_member(guild=guild, id=self.context.author.id)
+            member = self.context.author.get_member()
             role = guild.get_role(discord.moderator_role_id)
 
             if role not in member.roles:
@@ -167,25 +167,14 @@ class Command(ABC):
         if match_tag:
             username = match_tag.group("username")
             discriminator = match_tag.group("discriminator")
-            for user in guild.members:
-                if (user.name.casefold() == username.casefold() and
-                        user.discriminator == discriminator):
-                    member = user
+            user = DiscordUser.get_from_username(username, discriminator)
         else:
-            for user in guild.members:
-                if user.display_name.casefold() == username.casefold():
-                    member = user
+            user = DiscordUser.get_from_username(username)
 
-        if member is not None:
-            try:
-                return DiscordUser.objects.get(discord_id=member.id)
-            except DiscordUser.DoesNotExist:
-                return None
+        if user is None and raise_invalid:
+            raise CommandException("Invalid username")
         else:
-            if raise_invalid:
-                raise CommandException("Invalid username")
-            else:
-                return None
+            return user
 
     @staticmethod
     def twitch_user_from_username(username, existing_only=True, raise_invalid=True):
