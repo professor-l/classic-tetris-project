@@ -75,7 +75,11 @@ class ProfileCommand(Command):
 
         user = platform_user.user
         guild_id = self.context.guild.id if self.context.guild else None
-        member = platform_user.get_member(guild_id)
+        try:
+            member = platform_user.get_member(guild_id)
+        except AttributeError:
+            member = None
+
         name = self.context.display_name(platform_user)
         player_icon = self.get_player_icon(member)
         color = self.get_color(member)
