@@ -39,7 +39,7 @@ def get_guild():
 
 def get_guild_member(custom_guild_id, id):
     g = custom_guild_id or guild_id
-    return async_to_sync(client.get_guild(custom_guild_id).fetch_member)(id)
+    return async_to_sync(client.get_guild(g).fetch_member)(id)
 
 def get_channel(id):
     return client.get_channel(id)
