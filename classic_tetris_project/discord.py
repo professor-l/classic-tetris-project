@@ -39,7 +39,12 @@ def get_guild():
 
 def get_guild_member(custom_guild_id, id):
     g = custom_guild_id or guild_id
-    return async_to_sync(client.get_guild(g).fetch_member)(id)
+    try:
+        return async_to_sync(client.get_guild(g).fetch_member)(id)
+    except discord.erros.NotFound:
+        return async_to_sync(client.get_guild(guild_id).fetch_member)(id)
+    except discord.errors.NotFound:
+        return None
 
 def get_channel(id):
     return client.get_channel(id)

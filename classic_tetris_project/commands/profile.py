@@ -6,10 +6,10 @@ from .command import Command, CommandException
 from ..countries import Country
 
 from ..util.json_template import match_template
-    
+
 TEMPLATE = ("""
-{{    
-    "color": {color},   
+{{
+    "color": {color},
     "author": {{
       "name": "{name}",
       "url": "{url}",
@@ -108,11 +108,11 @@ class ProfileCommand(Command):
                                       playstyle=playstyle,
                                       country=country,
                                       same_pieces=same_pieces,
-                                      twitch_channel=twitch_channel)        
+                                      twitch_channel=twitch_channel)
 
         e = Embed.from_dict(json_message)
         self.send_message_full(self.context.channel.id, embed=e)
-    
+
     def format_pb(self, value):
         if value:
             return "{pb:,}".format(pb=value)
@@ -132,8 +132,8 @@ class ProfileCommand(Command):
 
         return 0 # black
 
-    def get_playstyle(self, user):        
-        if user.playstyle:            
+    def get_playstyle(self, user):
+        if user.playstyle:
             emote = get_emote(PLAYSTYLE_EMOJI[user.playstyle])
             display = user.get_playstyle_display()
             return (emote + " " + display) if emote else display
@@ -150,11 +150,11 @@ class ProfileCommand(Command):
         if user.same_piece_sets:
             emote = get_emote(TETRIS_CHECK)
             return (emote + " Yes") if emote else "Yes"
-        else:            
+        else:
             emote = get_emote(TETRIS_X)
             return (emote + " No") if emote else "No"
 
     def get_twitch(self, user):
         if hasattr(user, "twitch_user"):
             return f"https://www.twitch.tv/{user.twitch_user.username}"
-        return "Not `!link`ed"
+        return "Not linked (head to ctm.gg)"
