@@ -8,7 +8,7 @@ django-extensions==2.2.9
 django-nose==1.4.6
 django-redis==4.10.0
 django-webpack-loader==0.7.0
-django==2.2.10
+django==2.2.13
 factory_boy==2.12.0
 furl==2.1.0
 ipdb==0.12
