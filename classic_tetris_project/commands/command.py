@@ -150,9 +150,11 @@ class Command(ABC):
 
     @staticmethod
     def discord_user_from_username(username, guild=None, raise_invalid=True):
+        username = username.casefold()
         match_mention = RE_DISCORD_MENTION.match(username)
         match_tag = RE_DISCORD_TAG.match(username)
 
+        # Mention includes a discord ID, look up by that
         if match_mention:
             discord_id = match_mention.group(1)
             try:
@@ -160,18 +162,32 @@ class Command(ABC):
             except DiscordUser.DoesNotExist:
                 return None
 
-        if guild is None:
-            guild = discord.get_guild()
-
+        guild = guild or discord.get_guild()
         member = None
+        # Mention has format "User#1234"
+        # Find by username and discriminator
         if match_tag:
             username = match_tag.group("username")
             discriminator = match_tag.group("discriminator")
             user = DiscordUser.get_from_username(username, discriminator)
+            if user is None:
+                member = next((m for m in guild.members
+                               if m.name.casefold() == username and m.discriminator == discriminator),
+                              None)
         else:
             user = DiscordUser.get_from_username(username)
+            if user is None:
+                member = next((m for m in guild.members if m.display_name.casefold() == username),
+                              None)
 
-        if user is None and raise_invalid:
+        if member is not None:
+            try:
+                user = DiscordUser.objects.get(discord_id=member.id)
+            except DiscordUser.DoesNotExist:
+                return None
+
+        if user is None and member is None and raise_invalid:
+            # Couldn't find the user in DB or on Discord at all
             raise CommandException("Invalid username")
         else:
             return user

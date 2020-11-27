@@ -333,8 +333,8 @@ class DiscordUser(PlatformUser):
         # TODO: Address multiple results
         return query.first()
 
-    def get_member(self, guild_id=discord.guild_id):
-        return discord.get_guild_member(guild_id, self.discord_id)
+    def get_member(self, guild_id=None):
+        return discord.get_guild_member(int(self.discord_id), guild_id)
 
     @lazy
     def user_obj(self):

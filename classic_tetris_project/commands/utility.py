@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from .command import Command, CommandException
 from ..models import Side, TwitchChannel
 from ..util import Platform
-from ..discord import guild_id, client as discord_client
+from ..discord import GUILD_ID, client as discord_client
 from ..words import Words
 from..util.fieldgen.hz_simulation import HzSimulation
 import discord as discordpy
@@ -77,7 +77,7 @@ class CoinFlipCommand(Command):
     def execute(self, *args):
         if self.context.platform == Platform.TWITCH:
             self.check_moderator()
-        elif (self.context.message.guild and self.context.message.guild.id == guild_id):
+        elif (self.context.message.guild and self.context.message.guild.id == GUILD_ID):
             self.context.platform_user.send_message("Due to abuse, `!flip` has been disabled in the CTM Discord server.")
 
             self.context.delete_message(self.context.message)
