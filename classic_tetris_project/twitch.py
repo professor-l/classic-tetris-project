@@ -71,8 +71,6 @@ class APIClient:
 class Client:
     def __init__(self, username, token, default_channels=[]):
         self.username = username
-        self.user_obj = API.user_from_username(username, self)
-        self.user_id = self.user_obj.id
         self.token = token
         self.default_channels = default_channels
         self.reactor = irc.client.Reactor()
@@ -87,6 +85,8 @@ class Client:
         Thread(target=self.join_channels).start()
 
     def start(self):
+        self.user_obj = API.user_from_username(self.username, self)
+        self.user_id = self.user_obj.id
         self.connection.connect(TWITCH_SERVER, TWITCH_PORT, self.username, self.token)
         self.reactor.process_forever()
 

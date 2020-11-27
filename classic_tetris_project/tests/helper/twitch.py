@@ -7,6 +7,10 @@ from .factories import TwitchUserFactory
 class MockTwitchClient:
     def __init__(self):
         self.username = "ClassicTetrisBot"
+        self.user_id = "bot_id"
+
+    def get_user(self, user_id):
+        return MockTwitchAPIUser.create(id=user_id)
 
 class MockTwitchChannel:
     def __init__(self, name):

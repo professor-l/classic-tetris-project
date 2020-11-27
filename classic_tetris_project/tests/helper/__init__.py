@@ -16,6 +16,7 @@ from classic_tetris_project import discord, twitch
 
 patch.object(twitch.APIClient, "_request", side_effect=Exception("twitch API called")).start()
 patch.object(discord.APIClient, "_request", side_effect=Exception("discord API called")).start()
+patch("classic_tetris_project.twitch.client", MockTwitchClient()).start()
 
 @contextmanager
 def describe(description):
