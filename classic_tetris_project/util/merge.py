@@ -1,5 +1,5 @@
 from django.db import transaction
-from ..models import Game, Match, ScorePB
+from ..models import Game, Match, ScorePB, Qualifier, TournamentPlayer
 
 class UserMerger:
     def __init__(self, user1, user2):
@@ -47,3 +47,5 @@ class UserMerger:
         Match.objects.filter(player1=self.user2).update(player1=self.user1)
         Match.objects.filter(player2=self.user2).update(player2=self.user1)
         Game.objects.filter(winner=self.user2).update(winner=self.user1)
+        Qualifier.objects.filter(user=self.user2).update(user=self.user1)
+        TournamentPlayer.objects.filter(user=self.user2).update(user=self.user1)

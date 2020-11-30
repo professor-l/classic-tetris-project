@@ -6,6 +6,7 @@ discord.py==1.5.1
 django-environ==0.4.5
 django-extensions==3.1.0
 django-markdownx==3.0.1
+django-object-actions==3.0.1
 django-redis==4.12.1
 django-webpack-loader==0.7.0
 django==3.1.3
