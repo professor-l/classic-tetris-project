@@ -1,7 +1,7 @@
 @use 'colors';
 
 .btn {
-  display: flex;
+  display: inline-flex;
   box-sizing: border-box;
   height: 40px;
   padding: 10px 20px;
@@ -29,6 +29,11 @@
     &:hover {
       background-color: lighten(colors.$button-primary-bg, 5%);
     }
+  }
+
+  &--full {
+    display: flex;
+    width: 100%;
   }
 
   &--discord {
@@ -59,10 +64,4 @@
 .login-buttons {
   max-width: 400px;
   margin: auto;
-
-  &__btn {
-    &:not(:first-child) {
-      margin-top: 30px;
-    }
-  }
 }

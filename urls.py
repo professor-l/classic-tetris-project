@@ -7,6 +7,7 @@ from .views import user
 from .views import profile
 from .views import policy
 from .views import pages
+from .views import events
 
 oauth_patterns = ([
     path("login/", oauth.login, name="login"),
@@ -28,6 +29,11 @@ policy_patterns = ([
     path("cookies/", policy.cookies, name="cookies"),
 ], "policy")
 
+event_patterns = ([
+    path("", events.IndexView.as_view(), name="index"),
+    path("qualify/", events.QualifyView.as_view(), name="qualify"),
+], "event")
+
 
 urlpatterns = [
     path("", index, name="index"),
@@ -37,6 +43,7 @@ urlpatterns = [
     path("profile/", include(profile_patterns)),
     path("policy/", include(policy_patterns)),
     path("page/<slug:page_slug>/", pages.page, name="page"),
+    path("event/<slug:event_slug>/", include(event_patterns)),
 
     path("markdownx/", include('markdownx.urls')),
 ]

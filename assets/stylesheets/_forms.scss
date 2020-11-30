@@ -1,6 +1,6 @@
 @use 'colors';
 
-input[type="text"], select {
+input[type="text"], input[type="number"], input[type="url"], select, textarea {
   margin: 1px;
   padding: 5px;
   font-size: 16px;
@@ -16,4 +16,35 @@ input[type="text"], select {
 
 select:after {
   color: colors.$border-gray;
+}
+
+.field-list {
+  &__row {
+    display: table-row;
+  }
+
+  &__label {
+    display: table-cell;
+    padding: 5px;
+    text-align: right;
+    vertical-align: top;
+
+    &--input {
+      padding: 11px 5px;
+    }
+  }
+
+  &__value {
+    display: table-cell;
+    padding: 5px;
+    vertical-align: top;
+  }
+}
+
+.errorlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  color: colors.$error-text;
+  font-size: 14px;
 }

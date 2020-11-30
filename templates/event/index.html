@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+
+{% block title %}{{ event.name }} Qualifiers{% endblock %}
+
+{% block content %}
+<h1>{{ event.name }} Qualifiers</h1>
+
+{% if event.event_info %}
+{{ event.event_info|markdown }}
+{% endif %}
+
+{% if can_qualify %}
+<a href="{% url "event:qualify" event.slug %}" class="btn btn--primary">Qualify</a>
+{% endif %}
+
+<div class="spacer"></div>
+
+{% if approved_qualifiers %}
+{% module "Approved" %}
+<table class="data-table">
+  <tr class="data-table__headers">
+    <th>#</th>
+    <th>User</th>
+    <th>Score</th>
+  </tr>
+  {% for qualifier in approved_qualifiers %}
+  <tr class="data-table__row {% cycle "data-table__row--even" "data-table__row--odd" %}">
+    <td>{{ forloop.counter }}</td>
+    <td><a href="{{ qualifier.user.get_absolute_url }}">{{ qualifier.user.display_name }}</a></td>
+    <td>{{ qualifier.qualifying_score|intcomma }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endmodule %}
+{% endif %}
+
+{% if pending_qualifiers %}
+{% module "Pending Review" %}
+<table class="data-table">
+  <tr class="data-table__headers">
+    <th>User</th>
+    <th>Score</th>
+  </tr>
+  {% for qualifier in pending_qualifiers %}
+  <tr class="data-table__row {% cycle "data-table__row--even" "data-table__row--odd" %}">
+    <td><a href="{{ qualifier.user.get_absolute_url }}">{{ qualifier.user.display_name }}</a></td>
+    <td>{{ qualifier.qualifying_score|intcomma }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endmodule %}
+{% endif %}
+{% endblock %}

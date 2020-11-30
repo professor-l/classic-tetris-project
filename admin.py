@@ -1,7 +1,11 @@
-from django.contrib import admin
+from django.contrib import admin, auth
+from django.shortcuts import redirect
+from django.urls import reverse
+from django.utils import timezone
+from django_object_actions import DjangoObjectActions
 from markdownx.admin import MarkdownxModelAdmin
 
-from ..models import User, DiscordUser, TwitchUser, WebsiteUser, Match, Game, TwitchChannel, CustomCommand, Page
+from ..models import User, DiscordUser, TwitchUser, WebsiteUser, Match, Game, TwitchChannel, CustomCommand, Page, Event, Qualifier
 
 
 class DiscordUserInline(admin.StackedInline):
@@ -14,8 +18,15 @@ class WebsiteUserInline(admin.StackedInline):
     model = WebsiteUser
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(DjangoObjectActions, admin.ModelAdmin):
     inlines = [DiscordUserInline, TwitchUserInline, WebsiteUserInline]
+
+    def login_as(self, request, user):
+        website_user = WebsiteUser.fetch_by_user(user)
+        auth.login(request, website_user.auth_user)
+        return redirect(reverse("index"))
+
+    change_actions = ("login_as",)
 
 @admin.register(DiscordUser)
 class DiscordUserAdmin(admin.ModelAdmin):
@@ -51,3 +62,33 @@ class TwitchChannelAdmin(admin.ModelAdmin):
 class PageAdmin(MarkdownxModelAdmin):
     prepopulated_fields = { "slug": ("title",) }
     list_display = ("title", "slug", "public", "updated_at")
+
+
+@admin.register(Event)
+class EventAdmin(MarkdownxModelAdmin):
+    prepopulated_fields = { "slug": ("name",) }
+    list_display = ("name", "qualifying_open")
+
+@admin.register(Qualifier)
+class QualifierAdmin(admin.ModelAdmin):
+    list_display = ("user", "event", "qualifying_score", "approved", "reviewed_at")
+    list_filter = ("approved",)
+
+    fieldsets = (
+        ("Qualifier Data", {
+            "fields": ("user", "event", "qualifying_score", "qualifying_data", "vod",
+                       "details", "created_at"),
+        }),
+        ("Moderator Data", {
+            "fields": ("approved", "reviewed_at", "reviewed_by"),
+        }),
+    )
+    readonly_fields = ("user", "created_at", "approved", "reviewed_at", "reviewed_by")
+
+    actions = ["approve", "reject"]
+
+    def approve(self, request, queryset):
+        queryset.update(approved=True, reviewed_at=timezone.now(), reviewed_by=request.user)
+
+    def reject(self, request, queryset):
+        queryset.update(approved=False, reviewed_at=timezone.now(), reviewed_by=request.user)

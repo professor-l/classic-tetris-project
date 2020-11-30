@@ -6,13 +6,14 @@ By logging in, you agree to our <a href="{% url "policy:cookies" %}">cookie poli
 </p>
 
 <div class="login-buttons">
-  <a href="{{ discord_path }}" class="btn btn--discord login-buttons__btn">
+  <a href="{{ discord_path }}" class="btn btn--full btn--discord">
     <span class="btn__icon">
       {% include "icons/discord_inverted.html" %}
     </span>
     Login with Discord
   </a>
-  <a href="{{ twitch_path }}" class="btn btn--twitch login-buttons__btn">
+  <div class="spacer"></div>
+  <a href="{{ twitch_path }}" class="btn btn--full btn--twitch">
     <span class="btn__icon">
       {% include "icons/twitch_inverted.html" %}
     </span>
