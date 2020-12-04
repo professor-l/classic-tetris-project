@@ -4,8 +4,6 @@ import logging.handlers
 import os
 import sys
 
-import irc.client
-
 from . import discord, twitch
 
 
@@ -41,7 +39,3 @@ class LoggingManager:
         manager = LoggingManager()
         manager.bind(discord.logger)
         manager.bind(twitch.logger)
-
-        # irc.client.log.addHandler(manager.console_handler)
-        irc.client.log.addHandler(manager.file_handler)
-        irc.client.log.setLevel(logging.DEBUG)
