@@ -20,7 +20,10 @@ class UserAdmin(admin.ModelAdmin):
 class DiscordUserAdmin(admin.ModelAdmin):
     list_display = ("username", "discriminator", "discord_id")
 
-admin.site.register(TwitchUser)
+@admin.register(TwitchUser)
+class TwitchUserAdmin(admin.ModelAdmin):
+    list_display = ("username", "twitch_id")
+    search_fields = ("username",)
 
 
 class GameInline(admin.TabularInline):
@@ -38,4 +41,6 @@ class CustomCommandInline(admin.TabularInline):
 @admin.register(TwitchChannel)
 class TwitchChannelAdmin(admin.ModelAdmin):
     inlines = [CustomCommandInline]
-    list_display = ("__str__", "twitch_user", "connected")
+    list_display = ("twitch_user", "connected")
+    search_fields = ("twitch_user__username",)
+    autocomplete_fields = ("twitch_user",)
