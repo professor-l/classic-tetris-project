@@ -31,3 +31,6 @@ class TwitchChannel(models.Model):
 
     def send_message(self, message):
         self.client_channel.send_message(message)
+
+    def __str__(self):
+        return str(self.twitch_user)

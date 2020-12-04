@@ -10,17 +10,13 @@ class CustomCommand(models.Model):
     twitch_channel = models.ForeignKey(TwitchChannel, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=20)
-    output = models.CharField(max_length=400, null=True, blank=True)
-    alias_for = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
+    output = models.CharField(max_length=400, blank=True)
+    alias_for = models.ForeignKey("self", null=True, on_delete=models.CASCADE)
 
     class Meta:
-        indexes = [
-            models.Index(
-                fields=["twitch_channel"]
-            )
-        ]
         constraints = [
             models.UniqueConstraint(
+                # implies index on (twitch_chanel, name)
                 fields=["twitch_channel", "name"],
                 name="unique channel plus command"
             )
@@ -39,3 +35,6 @@ class CustomCommand(models.Model):
     def wrap(self, context):
         from ..commands.command import CustomTwitchCommand
         return CustomTwitchCommand(context, self)
+
+    def __str__(self):
+        return self.name

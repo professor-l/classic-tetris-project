@@ -135,10 +135,7 @@ class User(models.Model):
             return self.id
 
     def __str__(self):
-        if hasattr(self, "twitch_user"):
-            return self.twitch_user.username
-        else:
-            return f"User<id={self.id}>"
+        return self.display_name
 
     def get_absolute_url(self, include_base=False):
         path = reverse("user", kwargs={ "id": self.profile_id() })
@@ -381,6 +378,9 @@ class DiscordUser(PlatformUser):
             self.user_obj.send(message),
             discord.client.loop
         )
+
+    def __str__(self):
+        return self.username_with_discriminator
 
 signals.pre_save.connect(DiscordUser.before_save, sender=DiscordUser)
 
