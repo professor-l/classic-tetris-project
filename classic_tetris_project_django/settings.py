@@ -69,6 +69,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
 ]
 
 ROOT_URLCONF = 'classic_tetris_project_django.urls'
@@ -117,25 +118,14 @@ CACHES = {
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "formatters": {
-        "standard": {
-            "format": "%(asctime)s [%(name)s] %(levelname)s: %(message)s"
-        },
-    },
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
         },
-        "error": {
-            "level": "ERROR",
-            "class": "logging.FileHandler",
-            "filename": "logs/error.log",
-            "formatter": "standard",
-        },
     },
     "loggers": {
         "django": {
-            "handlers": ["console", "error"],
+            "handlers": ["console"],
             "level": "INFO",
             "propagate": True
         },
@@ -190,3 +180,12 @@ WEBPACK_LOADER = {
         'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
     }
 }
+
+if not DEBUG:
+    ROLLBAR = {
+        'access_token': ENV('ROLLBAR_TOKEN'),
+        'environment': 'production',
+        'root': BASE_DIR,
+    }
+    import rollbar
+    rollbar.init(**ROLLBAR)

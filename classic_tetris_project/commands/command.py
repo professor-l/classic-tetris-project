@@ -1,10 +1,12 @@
+import django.db
 import logging
 import re
+import rollbar
 import traceback
-from inspect import signature
-from discord import ChannelType
-import django.db
 from abc import ABC
+from discord import ChannelType
+from django.conf import settings
+from inspect import signature
 
 from .. import discord, twitch
 from ..util import Platform
@@ -44,7 +46,14 @@ class Command(ABC):
                     self.send_usage()
             except Exception as e:
                 self.send_message("Internal error :(")
-                self.context.logger.exception("Internal error :(")
+                if settings.DEBUG:
+                    traceback.print_exc()
+                else:
+                    rollbar.report_exc_info(extra_data={
+                        "command": self.context.command_name,
+                        "args": self.args,
+                        "user_id": self.context.user.id,
+                    })
             finally:
                 django.db.close_old_connections()
         else:
