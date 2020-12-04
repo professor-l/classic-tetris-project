@@ -14,7 +14,7 @@ class LoggingManager:
         self.formatter = logging.Formatter("%(asctime)s [%(name)s] %(levelname)s: %(message)s")
 
         self.console_handler = logging.StreamHandler()
-        self.console_handler.setLevel(logging.DEBUG)
+        self.console_handler.setLevel(logging.INFO)
         self.console_handler.setFormatter(self.formatter)
 
         self.file_handler = logging.handlers.TimedRotatingFileHandler(
@@ -22,7 +22,7 @@ class LoggingManager:
             when="midnight",
             interval=1
         )
-        self.file_handler.setLevel(logging.DEBUG)
+        self.file_handler.setLevel(logging.INFO)
         self.file_handler.setFormatter(self.formatter)
         self.file_handler.namer = lambda name: datetime.now().strftime("logs/bot-%Y-%m-%d.log")
 
