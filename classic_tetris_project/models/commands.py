@@ -11,7 +11,7 @@ class CustomCommand(models.Model):
 
     name = models.CharField(max_length=20)
     output = models.CharField(max_length=400, blank=True)
-    alias_for = models.ForeignKey("self", null=True, on_delete=models.CASCADE)
+    alias_for = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
 
     class Meta:
         constraints = [
