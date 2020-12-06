@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_nose',
     'django_extensions',
+    'markdownx',
     'webpack_loader',
 ]
 
@@ -83,6 +84,9 @@ TEMPLATES = [
         'DIRS': [TEMPLATE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
+            'builtins': [
+                'classic_tetris_project.private.templatetags',
+            ],
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
