@@ -8,9 +8,22 @@ class MockTwitchClient:
     def __init__(self):
         self.username = "ClassicTetrisBot"
         self.user_id = "bot_id"
+        self._user_id_cache = {}
+        self._username_cache = {}
 
     def get_user(self, user_id):
-        return MockTwitchAPIUser.create(id=user_id)
+        return self._user_id_cache.get(user_id)
+
+    def create_user(self, **params):
+        if "user_id" in params and params["user_id"] in self._user_id_cache:
+            return self._user_id_cache[user_id]
+        if "username" in params and params["username"] in self._username_cache:
+            return self._username_cache[username]
+
+        user = MockTwitchAPIUser.create(**params)
+        self._user_id_cache[user.id] = user
+        self._username_cache[user.username] = user
+        return user
 
 class MockTwitchChannel:
     def __init__(self, name):

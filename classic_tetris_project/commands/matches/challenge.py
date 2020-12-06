@@ -39,9 +39,9 @@ class Challenge:
         return cache.get(f"challenges.{sender.id}.sent")
 
     def save(self):
-        # Expire these automatically after 2 minutes as a safeguard
-        cache.set(f"challenges.{self.recipient.id}.received", self, timeout=120)
-        cache.set(f"challenges.{self.sender.id}.sent", self, timeout=120)
+        print(f"setting challenges.{self.recipient.id}.received")
+        cache.set(f"challenges.{self.recipient.id}.received", self, timeout=CHALLENGE_TIMEOUT)
+        cache.set(f"challenges.{self.sender.id}.sent", self, timeout=CHALLENGE_TIMEOUT)
 
     def remove(self):
         cache.delete(f"challenges.{self.recipient.id}.received")
@@ -86,18 +86,6 @@ class ChallengeCommand(QueueCommand):
 
         # Send public message announcing challenge
         self.send_message(f"{recipient.user_tag} : {sender.username} has challenged you to a match on twitch.tv/{channel_name}! You have 60 seconds to !accept or !decline.")
-
-        # Expire and send message to both after 1 minute
-        # In the future, we may want to schedule this with Celery
-        def send_delayed_expiration_message(challenge):
-            time.sleep(CHALLENGE_TIMEOUT)
-            existing_challenge = Challenge.pending_challenge(challenge.recipient)
-            if challenge == existing_challenge:
-                self.send_message(f"The challenge from {challenge.sender.username} to {challenge.recipient.username} has expired.")
-                challenge.remove()
-
-        expire_thread = Thread(target=send_delayed_expiration_message, args=(challenge,))
-        expire_thread.start()
 
 
 @Command.register_twitch("accept",

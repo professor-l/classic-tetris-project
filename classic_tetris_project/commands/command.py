@@ -211,7 +211,11 @@ class Command(ABC):
             if existing_only:
                 user = TwitchUser.from_username(username, refetch=True)
             else:
-                user = TwitchUser.get_or_create_from_username(username)
+                try:
+                    user = TwitchUser.get_or_create_from_username(username)
+                except:
+                    # no such Twitch user exists
+                    user = None
 
             if user and user.twitch_id == twitch.client.user_id:
                 raise CommandException("I'm a bot, silly!")

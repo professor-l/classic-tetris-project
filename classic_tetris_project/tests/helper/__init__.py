@@ -1,7 +1,10 @@
+import itertools
 import lxml.html
 import re
 from contextlib import contextmanager
 from django.test import TestCase as DjangoTestCase
+from django.test import override_settings
+from django.core.cache import cache
 from unittest.mock import patch
 
 from classic_tetris_project.commands.command_context import *
@@ -16,7 +19,6 @@ from classic_tetris_project import discord, twitch
 
 patch.object(twitch.APIClient, "_request", side_effect=Exception("twitch API called")).start()
 patch.object(discord.APIClient, "_request", side_effect=Exception("discord API called")).start()
-patch("classic_tetris_project.twitch.client", MockTwitchClient()).start()
 
 @contextmanager
 def describe(description):
@@ -38,11 +40,42 @@ class AssertHTMLMixin:
                     return
             raise AssertionError(f"No element found matching '{selector}' with text '{text}'")
 
-
+@override_settings(
+    TESTING=True,
+    DEBUG=True,
+    CACHES={
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        }
+    },
+)
 class TestCase(DjangoTestCase, AssertHTMLMixin):
     """
     Augment Django's TestCase class with some of our own convenience methods
     """
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        cache.clear()
+
+    def setUp(self):
+        self._patches = self.patches()
+
+        for _patch in self._patches:
+            _patch.start()
+
+    def patches(self):
+        return [
+            patch("classic_tetris_project.twitch.client", MockTwitchClient()),
+        ]
+
+    def tearDown(self):
+        for patch in self._patches:
+            patch.stop()
+        cache.clear()
+
     @lazy
     def current_user(self):
         return UserFactory()
@@ -66,32 +99,37 @@ class TestCase(DjangoTestCase, AssertHTMLMixin):
 
 
 class CommandTestCase(TestCase):
-    def setUp(self):
-        self._patches = [
+    def patches(self):
+        return super().patches() + [
             patch.object(DiscordCommandContext, "log"),
             patch.object(TwitchCommandContext, "log"),
         ]
 
-        for _patch in self._patches:
-            _patch.start()
+    def send_discord(self, command, discord_api_user=None, flush=True):
+        discord_api_user = discord_api_user or self.discord_api_user
+        discord_api_user.send(self.discord_channel, command)
+        if flush:
+            self.discord_channel.poll()
 
-    def tearDown(self):
-        for patch in self._patches:
-            patch.stop()
+    def send_twitch(self, command, twitch_api_user=None, flush=True):
+        twitch_api_user = twitch_api_user or self.twitch_api_user
+        twitch_api_user.send(self.twitch_channel, command)
+        if flush:
+            self.twitch_channel.poll()
 
     def assertDiscord(self, command, expected_messages):
-        self.discord_api_user.send(self.discord_channel, command)
+        self.send_discord(command, flush=False)
         actual_messages = self.discord_channel.poll()
         self._assertMessages(actual_messages, expected_messages)
 
     def assertTwitch(self, command, expected_messages):
-        self.twitch_api_user.send(self.twitch_channel, command)
+        self.send_twitch(command, flush=False)
         actual_messages = self.twitch_channel.poll()
         self._assertMessages(actual_messages, expected_messages)
 
     def _assertMessages(self, actual_messages, expected_messages):
-        self.assertEqual(len(actual_messages), len(expected_messages))
-        for actual, expected in zip(actual_messages, expected_messages):
+        for actual, expected in itertools.zip_longest(actual_messages, expected_messages,
+                                                      fillvalue=""):
             if isinstance(expected, str):
                 self.assertEqual(actual, expected)
             elif isinstance(expected, re.Pattern):
@@ -113,7 +151,7 @@ class CommandTestCase(TestCase):
 
     @lazy
     def twitch_api_user(self):
-        return MockTwitchAPIUser.create()
+        return self.twitch_client.create_user()
 
     @lazy
     def twitch_user(self):
@@ -124,3 +162,7 @@ class CommandTestCase(TestCase):
         channel_user = MockTwitchAPIUser.create()
         channel_user.create_twitch_user()
         return MockTwitchChannel(channel_user.username)
+
+    @lazy
+    def twitch_client(self):
+        return twitch.client
