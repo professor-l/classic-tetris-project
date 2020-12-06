@@ -28,6 +28,9 @@
         <div class="navbar__item">
           Hello, <a href="{{ current_user.get_absolute_url }}">{{ current_user.display_name }}</a>.
         </div>
+        {% if user.is_staff %}
+        <a href="{% url "admin:index" %}" class="navbar__item">Admin</a>
+        {% endif %}
         <a href="{% url "oauth:logout" %}" class="navbar__item">Logout</a>
         {% else %}
         <a href="{% url "oauth:login" %}" class="navbar__item">Login</a>

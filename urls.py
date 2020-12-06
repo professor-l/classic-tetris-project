@@ -6,6 +6,7 @@ from .views.index import index
 from .views import user
 from .views import profile
 from .views import policy
+from .views import pages
 
 oauth_patterns = ([
     path("login/", oauth.login, name="login"),
@@ -35,4 +36,7 @@ urlpatterns = [
     path("user/<str:id>/", user.UserView.as_view(), name="user"),
     path("profile/", include(profile_patterns)),
     path("policy/", include(policy_patterns)),
+    path("page/<slug:page_slug>/", pages.page, name="page"),
+
+    path("markdownx/", include('markdownx.urls')),
 ]

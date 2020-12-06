@@ -1,6 +1,7 @@
 from django.contrib import admin
+from markdownx.admin import MarkdownxModelAdmin
 
-from ..models import User, DiscordUser, TwitchUser, WebsiteUser, Match, Game, TwitchChannel, CustomCommand
+from ..models import User, DiscordUser, TwitchUser, WebsiteUser, Match, Game, TwitchChannel, CustomCommand, Page
 
 
 class DiscordUserInline(admin.StackedInline):
@@ -44,3 +45,9 @@ class TwitchChannelAdmin(admin.ModelAdmin):
     list_display = ("twitch_user", "connected")
     search_fields = ("twitch_user__username",)
     autocomplete_fields = ("twitch_user",)
+
+
+@admin.register(Page)
+class PageAdmin(MarkdownxModelAdmin):
+    prepopulated_fields = { "slug": ("title",) }
+    list_display = ("title", "slug", "public", "updated_at")
