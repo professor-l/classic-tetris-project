@@ -23,7 +23,7 @@ COIN_MESSAGES = {
     SIDE: "Side o.O"
 }
 
-@Command.register("hz", "hydrant", usage="hz <level> <height> <taps>")
+@Command.register_discord("hz", "hydrant", usage="hz <level> <height> <taps>")
 class HzCommand(Command):
 
     def execute(self, level, height, taps):
