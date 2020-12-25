@@ -49,11 +49,7 @@ class Command(ABC):
                 if settings.DEBUG:
                     traceback.print_exc()
                 else:
-                    rollbar.report_exc_info(extra_data={
-                        "command": self.context.command_name,
-                        "args": self.args,
-                        "user_id": self.context.user.id,
-                    })
+                    rollbar.report_exc_info(extra_data=self.context.report_data())
             finally:
                 django.db.close_old_connections()
         else:

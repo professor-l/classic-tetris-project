@@ -3,6 +3,7 @@ import logging
 import re
 import time
 from asgiref.sync import async_to_sync, sync_to_async
+from discord import ChannelType
 
 from .command import COMMAND_MAP
 from ..util import Platform, memoize
@@ -48,6 +49,15 @@ class CommandContext:
 
     def format_code(self, message):
         return message
+
+    # Returns extra data to be included in a Rollbar error report
+    def report_data(self):
+        return {
+            "command": self.command_name,
+            "args": self.args_string,
+            "user_id": self.user.id,
+            "platform": self.platform.name,
+        }
 
 
 
@@ -119,6 +129,21 @@ class DiscordCommandContext(CommandContext):
             username=user.name,
             message=message
         ))
+
+    def report_data(self):
+        data = {
+            **super().report_data(),
+            "discord_id": self.author.id,
+            "discord_name": self.author.name,
+            "channel_type": self.channel.type.name,
+            "channel_id": self.channel.id,
+        }
+        if self.channel.type == ChannelType.text:
+            data["channel_name"] = self.channel.name
+            data["guild_id"] = self.channel.guild.id
+            data["guild_name"] = self.channel.guild.name
+
+        return data
 
 class ReportCommandContext(DiscordCommandContext):
     prefix = "<:redheart:545715946325540893>"
@@ -199,6 +224,18 @@ class TwitchCommandContext(CommandContext):
             username=username,
             message=message
         ))
+
+    def report_data(self):
+        data = {
+            **super().report_data(),
+            "twitch_id": self.author.id,
+            "twitch_username": self.author.username,
+            "channel_type": self.channel.type,
+        }
+        if self.channel.type == "channel":
+            data["channel_name"] = self.channel.name
+
+        return data
 
     @property
     def user_tag(self):
