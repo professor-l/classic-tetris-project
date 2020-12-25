@@ -30,16 +30,20 @@ class APIClient:
 
     def user_from_username(self, username, client=None):
         response = self._request("users", { "login": username })
-        user_list = response["users"]
-        if user_list:
-            user_obj = user_list[0]
+        if "error" in response:
+            return None
+        elif response["users"]:
+            user_obj = response["users"][0]
             return self.wrap_user_dict(user_obj, client)
         else:
             return None
 
     def user_from_id(self, user_id, client=None):
-        user_obj = self._request(f"users/{user_id}")
-        return self.wrap_user_dict(user_obj, client)
+        response = self._request(f"users/{user_id}")
+        if "error" in response:
+            return None
+        else:
+            return self.wrap_user_dict(user_obj, client)
 
     def own_user(self, token, client=None):
         user_data = self._request(f"users", api=TWITCH_API_HELIX,
