@@ -8,11 +8,11 @@ class GetCountryCommand(Command):
         username = username[0] if len(username) == 1 else self.context.args_string
         platform_user = (self.platform_user_from_username(username) if username
                          else self.context.platform_user)
-        user = self.context.user
+        user = platform_user.user if platform_user else None
 
-        if platform_user and user.country:
-            self.send_message("{user_tag} is from {country}!".format(
-                user_tag=platform_user.user_tag,
+        if user and user.country:
+            self.send_message("{name} is from {country}!".format(
+                name=self.context.display_name(platform_user),
                 country=Country.get_country(user.country).full_name
             ))
         else:
