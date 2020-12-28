@@ -43,7 +43,7 @@ class APIClient:
         if "error" in response:
             return None
         else:
-            return self.wrap_user_dict(user_obj, client)
+            return self.wrap_user_dict(response, client)
 
     def own_user(self, token, client=None):
         user_data = self._request(f"users", api=TWITCH_API_HELIX,

@@ -55,7 +55,6 @@ class CommandContext:
         return {
             "command": self.command_name,
             "args": self.args_string,
-            "user_id": self.user.id,
             "platform": self.platform.name,
         }
 
