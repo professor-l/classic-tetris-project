@@ -8,7 +8,8 @@ from .users import User
 
 class Event(models.Model):
     class QualifyingType(models.IntegerChoices):
-        THREE_SCORE_AVERAGE = 1
+        HIGHEST_SCORE = 1
+        HIGHEST_3_SCORES = 2
 
     name = models.CharField(max_length=64)
     slug = models.SlugField(db_index=True)
@@ -25,10 +26,12 @@ class Event(models.Model):
     @property
     def form_class(self):
         from classic_tetris_project.private.forms import qualify as qualify_forms
-        if self.qualifying_type == self.QualifyingType.THREE_SCORE_AVERAGE:
-            return qualify_forms.ThreeScoreAverageForm
+        if self.qualifying_type == self.QualifyingType.HIGHEST_SCORE:
+            return qualify_forms.HighestScoreForm
+        elif self.qualifying_type == self.QualifyingType.HIGHEST_3_SCORES:
+            return qualify_forms.Highest3ScoresForm
         else:
-            raise "invalid qualifying type"
+            raise Exception("invalid qualifying type")
 
     def get_absolute_url(self):
         return reverse("event:index", args=[self.slug])
@@ -40,6 +43,7 @@ class Event(models.Model):
 class Qualifier(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     event = models.ForeignKey(Event, related_name="qualifiers", on_delete=models.CASCADE)
+    qualifying_type = models.IntegerField(choices=Event.QualifyingType.choices)
     qualifying_score = models.IntegerField()
     qualifying_data = models.JSONField()
     vod = models.URLField()
