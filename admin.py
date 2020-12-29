@@ -76,14 +76,14 @@ class QualifierAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ("Qualifier Data", {
-            "fields": ("user", "event", "qualifying_score", "qualifying_data", "vod",
-                       "details", "created_at"),
+            "fields": ("user", "event", "qualifying_type", "qualifying_score", "qualifying_data",
+                       "vod", "details", "created_at"),
         }),
         ("Moderator Data", {
             "fields": ("approved", "reviewed_at", "reviewed_by"),
         }),
     )
-    readonly_fields = ("user", "created_at", "approved", "reviewed_at", "reviewed_by")
+    readonly_fields = ("created_at", "approved", "reviewed_at", "reviewed_by")
 
     actions = ["approve", "reject"]
 
