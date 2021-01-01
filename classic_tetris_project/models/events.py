@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User as AuthUser
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from markdownx.models import MarkdownxField
@@ -19,9 +20,22 @@ class Event(models.Model):
     event_info = MarkdownxField(blank=True)
 
     def is_user_eligible(self, user):
-        return (self.qualifying_open and
-                user is not None and
-                not Qualifier.objects.filter(event=self, user=user).exists())
+        return self.user_ineligible_reason(user) is None
+
+    # Returns the reason a user is ineligible to qualify for this event. Returns None if they are
+    # eligible.
+    def user_ineligible_reason(self, user):
+        if not self.qualifying_open:
+            return "closed"
+        if not user:
+            return "logged_out"
+        if Qualifier.objects.filter(event=self, user=user).exists():
+            return "already_qualified"
+        if not hasattr(user, "twitch_user"):
+            return "link_twitch"
+        if not hasattr(user, "discord_user"):
+            return "link_discord"
+        return None
 
     @property
     def form_class(self):
