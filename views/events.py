@@ -8,6 +8,7 @@ from classic_tetris_project.models import Event
 from classic_tetris_project.util import lazy
 from .base import BaseView
 
+
 class EventView(BaseView):
     @lazy
     def event(self):
@@ -16,16 +17,18 @@ class EventView(BaseView):
         except Event.DoesNotExist:
             raise Http404()
 
+
 class IndexView(EventView):
     def get(self, request, event_slug):
         return render(request, "event/index.html", {
             "event": self.event,
-            "can_qualify": self.event.is_user_eligible(self.current_user),
+            "user_ineligible_reason": self.event.user_ineligible_reason(self.current_user),
             "approved_qualifiers": list(self.event.qualifiers.filter(approved=True)
                                         .order_by("-qualifying_score")),
             "pending_qualifiers": list(self.event.qualifiers.filter(approved=None)
                                        .order_by("-qualifying_score")),
         })
+
 
 class QualifyView(LoginRequiredMixin, EventView):
     def get(self, request, event_slug):
@@ -54,6 +57,6 @@ class QualifyView(LoginRequiredMixin, EventView):
 
     def ineligible_redirect(self):
         messages.info(self.request,
-                      "Qualifying for this event is closed or you have already qualified. If this "
-                      "is in error, please contact a moderator.")
+                      "You are no longer able to qualify for this event. If this is in error, "
+                      "please contact a moderator.")
         return redirect(reverse("event:index", args=[self.event.slug]))

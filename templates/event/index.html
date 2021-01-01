@@ -11,7 +11,11 @@
 {{ event.event_info|markdown }}
 {% endif %}
 
-{% if can_qualify %}
+{% if user_ineligible_reason %}
+<div class="alert alert--light-info">
+  {% include "event/ineligible_reasons/"|add:user_ineligible_reason|add:".html" %}
+</div>
+{% else %}
 <a href="{% url "event:qualify" event.slug %}" class="btn btn--primary">Qualify</a>
 {% endif %}
 
