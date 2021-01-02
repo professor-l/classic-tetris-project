@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.humanize',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -60,6 +61,7 @@ INSTALLED_APPS = [
     'django.contrib.redirects',
     'django_nose',
     'django_extensions',
+    'django_object_actions',
     'markdownx',
     'webpack_loader',
 ]
@@ -104,6 +106,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'classic_tetris_project_django.wsgi.application'
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = ['--where=classic_tetris_project/tests/',
+             '--with-specplugin', '--with-specselector']
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases

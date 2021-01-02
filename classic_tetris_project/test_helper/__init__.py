@@ -1,10 +1,12 @@
 import itertools
-import lxml.html
 import re
 from contextlib import contextmanager
+from hamcrest import *
+from django.db import transaction, connections
 from django.test import TestCase as DjangoTestCase
-from django.test import override_settings
+from django.test import override_settings, Client
 from django.core.cache import cache
+from spec import Spec as NoseSpec
 from unittest.mock import patch
 
 from classic_tetris_project.commands.command_context import *
@@ -13,6 +15,7 @@ from classic_tetris_project.util.memo import memoize, lazy
 from .factories import *
 from .discord import *
 from .twitch import *
+from .matchers import *
 from classic_tetris_project import discord, twitch
 
 
@@ -98,7 +101,73 @@ class TestCase(DjangoTestCase, AssertHTMLMixin):
         return self.client.post(self.url, *args, **kwargs)
 
 
-class CommandTestCase(TestCase):
+class Spec(NoseSpec):
+    def setup(self):
+        self._setting_override = override_settings(
+            TESTING=True,
+            DEBUG=True,
+            CACHES={
+                "default": {
+                    "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+                }
+            },
+        )
+        self._setting_override.__enter__()
+
+        self._patches = self.patches()
+        for _patch in self._patches:
+            _patch.start()
+
+        self.transactions = []
+        for conn in connections:
+            trans = transaction.atomic(using=conn)
+            trans.__enter__()
+            self.transactions.append((conn, trans))
+
+
+    def patches(self):
+        return [
+            patch("classic_tetris_project.twitch.client", MockTwitchClient()),
+        ]
+
+    def teardown(self):
+        for conn, trans in self.transactions:
+            transaction.set_rollback(True, using=conn)
+            trans.__exit__(None, None, None)
+
+        for patch in self._patches:
+            patch.stop()
+
+        self._setting_override.__exit__(None, None, None)
+        cache.clear()
+
+    @lazy
+    def current_user(self):
+        return UserFactory()
+
+    @lazy
+    def current_website_user(self):
+        return WebsiteUser.fetch_by_user(self.current_user)
+
+    @lazy
+    def current_auth_user(self):
+        return self.current_website_user.auth_user
+
+    @lazy
+    def client(self):
+        return Client()
+
+    def sign_in(self):
+        self.client.force_login(self.current_auth_user)
+
+    def get(self, *args, **kwargs):
+        return self.client.get(self.url, *args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        return self.client.post(self.url, *args, **kwargs)
+
+
+class CommandSpec(Spec):
     def patches(self):
         return super().patches() + [
             patch.object(DiscordCommandContext, "log"),
@@ -117,23 +186,23 @@ class CommandTestCase(TestCase):
         if flush:
             self.twitch_channel.poll()
 
-    def assertDiscord(self, command, expected_messages):
+    def assert_discord(self, command, expected_messages):
         self.send_discord(command, flush=False)
         actual_messages = self.discord_channel.poll()
-        self._assertMessages(actual_messages, expected_messages)
+        self._assert_messages(actual_messages, expected_messages)
 
-    def assertTwitch(self, command, expected_messages):
+    def assert_twitch(self, command, expected_messages):
         self.send_twitch(command, flush=False)
         actual_messages = self.twitch_channel.poll()
-        self._assertMessages(actual_messages, expected_messages)
+        self._assert_messages(actual_messages, expected_messages)
 
-    def _assertMessages(self, actual_messages, expected_messages):
+    def _assert_messages(self, actual_messages, expected_messages):
         for actual, expected in itertools.zip_longest(actual_messages, expected_messages,
                                                       fillvalue=""):
             if isinstance(expected, str):
-                self.assertEqual(actual, expected)
+                assert_that(actual, equal_to(expected))
             elif isinstance(expected, re.Pattern):
-                self.assertRegex(actual, expected)
+                assert_that(actual, matches_regexp(expected))
             else:
                 raise f"Can't match message: {expected}"
 
