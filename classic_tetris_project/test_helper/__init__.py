@@ -1,9 +1,7 @@
 import itertools
 import re
-from contextlib import contextmanager
 from hamcrest import *
 from django.db import transaction, connections
-from django.test import TestCase as DjangoTestCase
 from django.test import override_settings, Client
 from django.core.cache import cache
 from spec import Spec as NoseSpec
@@ -19,86 +17,8 @@ from .matchers import *
 from classic_tetris_project import discord, twitch
 
 
-
 patch.object(twitch.APIClient, "_request", side_effect=Exception("twitch API called")).start()
 patch.object(discord.APIClient, "_request", side_effect=Exception("discord API called")).start()
-
-@contextmanager
-def describe(description):
-    """
-    noop, just used to provide structure to test classes
-    """
-    yield
-
-# Based loosely on https://github.com/johnpaulett/django-with-asserts
-class AssertHTMLMixin:
-    def assertHTML(self, response, selector, text=None):
-        html = lxml.html.fromstring(response.content)
-        elements = html.cssselect(selector)
-        if not elements:
-            raise AssertionError(f"No element found matching '{selector}'")
-        if text:
-            for element in elements:
-                if element.text.strip() == text:
-                    return
-            raise AssertionError(f"No element found matching '{selector}' with text '{text}'")
-
-@override_settings(
-    TESTING=True,
-    DEBUG=True,
-    CACHES={
-        "default": {
-            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        }
-    },
-)
-class TestCase(DjangoTestCase, AssertHTMLMixin):
-    """
-    Augment Django's TestCase class with some of our own convenience methods
-    """
-
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        cache.clear()
-
-    def setUp(self):
-        self._patches = self.patches()
-
-        for _patch in self._patches:
-            _patch.start()
-
-    def patches(self):
-        return [
-            patch("classic_tetris_project.twitch.client", MockTwitchClient()),
-        ]
-
-    def tearDown(self):
-        for patch in self._patches:
-            patch.stop()
-        cache.clear()
-
-    @lazy
-    def current_user(self):
-        return UserFactory()
-
-    @lazy
-    def current_website_user(self):
-        return WebsiteUser.fetch_by_user(self.current_user)
-
-    @lazy
-    def current_auth_user(self):
-        return self.current_website_user.auth_user
-
-    def sign_in(self):
-        self.client.force_login(self.current_auth_user)
-
-    def get(self, *args, **kwargs):
-        return self.client.get(self.url, *args, **kwargs)
-
-    def post(self, *args, **kwargs):
-        return self.client.post(self.url, *args, **kwargs)
 
 
 class Spec(NoseSpec):
