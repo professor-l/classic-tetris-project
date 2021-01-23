@@ -3,13 +3,13 @@ from classic_tetris_project.test_helper import *
 
 class ProfileView_(Spec):
     url = "/profile/"
-    def redirects_when_logged_in(self):
+    def test_redirects_when_logged_in(self):
         self.sign_in()
         response = self.get()
 
         assert_that(response, redirects_to(f"/user/{self.current_user.id}/"))
 
-    def redirects_when_logged_out(self):
+    def test_redirects_when_logged_out(self):
         response = self.get()
 
         assert_that(response, redirects_to(f"/oauth/login/?next=/profile/"))
@@ -18,12 +18,12 @@ class ProfileView_(Spec):
 class ProfileEditView_(Spec):
     url = "/profile/edit/"
     class GET:
-        def redirects_when_logged_out(self):
+        def test_redirects_when_logged_out(self):
             response = self.get()
 
             assert_that(response, redirects_to(f"/oauth/login/?next=/profile/edit/"))
 
-        def renders(self):
+        def test_renders(self):
             self.sign_in()
             response = self.get()
 
@@ -31,12 +31,12 @@ class ProfileEditView_(Spec):
             assert_that(response, uses_template("profile/edit.html"))
 
     class POST:
-        def redirects_when_logged_out(self):
+        def test_redirects_when_logged_out(self):
             response = self.post()
 
             assert_that(response, redirects_to(f"/oauth/login/?next=/profile/edit/"))
 
-        def updates_and_redirects(self):
+        def test_updates_and_redirects(self):
             self.sign_in()
             response = self.post({
                 "preferred_name": "Preferred Name",

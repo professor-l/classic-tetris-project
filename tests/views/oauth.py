@@ -4,7 +4,7 @@ from classic_tetris_project.test_helper import *
 class Login(Spec):
     url = "/oauth/login/"
 
-    def renders(self):
+    def test_renders(self):
         response = self.get()
 
         assert_that(response.status_code, equal_to(200))
@@ -12,7 +12,7 @@ class Login(Spec):
         assert_that(response, has_html("a[href='/oauth/login/discord/']"))
         assert_that(response, has_html("a[href='/oauth/login/twitch/']")) 
 
-    def renders_with_next_path(self):
+    def test_renders_with_next_path(self):
         response = self.get({ "next": "/profile/" })
 
         assert_that(response.status_code, equal_to(200))
@@ -24,13 +24,13 @@ class Login(Spec):
 class Logout(Spec):
     url = "/oauth/logout/"
 
-    def redirects_when_logged_in(self):
+    def test_redirects_when_logged_in(self):
         self.sign_in()
         response = self.get()
 
         assert_that(response, redirects_to("/"))
 
-    def redirects_when_logged_out(self):
+    def test_redirects_when_logged_out(self):
         response = self.get()
 
         assert_that(response, redirects_to("/"))
