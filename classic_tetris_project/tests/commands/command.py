@@ -3,14 +3,14 @@ from classic_tetris_project.commands.command import Command, CommandException
 
 class Command_(Spec):
     class discord_user_from_username:
-        def with_mention(self):
+        def test_with_mention(self):
             discord_user = DiscordUserFactory(discord_id="1234")
 
             assert_that(Command.discord_user_from_username("<@1234>"), equal_to(discord_user))
             assert_that(Command.discord_user_from_username("<@1235>"), equal_to(None))
 
         @patch("classic_tetris_project.discord.get_guild")
-        def with_username(self, get_guild):
+        def test_with_username(self, get_guild):
             joe = DiscordUserFactory(discord_id="1234")
             jane = DiscordUserFactory(discord_id="1235")
 
@@ -41,7 +41,7 @@ class Command_(Spec):
                         raises(CommandException))
             assert_that(Command.discord_user_from_username("jumping jack"), equal_to(None))
 
-        def with_username_and_discriminator(self):
+        def test_with_username_and_discriminator(self):
             joe = DiscordUserFactory(discord_id="1234")
             jane = DiscordUserFactory(discord_id="1235")
             jack = DiscordUserFactory(discord_id="1236")
@@ -60,13 +60,13 @@ class Command_(Spec):
                         equal_to(None))
 
     class twitch_user_from_username:
-        def invalid(self):
+        def test_invalid(self):
             assert_that(calling(Command.twitch_user_from_username).with_args("invalid username"),
                         raises(CommandException))
             assert_that(Command.twitch_user_from_username("invalid username", raise_invalid=False),
                         equal_to(None))
 
-        def with_existing(self):
+        def test_with_existing(self):
             twitch_user = TwitchUserFactory(username="dexfore")
 
             assert_that(Command.twitch_user_from_username("dexfore"), equal_to(twitch_user))
@@ -77,7 +77,7 @@ class Command_(Spec):
 
         @patch.object(twitch.APIClient, "user_from_username",
                       lambda self, username, client=None: MockTwitchAPIUser.create(username=username))
-        def without_existing(self):
+        def test_without_existing(self):
             twitch_user = TwitchUserFactory(username="professor_l")
 
             assert_that(Command.twitch_user_from_username("dexfore"), equal_to(None))

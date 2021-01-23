@@ -9,6 +9,7 @@ static/
 logs/
 cache/
 node_modules/
+htmlcov/
 .env
 
 /export.py

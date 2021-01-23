@@ -4,7 +4,6 @@ from hamcrest import *
 from django.db import transaction, connections
 from django.test import override_settings, Client
 from django.core.cache import cache
-from spec import Spec as NoseSpec
 from unittest.mock import patch
 
 from classic_tetris_project.commands.command_context import *
@@ -21,7 +20,7 @@ patch.object(twitch.APIClient, "_request", side_effect=Exception("twitch API cal
 patch.object(discord.APIClient, "_request", side_effect=Exception("discord API called")).start()
 
 
-class Spec(NoseSpec):
+class Spec:
     def setup(self):
         self._setting_override = override_settings(
             TESTING=True,
@@ -35,15 +34,8 @@ class Spec(NoseSpec):
         self._setting_override.__enter__()
 
         self._patches = self.patches()
-        for _patch in self._patches:
-            _patch.start()
-
-        self.transactions = []
-        for conn in connections:
-            trans = transaction.atomic(using=conn)
-            trans.__enter__()
-            self.transactions.append((conn, trans))
-
+        for patch in self._patches:
+            patch.start()
 
     def patches(self):
         return [
@@ -51,15 +43,12 @@ class Spec(NoseSpec):
         ]
 
     def teardown(self):
-        for conn, trans in self.transactions:
-            transaction.set_rollback(True, using=conn)
-            trans.__exit__(None, None, None)
+        cache.clear()
 
         for patch in self._patches:
             patch.stop()
 
         self._setting_override.__exit__(None, None, None)
-        cache.clear()
 
     @lazy
     def current_user(self):

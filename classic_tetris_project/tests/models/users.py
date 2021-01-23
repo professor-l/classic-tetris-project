@@ -15,7 +15,7 @@ class User_(Spec):
         return UserFactory()
 
     class add_pb:
-        def creates_score_pb(self):
+        def test_creates_score_pb(self):
             assert_that(ScorePB.objects.count(), equal_to(0))
 
             self.user.add_pb(200000)
@@ -30,7 +30,7 @@ class User_(Spec):
                 lines=equal_to(None),
             ))
 
-        def with_params_creates_score_pb(self):
+        def test_with_params_creates_score_pb(self):
             assert_that(ScorePB.objects.count(), equal_to(0))
 
             self.user.add_pb(200000, console_type="pal", starting_level=18, lines=30)
@@ -45,7 +45,7 @@ class User_(Spec):
                 lines=equal_to(30),
             ))
 
-        def with_existing_replaces_current(self):
+        def test_with_existing_replaces_current(self):
             score_pb_other = ScorePBFactory()
             score_pb_pal = ScorePBFactory(user=self.user, console_type="pal")
             score_pb_19 = ScorePBFactory(user=self.user, starting_level=19)
@@ -63,12 +63,12 @@ class User_(Spec):
             assert_that(score_pb.current, equal_to(False))
 
     class get_pb:
-        def without_score_pbs_returns_none(self):
+        def test_without_score_pbs_returns_none(self):
             score_pb_other = self.other_user.add_pb(999999)
 
             assert_that(self.user.get_pb(), equal_to(None))
 
-        def returns_greatest_score(self):
+        def test_returns_greatest_score(self):
             score_pb_other = self.other_user.add_pb(999999)
 
             score_pb_accident = self.user.add_pb(2000000)
@@ -85,44 +85,44 @@ class User_(Spec):
             assert_that(self.user.get_pb(console_type="pal"), equal_to(500000))
 
     class display_name:
-        def with_preferred_name(self):
+        def test_with_preferred_name(self):
             self.discord_user
             self.twitch_user
             self.user.preferred_name = "Preferred Name"
             assert_that(self.user.display_name, equal_to("Preferred Name"))
 
-        def with_twitch_user(self):
+        def test_with_twitch_user(self):
             self.discord_user
             self.twitch_user
             assert_that(self.user.display_name, equal_to(self.twitch_user.username))
 
-        def with_discord_user(self):
+        def test_with_discord_user(self):
             self.discord_user
             assert_that(self.user.display_name, equal_to(self.discord_user.username))
 
-        def with_nothing(self):
+        def test_with_nothing(self):
             assert_that(self.user.display_name, equal_to(f"User {self.user.id}"))
 
     class profile_id:
-        def with_twitch_user(self):
+        def test_with_twitch_user(self):
             self.twitch_user
             assert_that(self.user.profile_id(), equal_to(self.twitch_user.username))
 
-        def without_twitch_user(self):
+        def test_without_twitch_user(self):
             assert_that(self.user.profile_id(), equal_to(self.user.id))
 
     class get_absolute_url:
-        def with_twitch_user(self):
+        def test_with_twitch_user(self):
             self.twitch_user
             assert_that(self.user.get_absolute_url(),
                         equal_to(f"/user/{self.twitch_user.username}/"))
 
-        def without_twitch_user(self):
+        def test_without_twitch_user(self):
             assert_that(self.user.get_absolute_url(),
                         equal_to(f"/user/{self.user.id}/"))
 
         @patch("django.conf.settings.BASE_URL", "https://monthlytetris.info")
-        def with_include_base(self):
+        def test_with_include_base(self):
             assert_that(self.user.get_absolute_url(True),
                         equal_to(f"https://monthlytetris.info/user/{self.user.id}/"))
 
@@ -131,28 +131,25 @@ class DiscordUser_(Spec):
     @lazy
     def discord_user(self):
         return DiscordUserFactory(discord_id="1001", username="User 1", discriminator="9001")
-
     @lazy
     def discord_user_old(self):
         return DiscordUserFactory(discord_id="1001", username="User 1 old", discriminator="8001")
-
     @lazy
     def discord_user_other(self):
         return DiscordUserFactory(discord_id="1002", username="User 2", discriminator="9002")
-
     @lazy
     def user_obj(self):
         return discord.wrap_user_dict({ "id": "1001", "username": "User 1", "discriminator": "9001",
                                        "avatar": "1001" })
 
     class get_or_create_from_user_obj:
-        def returns_existing_user(self):
+        def test_returns_existing_user(self):
             existing_discord_user = self.discord_user
             discord_user = DiscordUser.get_or_create_from_user_obj(self.user_obj)
 
             assert_that(discord_user, equal_to(existing_discord_user))
 
-        def updates_existing_user(self):
+        def test_updates_existing_user(self):
             existing_discord_user = self.discord_user_old
             discord_user = DiscordUser.get_or_create_from_user_obj(self.user_obj)
 
@@ -161,7 +158,7 @@ class DiscordUser_(Spec):
             assert_that(existing_discord_user.username, equal_to("User 1"))
             assert_that(existing_discord_user.discriminator, equal_to("9001"))
 
-        def creates_user(self):
+        def test_creates_user(self):
             discord_user = DiscordUser.get_or_create_from_user_obj(self.user_obj)
 
             assert_that(DiscordUser.objects.count(), equal_to(1))
@@ -170,20 +167,20 @@ class DiscordUser_(Spec):
             assert_that(discord_user.discriminator, equal_to("9001"))
 
     class username_with_descriminator:
-        def returns_correct_value(self):
+        def test_returns_correct_value(self):
             self.discord_user.username = "Username"
             self.discord_user.discriminator = "1234"
             assert_that(self.discord_user.username_with_discriminator, equal_to("Username#1234"))
 
     class update_fields:
-        def updates_fields(self):
+        def test_updates_fields(self):
             self.discord_user_old.update_fields(self.user_obj)
 
             self.discord_user_old.refresh_from_db()
             assert_that(self.discord_user_old.username, equal_to("User 1"))
             assert_that(self.discord_user_old.discriminator, equal_to("9001"))
 
-        def doesnt_save_if_no_change(self):
+        def test_doesnt_save_if_no_change(self):
             self.discord_user
             with patch.object(DiscordUser, "save") as save:
                 self.discord_user.update_fields(self.user_obj)
@@ -192,7 +189,7 @@ class DiscordUser_(Spec):
             assert_that(self.discord_user.discriminator, equal_to("9001"))
             save.assert_not_called()
 
-        def complains_given_wrong_id(self):
+        def test_complains_given_wrong_id(self):
             assert_that(calling(self.discord_user_other.update_fields).with_args(self.user_obj),
                         raises(Exception))
 
@@ -203,27 +200,27 @@ class TwitchUser_(Spec):
         return TwitchUserFactory()
 
     class from_username:
-        def with_existing_user(self):
+        def test_with_existing_user(self):
             assert_that(TwitchUser.from_username(self.twitch_user.username),
                         equal_to(self.twitch_user))
 
-        def without_existing_user(self):
+        def test_without_existing_user(self):
             assert_that(TwitchUser.from_username("nonexistent"), equal_to(None))
 
         @patch.object(twitch.APIClient, "user_from_username")
-        def refetch_without_result(self, api_patch):
+        def test_refetch_without_result(self, api_patch):
             api_patch.return_value = None
 
             assert_that(TwitchUser.from_username("nonexistent", True), equal_to(None))
 
         @patch.object(twitch.APIClient, "user_from_username")
-        def refetch_without_matching_user(self, api_patch):
+        def test_refetch_without_matching_user(self, api_patch):
             api_patch.return_value = MockTwitchAPIUser.create(username="no_match")
 
             assert_that(TwitchUser.from_username("no_match", True), equal_to(None))
 
         @patch.object(twitch.APIClient, "user_from_username")
-        def refetch_with_matching_user(self, api_patch):
+        def test_refetch_with_matching_user(self, api_patch):
             api_patch.return_value = MockTwitchAPIUser.create(username="match",
                                                               id=self.twitch_user.twitch_id)
 
@@ -232,12 +229,12 @@ class TwitchUser_(Spec):
             assert_that(self.twitch_user.username, equal_to("match"))
 
     class get_or_create_from_username:
-        def with_existing_user(self):
+        def test_with_existing_user(self):
             assert_that(TwitchUser.get_or_create_from_username(self.twitch_user.username),
                         equal_to(self.twitch_user))
 
         @patch.object(twitch.APIClient, "user_from_username")
-        def with_new_user(self, api_patch):
+        def test_with_new_user(self, api_patch):
             api_patch.return_value = MockTwitchAPIUser.create(username="new_user", id="12345")
 
             new_twitch_user = TwitchUser.get_or_create_from_username("new_user")
@@ -245,7 +242,7 @@ class TwitchUser_(Spec):
             assert_that(new_twitch_user.twitch_id, equal_to("12345"))
 
         @patch.object(twitch.APIClient, "user_from_username")
-        def with_updated_user(self, api_patch):
+        def test_with_updated_user(self, api_patch):
             api_patch.return_value = MockTwitchAPIUser.create(username="updated_user",
                                                               id=self.twitch_user.twitch_id)
 
@@ -256,28 +253,30 @@ class TwitchUser_(Spec):
             assert_that(TwitchUser.objects.count(), equal_to(1))
 
         @patch.object(twitch.APIClient, "user_from_username")
-        def with_nonexistent_user(self, api_patch):
+        def test_with_nonexistent_user(self, api_patch):
             api_patch.return_value = None
 
             assert_that(calling(TwitchUser.get_or_create_from_username).with_args("nonexistent_user"),
                         raises(Exception))
 
     class get_or_create_from_user_obj:
-        def with_existing_user(self):
+        def test_with_existing_user(self):
             user_obj = MockTwitchAPIUser.create(username=self.twitch_user.username,
                                                 id=self.twitch_user.twitch_id)
 
-            assert_that(TwitchUser.get_or_create_from_user_obj(user_obj), equal_to(self.twitch_user))
+            assert_that(TwitchUser.get_or_create_from_user_obj(user_obj),
+                        equal_to(self.twitch_user))
 
-        def with_updated_user(self):
+        def test_with_updated_user(self):
             user_obj = MockTwitchAPIUser.create(username="updated_user",
                                                 id=self.twitch_user.twitch_id)
 
-            assert_that(TwitchUser.get_or_create_from_user_obj(user_obj), equal_to(self.twitch_user))
+            assert_that(TwitchUser.get_or_create_from_user_obj(user_obj),
+                        equal_to(self.twitch_user))
             self.twitch_user.refresh_from_db()
             assert_that(self.twitch_user.username, equal_to("updated_user"))
 
-        def without_existing_user(self):
+        def test_without_existing_user(self):
             user_obj = MockTwitchAPIUser.create(username="new_user", id="12345")
 
             new_twitch_user = TwitchUser.get_or_create_from_user_obj(user_obj)
@@ -286,6 +285,6 @@ class TwitchUser_(Spec):
             assert_that(TwitchUser.objects.count(), equal_to(1))
 
     class twitch_url:
-        def returns_twitch_url(self):
+        def test_returns_twitch_url(self):
             self.twitch_user.username = "dexfore"
             assert_that(self.twitch_user.twitch_url, equal_to("https://www.twitch.tv/dexfore"))

@@ -59,7 +59,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.redirects',
-    'django_nose',
     'django_extensions',
     'django_object_actions',
     'markdownx',
@@ -104,10 +103,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'classic_tetris_project_django.wsgi.application'
-
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-NOSE_ARGS = ['--where=classic_tetris_project/tests/',
-             '--with-specplugin', '--with-specselector']
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases

@@ -20,26 +20,26 @@ class ChallengeCommand_(CommandSpec):
         ]
 
     class twitch:
-        def no_queue(self):
+        def test_no_queue(self):
             self.assert_twitch("!challenge user1", [
                 "The queue is not open."
             ])
 
-        def invalid_user(self):
+        def test_invalid_user(self):
             self._open_queue()
 
             self.assert_twitch("!challenge user1", [
                 "Twitch user \"user1\" does not exist."
             ])
 
-        def own_user(self):
+        def test_own_user(self):
             self._open_queue()
 
             self.assert_twitch(f"!challenge {self.twitch_user.username}", [
                 "You can't challenge yourself, silly!"
             ])
 
-        def challenge(self):
+        def test_challenge(self):
             self.user1
             self._open_queue()
 
@@ -48,7 +48,7 @@ class ChallengeCommand_(CommandSpec):
                 f"twitch.tv/{self.twitch_channel.name}! You have 60 seconds to !accept or !decline."
             ])
 
-        def existing_own_challenge(self):
+        def test_existing_own_challenge(self):
             self.user1
             self.user2
             self._open_queue()
@@ -58,7 +58,7 @@ class ChallengeCommand_(CommandSpec):
                 "You have already challenged user2."
             ])
 
-        def existing_other_challenge(self):
+        def test_existing_other_challenge(self):
             self.user1
             self._open_queue()
             self.send_twitch("!challenge user1", self.user2)
