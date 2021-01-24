@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin, auth
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -21,12 +22,14 @@ class WebsiteUserInline(admin.StackedInline):
 class UserAdmin(DjangoObjectActions, admin.ModelAdmin):
     inlines = [DiscordUserInline, TwitchUserInline, WebsiteUserInline]
 
-    def login_as(self, request, user):
-        website_user = WebsiteUser.fetch_by_user(user)
-        auth.login(request, website_user.auth_user)
-        return redirect(reverse("index"))
+    # Don't allow this on production as this is a security vulnerability
+    if settings.DEBUG:
+        def login_as(self, request, user):
+            website_user = WebsiteUser.fetch_by_user(user)
+            auth.login(request, website_user.auth_user)
+            return redirect(reverse("index"))
 
-    change_actions = ("login_as",)
+        change_actions = ("login_as",)
 
 @admin.register(DiscordUser)
 class DiscordUserAdmin(admin.ModelAdmin):
