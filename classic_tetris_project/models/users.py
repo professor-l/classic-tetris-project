@@ -13,6 +13,7 @@ from furl import furl
 from .. import twitch, discord
 from ..util import lazy
 from ..countries import Country
+from ..facades.user_permissions import UserPermissions
 
 class User(models.Model):
     RE_PREFERRED_NAME = re.compile(r"^[A-Za-z0-9\-_. ]+$")
@@ -123,6 +124,10 @@ class User(models.Model):
             return self.discord_user.display_name()
         else:
             return f"User {self.id}"
+
+    @lazy
+    def permissions(self):
+        return UserPermissions(self)
 
     def merge(self, target_user):
         from ..util.merge import UserMerger

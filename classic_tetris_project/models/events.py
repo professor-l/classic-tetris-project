@@ -2,6 +2,7 @@ from django.contrib.auth.models import User as AuthUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from markdownx.models import MarkdownxField
 
 from .users import User
@@ -55,6 +56,14 @@ class Event(models.Model):
 
 
 class Qualifier(models.Model):
+    REVIEWER_CHECKS = [
+        ("announced", "Announced attempt"),
+        ("stencil", "Stencil ready"),
+        ("rom", "Unmodified ROM"),
+        ("timer", "Timer on screen"),
+        ("reset", "Hard reset before starting"),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     event = models.ForeignKey(Event, related_name="qualifiers", on_delete=models.CASCADE)
     qualifying_type = models.IntegerField(choices=Event.QualifyingType.choices)
@@ -65,14 +74,27 @@ class Qualifier(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     approved = models.BooleanField(default=None, null=True)
+    review_data = models.JSONField(default=dict)
     reviewed_at = models.DateTimeField(null=True)
-    reviewed_by = models.ForeignKey(AuthUser, on_delete=models.SET_NULL, null=True)
+    reviewed_by = models.ForeignKey(User, related_name="qualifiers_reviewed",
+                                    on_delete=models.SET_NULL, null=True)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["event", "user"],
                                     name="unique_event_user"),
         ]
+
+
+    def review(self, approved, reviewed_by, checks, notes):
+        self.approved = approved
+        self.reviewed_by = reviewed_by
+        self.reviewed_at = timezone.now()
+        self.review_data = {
+            "checks": checks,
+            "notes": notes,
+        }
+        self.save()
 
     def __str__(self):
         return f"{self.user.display_name} ({self.event.name})"
