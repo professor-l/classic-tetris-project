@@ -9,7 +9,7 @@
 {{ event.qualifying_instructions|markdown }}
 {% endif %}
 
-<form method="post">
+<form method="post" class="form">
   {% csrf_token %}
   {{ form.non_field_errors }}
   <div class="field-list">

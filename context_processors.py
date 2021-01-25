@@ -8,5 +8,6 @@ def session_processor(request):
         current_user = None
 
     return {
+        "auth_user": request.user,
         "current_user": current_user,
     }

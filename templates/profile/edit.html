@@ -2,15 +2,15 @@
 
 {% block content %}
 <div class="profile">
-  <div class="profile-section">
-    <div class="profile-section__header">
-      <h2 class="profile-section__title">
+  <div class="section">
+    <div class="section__header">
+      <h2 class="section__title">
         Edit Profile
       </h2>
     </div>
-    <form method="post">
+    <form method="post" class="form">
       {% csrf_token %}
-      <div class="profile-section__body">
+      <div class="section__body">
         {{ form.non_field_errors }}
         <div class="field-list">
           <div class="field-list__row">
@@ -84,6 +84,7 @@
             <div class="field-list__value">
               <input type="submit" value="Update" class="btn btn--primary">
             </div>
+          </div>
         </div>
       </div>
     </form>

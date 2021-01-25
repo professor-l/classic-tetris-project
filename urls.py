@@ -8,6 +8,7 @@ from .views import profile
 from .views import policy
 from .views import pages
 from .views import events
+from .views import review_qualifiers
 
 oauth_patterns = ([
     path("login/", oauth.login, name="login"),
@@ -34,6 +35,11 @@ event_patterns = ([
     path("qualify/", events.QualifyView.as_view(), name="qualify"),
 ], "event")
 
+review_qualifiers_patterns = ([
+    path("", review_qualifiers.IndexView.as_view(), name="index"),
+    path("<int:qualifier_id>/", review_qualifiers.ReviewView.as_view(), name="review"),
+], "review_qualifiers")
+
 
 urlpatterns = [
     path("", index, name="index"),
@@ -44,6 +50,7 @@ urlpatterns = [
     path("policy/", include(policy_patterns)),
     path("page/<slug:page_slug>/", pages.page, name="page"),
     path("event/<slug:event_slug>/", include(event_patterns)),
+    path("review_qualifiers/", include(review_qualifiers_patterns)),
 
     path("markdownx/", include('markdownx.urls')),
 ]

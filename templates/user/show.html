@@ -15,18 +15,18 @@
     {% endif %}
   </div>
 
-  <div class="profile-section">
-    <div class="profile-section__header">
-      <h2 class="profile-section__title">
+  <div class="section">
+    <div class="section__header">
+      <h2 class="section__title">
         Profile
       </h2>
       {% if user == current_user %}
-      <a href="{% url "profile:edit" %}" class="profile-section__edit">
+      <a href="{% url "profile:edit" %}" class="section__edit">
         Edit
       </a>
       {% endif %}
     </div>
-    <div class="profile-section__body">
+    <div class="section__body">
       <div class="field-list">
         {% if user.country %}
         <div class="field-list__row">

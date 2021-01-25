@@ -52,6 +52,30 @@ h2 {
   }
 }
 
+.section {
+  margin-top: 30px;
+
+  &__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 6px;
+    border-bottom: 1px colors.$border-gray solid;
+  }
+
+  &__title {
+    margin: 0;
+  }
+
+  &__edit {
+    text-decoration: none;
+  }
+
+  &__body {
+    margin: 15px;
+  }
+}
+
 .data-table {
   width: 100%;
   border-collapse: collapse;
