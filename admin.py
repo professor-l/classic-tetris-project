@@ -83,15 +83,7 @@ class QualifierAdmin(admin.ModelAdmin):
                        "vod", "details", "created_at"),
         }),
         ("Moderator Data", {
-            "fields": ("approved", "reviewed_at", "reviewed_by"),
+            "fields": ("approved", "reviewed_by", "reviewed_at", "review_data"),
         }),
     )
-    readonly_fields = ("created_at", "approved", "reviewed_at", "reviewed_by")
-
-    actions = ["approve", "reject"]
-
-    def approve(self, request, queryset):
-        queryset.update(approved=True, reviewed_at=timezone.now(), reviewed_by=request.user)
-
-    def reject(self, request, queryset):
-        queryset.update(approved=False, reviewed_at=timezone.now(), reviewed_by=request.user)
+    readonly_fields = ("created_at", "approved", "reviewed_at", "reviewed_by", "review_data")

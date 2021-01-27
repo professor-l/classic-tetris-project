@@ -6,6 +6,7 @@
 
 {% block content %}
 <h1>Review Qualifiers</h1>
+{% if qualifiers %}
 <table class="data-table">
   <tr class="data-table__headers">
     <th>Event</th>
@@ -24,4 +25,7 @@
   </tr>
   {% endfor %}
 </table>
+{% else %}
+<p>No qualifiers to review!</p>
+{% endif %}
 {% endblock %}

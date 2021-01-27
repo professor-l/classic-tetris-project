@@ -80,7 +80,7 @@ class IndexView_(Spec):
                 assert_that(response, uses_template("event/index.html"))
                 assert_that(response, uses_template("event/ineligible_reasons/logged_out.html"))
 
-class QualifyView(Spec):
+class QualifyView_(Spec):
     @lazy
     def event(self):
         return EventFactory(qualifying_open=True)
