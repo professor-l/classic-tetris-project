@@ -62,3 +62,34 @@ class Event_(Spec):
             self.user.refresh_from_db()
 
             assert_that(self.event.user_ineligible_reason(self.user), equal_to("link_discord"))
+
+
+class Qualifier_(Spec):
+    @lazy
+    def qualifier(self):
+        return QualifierFactory()
+
+    class review:
+        def test_sets_reviewer_columns(self):
+            reviewer = UserFactory()
+            self.qualifier.review(True, reviewer, notes="Great job", checks={
+                "announced": True,
+                "stencil": True,
+                "rom": True,
+                "timer": True,
+                "reset": True,
+            })
+            assert_that(self.qualifier, has_properties(
+                approved=True,
+                reviewed_by=reviewer,
+                review_data={
+                    "notes": "Great job",
+                    "checks": {
+                        "announced": True,
+                        "stencil": True,
+                        "rom": True,
+                        "timer": True,
+                        "reset": True,
+                    },
+                }
+            ))
