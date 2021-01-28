@@ -104,3 +104,59 @@ h2 {
     }
   }
 }
+
+.qualifier-group {
+  padding: 5px;
+  display: flex;
+  flex-direction: row-reverse;
+
+  &__sidebar {
+    flex: 0 0 30px;
+    position: relative;
+  }
+
+  &__name {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(90deg);
+    white-space: nowrap;
+    font-weight: bold;
+    color: colors.$qualifier-table-text;
+  }
+
+  &__rows {
+    flex: 1 0 auto;
+  }
+}
+
+.qualifier-row {
+  display: flex;
+  flex-direction: row;
+
+  &--headers {
+    margin-left: 5px;
+    margin-right: 35px;
+  }
+
+  &__cell {
+    padding: 5px 10px;
+
+    &--seed {
+      flex: 1 0 30px;
+    }
+
+    &--user {
+      flex: 1 1 100px;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &--score {
+      flex: 1 0 90px;
+      text-align: left;
+    }
+  }
+}

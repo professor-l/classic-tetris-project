@@ -4,6 +4,7 @@ from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
+from classic_tetris_project.facades.qualifier_table import QualifierTable
 from classic_tetris_project.models import Event
 from classic_tetris_project.util import lazy
 from .base import BaseView
@@ -23,8 +24,7 @@ class IndexView(EventView):
         return render(request, "event/index.html", {
             "event": self.event,
             "user_ineligible_reason": self.event.user_ineligible_reason(self.current_user),
-            "approved_qualifiers": list(self.event.qualifiers.filter(approved=True)
-                                        .order_by("-qualifying_score")),
+            "qualifier_groups": QualifierTable(self.event).groups(),
             "pending_qualifiers": list(self.event.qualifiers.filter(approved=None)
                                        .order_by("-qualifying_score")),
         })
