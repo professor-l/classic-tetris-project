@@ -84,6 +84,9 @@ class QualifierAdmin(admin.ModelAdmin):
         }),
         ("Moderator Data", {
             "fields": ("approved", "reviewed_by", "reviewed_at", "review_data"),
+            "description": ("Qualifiers can be reviewed from <a href='/review_qualifiers/'>this "
+                            "page</a>. Change Approved to \"Unknown\" to allow a qualifier to be "
+                            "reviewed again.")
         }),
     )
-    readonly_fields = ("created_at", "approved", "reviewed_at", "reviewed_by", "review_data")
+    readonly_fields = ("created_at", "reviewed_at", "reviewed_by", "review_data")
