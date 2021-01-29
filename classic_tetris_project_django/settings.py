@@ -18,6 +18,7 @@ ENV = environ.Env(
     CACHE_URL=(str, 'rediscache://'),
     BASE_URL=(str, 'http://dev.monthlytetris.info:8000'),
     DISCORD_USER_ID_WHITELIST=(list, []),
+    ROLLBAR_ENABLED=(bool, False),
 )
 environ.Env.read_env('.env')
 
@@ -175,14 +176,14 @@ WEBPACK_LOADER = {
     }
 }
 
-if not DEBUG:
-    ROLLBAR = {
-        'access_token': ENV('ROLLBAR_TOKEN'),
-        'environment': 'production',
-        'root': BASE_DIR,
-    }
-    import rollbar
-    rollbar.init(**ROLLBAR)
+ROLLBAR = {
+    'access_token': ENV('ROLLBAR_TOKEN'),
+    'environment': 'development' if DEBUG else 'production',
+    'root': BASE_DIR,
+    'enabled': ENV('ROLLBAR_ENABLED'),
+}
+import rollbar
+rollbar.init(**ROLLBAR)
 
 
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379/1',

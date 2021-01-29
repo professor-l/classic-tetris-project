@@ -46,10 +46,9 @@ class Command(ABC):
                     self.send_usage()
             except Exception as e:
                 self.send_message("Internal error :(")
+                rollbar.report_exc_info(extra_data=self.context.report_data())
                 if settings.DEBUG:
                     traceback.print_exc()
-                else:
-                    rollbar.report_exc_info(extra_data=self.context.report_data())
             finally:
                 django.db.close_old_connections()
         else:
