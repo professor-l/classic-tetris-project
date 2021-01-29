@@ -30,6 +30,9 @@ class Spec:
                     "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
                 }
             },
+            CELERY_TASK_EAGER_PROPAGATES=True,
+            CELERY_TASK_ALWAYS_EAGER=True,
+            CELERY_BROKER_BACKEND="memory",
         )
         self._setting_override.__enter__()
 

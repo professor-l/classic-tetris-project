@@ -93,7 +93,6 @@ class Qualifier(models.Model):
 
 
     def review(self, approved, reviewed_by, checks, notes):
-        from classic_tetris_project import tasks
         self.approved = approved
         self.reviewed_by = reviewed_by
         self.reviewed_at = timezone.now()
@@ -102,6 +101,10 @@ class Qualifier(models.Model):
             "notes": notes,
         }
         self.save()
+        self.report_reviewed()
+
+    def report_reviewed(self):
+        from classic_tetris_project import tasks
         tasks.report_reviewed_qualifier.delay(self.id)
 
     def __str__(self):
