@@ -1,8 +1,10 @@
+from django.conf import settings
 from django.contrib.auth.models import User as AuthUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from furl import furl
 from markdownx.models import MarkdownxField
 
 from .users import User
@@ -48,8 +50,12 @@ class Event(models.Model):
         else:
             raise Exception("invalid qualifying type")
 
-    def get_absolute_url(self):
-        return reverse("event:index", args=[self.slug])
+    def get_absolute_url(self, include_base=False):
+        path = reverse("event:index", args=[self.slug])
+        if include_base:
+            return furl(settings.BASE_URL, path=path).url
+        else:
+            return path
 
     def __str__(self):
         return self.name
@@ -87,6 +93,7 @@ class Qualifier(models.Model):
 
 
     def review(self, approved, reviewed_by, checks, notes):
+        from classic_tetris_project import tasks
         self.approved = approved
         self.reviewed_by = reviewed_by
         self.reviewed_at = timezone.now()
@@ -95,6 +102,7 @@ class Qualifier(models.Model):
             "notes": notes,
         }
         self.save()
+        tasks.report_reviewed_qualifier.delay(self.id)
 
     def __str__(self):
         return f"{self.user.display_name} ({self.event.name})"

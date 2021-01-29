@@ -1,7 +1,9 @@
 asgiref==3.2.10
 authlib==0.14.1
+celery==5.0.5
 coverage==5.0.4
 cssselect==1.1.0
+disco-py==0.0.14rc1
 discord.py==1.5.1
 django-environ==0.4.5
 django-extensions==3.1.0

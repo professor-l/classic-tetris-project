@@ -16,7 +16,8 @@ ENV = environ.Env(
     DEBUG=(bool, True),
     DATABASE_URL=(str, 'sqlite:///db.sqlite3'),
     CACHE_URL=(str, 'rediscache://'),
-    BASE_URL=(str, 'http://dev.monthlytetris.info:8000')
+    BASE_URL=(str, 'http://dev.monthlytetris.info:8000'),
+    DISCORD_USER_ID_WHITELIST=(list, []),
 )
 environ.Env.read_env('.env')
 
@@ -81,11 +82,13 @@ ROOT_URLCONF = 'classic_tetris_project_django.urls'
 
 LOGIN_URL = '/oauth/login/'
 
-TEMPLATE_DIR = os.path.join(BASE_DIR, "classic_tetris_project", "private", "templates")
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATE_DIR],
+        'DIRS': [
+            os.path.join(BASE_DIR, "classic_tetris_project", "templates"),
+            os.path.join(BASE_DIR, "classic_tetris_project", "private", "templates"),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'builtins': [
@@ -180,3 +183,6 @@ if not DEBUG:
     }
     import rollbar
     rollbar.init(**ROLLBAR)
+
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/1',

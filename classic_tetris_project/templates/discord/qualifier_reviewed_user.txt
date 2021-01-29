@@ -1,0 +1,13 @@
+Your qualifier for [{{ event_name }}]({{ event_url }}) was **{% if qualifier.approved %}approved{% else %}rejected{% endif %}** by {{ qualifier.reviewed_by.display_name }}.\
+\
+{% if checks %}\
+{% for check, value in checks %}
+
+{% if value %}:white_check_mark:{% else %}:x:{% endif %} {{ check }}?\
+{% endfor %}\
+{% endif %}\
+\
+{% if qualifier.review_data.notes %}
+
+{{ qualifier.review_data.notes }}
+{% endif %}
