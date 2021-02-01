@@ -33,7 +33,8 @@ class IndexView_(Spec):
                 add_review_permission(self.current_auth_user)
 
             def test_renders_no_qualifiers(self):
-                QualifierFactory(approved=True)
+                QualifierFactory(submitted_=True, approved=True)
+                QualifierFactory()
 
                 response = self.get()
 
@@ -42,7 +43,7 @@ class IndexView_(Spec):
                 assert_that(response, not_(has_html("table.data-table")))
 
             def test_renders_qualifiers(self):
-                QualifierFactory(approved=None)
+                QualifierFactory(submitted_=True, approved=None)
 
                 response = self.get()
 
@@ -53,7 +54,7 @@ class IndexView_(Spec):
 class ReviewView_(Spec):
     @lazy
     def qualifier(self):
-        return QualifierFactory()
+        return QualifierFactory(submitted_=True)
     @property
     def url(self):
         return f"/review_qualifiers/{self.qualifier.id}/"

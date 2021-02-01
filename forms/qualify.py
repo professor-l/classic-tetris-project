@@ -7,15 +7,13 @@ class QualifyingForm(forms.Form):
     vod = forms.URLField()
     details = forms.CharField(widget=forms.Textarea, required=False)
 
-    def save(self, event, user):
-        return Qualifier.objects.create(
-            user=user,
-            event=event,
-            qualifying_type=event.qualifying_type,
-            vod=self.cleaned_data["vod"],
-            details=self.cleaned_data["details"],
-            **self.score_data()
-        )
+    def save(self, qualifier):
+        qualifier.submitted = True
+        qualifier.vod = self.cleaned_data["vod"]
+        qualifier.details = self.cleaned_data["details"]
+        for attr, value in self.score_data().items():
+            setattr(qualifier, attr, value)
+        qualifier.save()
 
     def score_data(self):
         {}

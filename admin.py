@@ -80,7 +80,7 @@ class QualifierAdmin(admin.ModelAdmin):
     fieldsets = (
         ("Qualifier Data", {
             "fields": ("user", "event", "qualifying_type", "qualifying_score", "qualifying_data",
-                       "vod", "details", "created_at"),
+                       "vod", "auth_word", "details", "created_at", "submitted", "submitted_at"),
         }),
         ("Moderator Data", {
             "fields": ("approved", "reviewed_by", "reviewed_at", "review_data"),

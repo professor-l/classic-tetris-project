@@ -5,15 +5,9 @@
 {% block content %}
 <h1>Qualify for {{ event.name }}</h1>
 
-{% if event.qualifying_instructions %}
-{{ event.qualifying_instructions|markdown }}
+{% if event.pre_qualifying_instructions %}
+{{ event.pre_qualifying_instructions|markdown }}
 {% endif %}
 
-<form method="post" class="form">
-  {% csrf_token %}
-  {{ form.non_field_errors }}
-  <div class="field-list">
-    {% include form.qualify_template %}
-  </div>
-</form>
+<a href="{% url "event:qualify" event.slug %}" class="btn btn--primary" data-method="post">Start Qualifier</a>
 {% endblock %}

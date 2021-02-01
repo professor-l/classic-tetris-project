@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Qualify for {{ event.name }}{% endblock %}
+
+{% block content %}
+<h1>Qualify for {{ event.name }}</h1>
+
+{% if event.qualifying_instructions %}
+{{ event.qualifying_instructions|markdown }}
+{% endif %}
+
+<div class="auth-word alert alert--light-info">
+  Your auth word is:
+  <div class="auth-word__word">
+    {{ qualifier.auth_word|upper }}
+  </div>
+  When you complete your first game with a score of over 5000, <strong>enter this word on the leaderboard</strong>. This helps us verify that you're recording your qualifier in real time.
+</div>
+
+<form method="post" class="form">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <div class="field-list">
+    {% include form.qualify_template %}
+  </div>
+</form>
+{% endblock %}

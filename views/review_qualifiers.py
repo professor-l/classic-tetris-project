@@ -18,7 +18,8 @@ class ReviewQualifiersView(PermissionRequiredMixin, BaseView):
 class IndexView(ReviewQualifiersView):
     def get(self, request):
         return render(request, "review_qualifiers/index.html", {
-            "qualifiers": list(Qualifier.objects.filter(approved=None).order_by("created_at")),
+            "qualifiers": list(Qualifier.objects.filter(submitted=True, approved=None)
+                               .order_by("created_at")),
         })
 
 
@@ -55,6 +56,6 @@ class ReviewView(ReviewQualifiersView):
     @lazy
     def qualifier(self):
         try:
-            return Qualifier.objects.get(id=self.kwargs["qualifier_id"])
+            return Qualifier.objects.filter(submitted=True).get(id=self.kwargs["qualifier_id"])
         except Qualifier.DoesNotExist:
             raise Http404()

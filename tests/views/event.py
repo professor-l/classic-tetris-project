@@ -24,7 +24,7 @@ class IndexView_(Spec):
                 assert_that(response, uses_template("event/ineligible_reasons/closed.html"))
 
             def test_renders_already_qualified(self):
-                QualifierFactory(user=self.current_user, event=self.event)
+                QualifierFactory(user=self.current_user, event=self.event, submitted_=True)
                 response = self.get()
 
                 assert_that(response.status_code, equal_to(200))
@@ -56,10 +56,21 @@ class IndexView_(Spec):
                 assert_that(response, uses_template("event/index.html"))
                 assert_that(response, has_html(f"a[href='/event/{self.event.slug}/qualify/']"))
 
+            def test_renders_qualify_button_with_started_qualifier(self):
+                DiscordUserFactory(user=self.current_user)
+                TwitchUserFactory(user=self.current_user)
+                QualifierFactory(user=self.current_user, event=self.event)
+                response = self.get()
+
+                assert_that(response.status_code, equal_to(200))
+                assert_that(response, uses_template("event/index.html"))
+                assert_that(response, has_html(f"a[href='/event/{self.event.slug}/qualify/']"))
+
             def test_renders_qualifier_list(self):
-                qualifier1 = QualifierFactory(event=self.event, approved=None)
-                qualifier2 = QualifierFactory(event=self.event, approved=True)
-                qualifier3 = QualifierFactory(event=self.event, approved=False)
+                qualifier1 = QualifierFactory(event=self.event, submitted_=True, approved=None)
+                qualifier2 = QualifierFactory(event=self.event, submitted_=True, approved=True)
+                qualifier3 = QualifierFactory(event=self.event, submitted_=True, approved=False)
+                qualifier4 = QualifierFactory(event=self.event)
                 response = self.get()
 
                 assert_that(response.status_code, equal_to(200))
@@ -69,6 +80,8 @@ class IndexView_(Spec):
                                                text=qualifier2.user.display_name))
                 assert_that(response, not_(has_html(f".data-table .data-table__row a",
                                                     text=qualifier3.user.display_name)))
+                assert_that(response, not_(has_html(f".data-table .data-table__row a",
+                                                    text=qualifier4.user.display_name)))
 
 
 
@@ -80,6 +93,7 @@ class IndexView_(Spec):
                 assert_that(response, uses_template("event/index.html"))
                 assert_that(response, uses_template("event/ineligible_reasons/logged_out.html"))
 
+
 class QualifyView_(Spec):
     @lazy
     def event(self):
@@ -90,6 +104,8 @@ class QualifyView_(Spec):
     def setup(self):
         super().setup()
         self.sign_in()
+        DiscordUserFactory(user=self.current_user)
+        TwitchUserFactory(user=self.current_user)
 
     class GET:
         def test_with_qualifying_closed(self):
@@ -99,9 +115,13 @@ class QualifyView_(Spec):
 
             assert_that(response, redirects_to(f"/event/{self.event.slug}/"))
 
+        def test_with_qualifier_started(self):
+            QualifierFactory(event=self.event, user=self.current_user)
+            response = self.get()
+
+            assert_that(response, redirects_to(f"/event/{self.event.slug}/qualifier/"))
+
         def test_renders(self):
-            DiscordUserFactory(user=self.current_user)
-            TwitchUserFactory(user=self.current_user)
             response = self.get()
 
             assert_that(response.status_code, equal_to(200))
@@ -111,19 +131,93 @@ class QualifyView_(Spec):
         def test_with_qualifying_closed(self):
             self.event.qualifying_open = False
             self.event.save()
-            response = self.post({ "vod": "https://twitch.tv/qual1", "score": 200000, "details": "Hi there" })
+            response = self.post()
 
             assert_that(response, redirects_to(f"/event/{self.event.slug}/"))
             assert_that(Qualifier.objects.count(), equal_to(0))
 
-        def test_submits_qualifier(self):
-            DiscordUserFactory(user=self.current_user)
-            TwitchUserFactory(user=self.current_user)
+        def test_with_qualifier_started(self):
+            QualifierFactory(event=self.event, user=self.current_user)
+            assert_that(Qualifier.objects.count(), equal_to(1))
+            response = self.post()
+
+            assert_that(response, redirects_to(f"/event/{self.event.slug}/qualifier/"))
+            assert_that(Qualifier.objects.count(), equal_to(1))
+
+        def test_creates_qualifier(self):
+            assert_that(Qualifier.objects.count(), equal_to(0))
+            response = self.post()
+
+            assert_that(response, redirects_to(f"/event/{self.event.slug}/qualifier/"))
+            assert_that(Qualifier.objects.count(), equal_to(1))
+            assert_that(Qualifier.objects.last(), has_properties(
+                user=self.current_user,
+                event=self.event,
+                submitted=False,
+            ))
+
+
+class QualifierView_(Spec):
+    @lazy
+    def event(self):
+        return EventFactory(qualifying_open=True)
+    @lazy
+    def qualifier(self):
+        return QualifierFactory(event=self.event, user=self.current_user)
+    @property
+    def url(self):
+        return f"/event/{self.event.slug}/qualifier/"
+    def setup(self):
+        super().setup()
+        DiscordUserFactory(user=self.current_user)
+        TwitchUserFactory(user=self.current_user)
+        self.sign_in()
+        self.qualifier
+
+    class GET:
+        def test_with_qualifying_closed(self):
+            self.event.qualifying_open = False
+            self.event.save()
+            response = self.get()
+
+            assert_that(response, redirects_to(f"/event/{self.event.slug}/"))
+
+        def test_without_qualifier(self):
+            self.qualifier.delete()
+            response = self.get()
+
+            assert_that(response, redirects_to(f"/event/{self.event.slug}/qualify/"))
+
+        def test_renders(self):
+            response = self.get()
+
+            assert_that(response.status_code, equal_to(200))
+            assert_that(response, uses_template("event/qualifier.html"))
+
+    class POST:
+        def test_with_qualifying_closed(self):
+            self.event.qualifying_open = False
+            self.event.save()
             response = self.post({ "vod": "https://twitch.tv/qual1", "score": 200000, "details": "Hi there" })
 
             assert_that(response, redirects_to(f"/event/{self.event.slug}/"))
-            assert_that(Qualifier.objects.count(), equal_to(1))
-            assert_that(Qualifier.objects.last(), has_properties(
+            self.qualifier.refresh_from_db()
+            assert_that(self.qualifier.submitted, equal_to(False))
+
+        def test_without_qualifier(self):
+            self.qualifier.delete()
+            response = self.post({ "vod": "https://twitch.tv/qual1", "score": 200000, "details": "Hi there" })
+
+            assert_that(response, redirects_to(f"/event/{self.event.slug}/qualify/"))
+
+        def test_submits_qualifier(self):
+            response = self.post({ "vod": "https://twitch.tv/qual1", "score": 200000, "details": "Hi there" })
+
+            assert_that(response, redirects_to(f"/event/{self.event.slug}/"))
+            self.qualifier.refresh_from_db()
+            assert_that(self.qualifier, has_properties(
+                submitted=True,
+                approved=None,
                 vod="https://twitch.tv/qual1",
                 qualifying_score=200000,
                 details="Hi there",

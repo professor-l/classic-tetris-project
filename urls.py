@@ -33,6 +33,7 @@ policy_patterns = ([
 event_patterns = ([
     path("", events.IndexView.as_view(), name="index"),
     path("qualify/", events.QualifyView.as_view(), name="qualify"),
+    path("qualifier/", events.QualifierView.as_view(), name="qualifier"),
 ], "event")
 
 review_qualifiers_patterns = ([
