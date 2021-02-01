@@ -1,5 +1,7 @@
 from django import forms
+from django.utils import timezone
 
+from classic_tetris_project import tasks
 from classic_tetris_project.models import Qualifier
 
 
@@ -9,11 +11,13 @@ class QualifyingForm(forms.Form):
 
     def save(self, qualifier):
         qualifier.submitted = True
+        qualifier.submitted_at = timezone.now()
         qualifier.vod = self.cleaned_data["vod"]
         qualifier.details = self.cleaned_data["details"]
         for attr, value in self.score_data().items():
             setattr(qualifier, attr, value)
         qualifier.save()
+        tasks.report_submitted_qualifier.delay(qualifier.id)
 
     def score_data(self):
         {}

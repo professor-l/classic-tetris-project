@@ -7,6 +7,7 @@ from django.urls import reverse
 from classic_tetris_project.facades.qualifier_table import QualifierTable
 from classic_tetris_project.models import Event, Qualifier
 from classic_tetris_project.util import lazy
+from classic_tetris_project import tasks
 from .base import BaseView
 
 
@@ -59,6 +60,7 @@ class QualifyView(LoginRequiredMixin, EventView):
             return redirect(reverse("event:qualifier", args=[self.event.slug]))
 
         qualifier = Qualifier.objects.create(user=self.current_user, event=self.event)
+        tasks.announce_qualifier.delay(qualifier.id)
         return redirect(reverse("event:qualifier", args=[self.event.slug]))
 
 
