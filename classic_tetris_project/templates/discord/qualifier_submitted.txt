@@ -1,0 +1,6 @@
+{% load humanize %}\
+\
+{{ qualifier.user.discord_user.user_tag|safe }} submitted a qualifier for [{{ event_name }}]({{ event_url }})!
+
+Score: {{ qualifier.qualifying_score|intcomma }}
+VOD: {{ qualifier.vod }}

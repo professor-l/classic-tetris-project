@@ -1,6 +1,0 @@
-{% load humanize %}\
-\
-{{ qualifier.user.discord_user.user_tag|safe }}'s qualifier for [{{ event_name }}]({{ event_url }}) was approved.
-
-Score: {{ qualifier.qualifying_score|intcomma }}
-VOD: {{ qualifier.vod }}
