@@ -13,6 +13,6 @@ class Words:
 
     @staticmethod
     def get_word():
-        return random.choice(Words.FULL_LIST)
+        return random.choice(Words.FULL_LIST).upper()
 
 Words.populate()

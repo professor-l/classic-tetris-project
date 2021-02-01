@@ -37,6 +37,10 @@ class Event_(Spec):
         def test_returns_none_if_eligible(self):
             assert_that(self.event.user_ineligible_reason(self.user), equal_to(None))
 
+        def test_returns_none_if_started_qualifier(self):
+            QualifierFactory(user=self.user, event=self.event)
+            assert_that(self.event.user_ineligible_reason(self.user), equal_to(None))
+
         def test_returns_closed(self):
             self.event.qualifying_open = False
             self.event.save()
@@ -47,7 +51,7 @@ class Event_(Spec):
             assert_that(self.event.user_ineligible_reason(None), equal_to("logged_out"))
 
         def test_returns_already_qualified(self):
-            QualifierFactory(user=self.user, event=self.event)
+            QualifierFactory(user=self.user, event=self.event, submitted_=True)
 
             assert_that(self.event.user_ineligible_reason(self.user), equal_to("already_qualified"))
 

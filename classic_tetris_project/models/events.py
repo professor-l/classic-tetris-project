@@ -2,12 +2,14 @@ from django.conf import settings
 from django.contrib.auth.models import User as AuthUser
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import signals
 from django.urls import reverse
 from django.utils import timezone
 from furl import furl
 from markdownx.models import MarkdownxField
 
 from .users import User
+from ..words import Words
 
 
 class Event(models.Model):
@@ -19,6 +21,7 @@ class Event(models.Model):
     slug = models.SlugField(db_index=True)
     qualifying_type = models.IntegerField(choices=QualifyingType.choices)
     qualifying_open = models.BooleanField(default=False)
+    pre_qualifying_instructions = MarkdownxField(blank=True)
     qualifying_instructions = MarkdownxField(blank=True)
     event_info = MarkdownxField(blank=True)
 
@@ -32,7 +35,7 @@ class Event(models.Model):
             return "closed"
         if not user:
             return "logged_out"
-        if Qualifier.objects.filter(event=self, user=user).exists():
+        if Qualifier.objects.filter(event=self, user=user, submitted=True).exists():
             return "already_qualified"
         if not hasattr(user, "twitch_user"):
             return "link_twitch"
@@ -72,12 +75,15 @@ class Qualifier(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     event = models.ForeignKey(Event, related_name="qualifiers", on_delete=models.CASCADE)
+    auth_word = models.CharField(max_length=6)
     qualifying_type = models.IntegerField(choices=Event.QualifyingType.choices)
-    qualifying_score = models.IntegerField()
-    qualifying_data = models.JSONField()
-    vod = models.URLField()
+    qualifying_score = models.IntegerField(blank=True, null=True)
+    qualifying_data = models.JSONField(blank=True, null=True)
+    vod = models.URLField(null=True)
     details = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    submitted = models.BooleanField(default=False)
+    submitted_at = models.DateTimeField(blank=True, null=True)
 
     approved = models.BooleanField(default=None, null=True)
     review_data = models.JSONField(default=dict)
@@ -107,5 +113,14 @@ class Qualifier(models.Model):
         from classic_tetris_project import tasks
         tasks.report_reviewed_qualifier.delay(self.id)
 
+    @staticmethod
+    def before_save(sender, instance, **kwargs):
+        if not instance.auth_word:
+            instance.auth_word = Words.get_word()
+        if not instance.qualifying_type:
+            instance.qualifying_type = instance.event.qualifying_type
+
     def __str__(self):
         return f"{self.user.display_name} ({self.event.name})"
+
+signals.pre_save.connect(Qualifier.before_save, sender=Qualifier)

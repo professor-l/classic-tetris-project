@@ -17,7 +17,11 @@ class QualifierFactory(factory.django.DjangoModelFactory):
         model = Qualifier
     user = factory.SubFactory(UserFactory)
     event = factory.SubFactory(EventFactory)
-    qualifying_type = factory.LazyAttribute(lambda o: o.event.qualifying_type)
-    qualifying_score = 500000
-    qualifying_data = [500000]
-    vod = "https://twitch.tv/asdf"
+
+    class Params:
+        submitted_ = factory.Trait(
+            qualifying_score=500000,
+            qualifying_data=[500000],
+            vod="https://twitch.tv/asdf",
+            submitted=True,
+        )

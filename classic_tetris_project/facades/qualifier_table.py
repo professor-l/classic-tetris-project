@@ -49,7 +49,7 @@ class QualifierTable:
 
     def __init__(self, event):
         self.event = event
-        self.qualifiers = self.event.qualifiers.filter(approved=True).order_by("-qualifying_score")
+        self.qualifiers = self.event.qualifiers.filter(submitted=True, approved=True).order_by("-qualifying_score")
 
     def groups(self):
         groups_data = []
