@@ -41,7 +41,7 @@ class Highest2ScoresForm(QualifyingForm):
     score2 = forms.IntegerField(min_value=0)
 
     def score_data(self):
-        qualifying_score = (self.cleaned_data["score1"] + self.cleaned_data["score2"]) // 3
+        qualifying_score = (self.cleaned_data["score1"] + self.cleaned_data["score2"]) // 2
         qualifying_data = sorted([self.cleaned_data["score1"], self.cleaned_data["score2"]],
                                  key=lambda score: -score)
         return {
