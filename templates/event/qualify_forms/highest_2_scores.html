@@ -1,0 +1,46 @@
+<div class="field-list__row">
+  <div class="field-list__label field-list__label--input">
+    <label for="{{ form.score1.id_for_label }}">Score 1:</label>
+  </div>
+  <div class="field-list__value">
+    {{ form.score1 }}
+    {{ form.score1.errors }}
+  </div>
+</div>
+
+<div class="field-list__row">
+  <div class="field-list__label field-list__label--input">
+    <label for="{{ form.score2.id_for_label }}">Score 2:</label>
+  </div>
+  <div class="field-list__value">
+    {{ form.score2 }}
+    {{ form.score2.errors }}
+  </div>
+</div>
+
+<div class="field-list__row">
+  <div class="field-list__label field-list__label--input">
+    <label for="{{ form.vod.id_for_label }}">VOD:</label>
+  </div>
+  <div class="field-list__value">
+    {{ form.vod }}
+    {{ form.vod.errors }}
+  </div>
+</div>
+
+<div class="field-list__row">
+  <div class="field-list__label field-list__label--input">
+    <label for="{{ form.details.id_for_label }}">Details:</label>
+  </div>
+  <div class="field-list__value">
+    {{ form.details }}
+    {{ form.details.errors }}
+  </div>
+</div>
+
+<div class="field-list__row">
+  <div class="field-list__label"></div>
+  <div class="field-list__value">
+    <input type="submit" value="Submit" class="btn btn--primary">
+  </div>
+</div>

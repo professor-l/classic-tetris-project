@@ -36,6 +36,23 @@ class HighestScoreForm(QualifyingForm):
         return "event/qualify_forms/highest_score.html"
 
 
+class Highest2ScoresForm(QualifyingForm):
+    score1 = forms.IntegerField(min_value=0)
+    score2 = forms.IntegerField(min_value=0)
+
+    def score_data(self):
+        qualifying_score = (self.cleaned_data["score1"] + self.cleaned_data["score2"]) // 3
+        qualifying_data = sorted([self.cleaned_data["score1"], self.cleaned_data["score2"]],
+                                 key=lambda score: -score)
+        return {
+            "qualifying_score": qualifying_score,
+            "qualifying_data": qualifying_data,
+        }
+
+    def qualify_template(self):
+        return "event/qualify_forms/highest_2_scores.html"
+
+
 class Highest3ScoresForm(QualifyingForm):
     score1 = forms.IntegerField(min_value=0)
     score2 = forms.IntegerField(min_value=0)
@@ -44,8 +61,9 @@ class Highest3ScoresForm(QualifyingForm):
     def score_data(self):
         qualifying_score = (self.cleaned_data["score1"] + self.cleaned_data["score2"] +
                             self.cleaned_data["score3"]) // 3
-        qualifying_data = [self.cleaned_data["score1"], self.cleaned_data["score2"],
-                           self.cleaned_data["score3"]]
+        qualifying_data = sorted([self.cleaned_data["score1"], self.cleaned_data["score2"],
+                                  self.cleaned_data["score3"]],
+                                 key=lambda score: -score)
         return {
             "qualifying_score": qualifying_score,
             "qualifying_data": qualifying_data,

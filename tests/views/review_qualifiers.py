@@ -124,7 +124,7 @@ class ReviewView_(Spec):
                 assert_that(response.status_code, equal_to(404))
 
             @patch("classic_tetris_project.tasks.report_reviewed_qualifier.delay")
-            def test_with_qualifier(self, _):
+            def test_with_qualifier(self, report_reviewed_qualifier):
                 response = self.post({
                     "approved": True, 
                     "notes": "Great job",
@@ -151,3 +151,4 @@ class ReviewView_(Spec):
                         },
                     }
                 ))
+                report_reviewed_qualifier.assert_called_once_with(self.qualifier.id)
