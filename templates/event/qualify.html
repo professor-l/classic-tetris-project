@@ -9,5 +9,5 @@
 {{ event.pre_qualifying_instructions|markdown }}
 {% endif %}
 
-<a href="{% url "event:qualify" event.slug %}" class="btn btn--primary" data-method="post">Start Qualifier</a>
+<a href="{% url "event:qualify" event.slug %}" class="btn btn--primary" data-method="post" data-confirm="Are you sure you want to start your qualifier now? Do not continue unless you're ready to start your qualifier.">Start Qualifier</a>
 {% endblock %}
