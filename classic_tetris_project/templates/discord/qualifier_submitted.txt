@@ -4,3 +4,6 @@
 
 Score: {{ qualifier.qualifying_score|intcomma }}
 VOD: {{ qualifier.vod }}
+{% if qualifier.details %}
+{{ qualifier.details }}
+{% endif %}
