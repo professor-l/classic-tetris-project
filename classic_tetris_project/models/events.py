@@ -15,7 +15,8 @@ from ..words import Words
 class Event(models.Model):
     class QualifyingType(models.IntegerChoices):
         HIGHEST_SCORE = 1
-        HIGHEST_3_SCORES = 2
+        HIGHEST_2_SCORES = 2
+        HIGHEST_3_SCORES = 3
 
     name = models.CharField(max_length=64)
     slug = models.SlugField(db_index=True)
@@ -48,6 +49,8 @@ class Event(models.Model):
         from classic_tetris_project.private.forms import qualify as qualify_forms
         if self.qualifying_type == self.QualifyingType.HIGHEST_SCORE:
             return qualify_forms.HighestScoreForm
+        elif self.qualifying_type == self.QualifyingType.HIGHEST_2_SCORES:
+            return qualify_forms.Highest2ScoresForm
         elif self.qualifying_type == self.QualifyingType.HIGHEST_3_SCORES:
             return qualify_forms.Highest3ScoresForm
         else:
