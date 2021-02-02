@@ -19,6 +19,7 @@ ENV = environ.Env(
     BASE_URL=(str, 'http://dev.monthlytetris.info:8000'),
     DISCORD_USER_ID_WHITELIST=(list, []),
     ROLLBAR_ENABLED=(bool, False),
+    ROLLBAR_TOKEN=(str, ''),
 )
 environ.Env.read_env('.env')
 
