@@ -13,4 +13,4 @@ class UserPermissions:
             return self.user.website_user.auth_user
 
     def review_qualifiers(self):
-        return self.auth_user is not None and self.auth_user.has_perm(REVIEW_QUALIFIERS)
+        return self.auth_user is not None and self.auth_user.has_perm(self.REVIEW_QUALIFIERS)
