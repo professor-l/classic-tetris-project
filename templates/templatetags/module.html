@@ -1,6 +1,8 @@
 <div class="module">
   <div class="module__header{% if header_style %} module__header--{{ header_style }}{% endif %}">
-    {{ title }}
+    <div class="module__header-title">
+      {{ title }}
+    </div>
   </div>
   <div class="module__body">
     {{ content }}

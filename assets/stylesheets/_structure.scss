@@ -41,10 +41,20 @@ h2 {
   box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.32);
 
   &__header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
     background-color: colors.$module-header-bg;
     color: colors.$module-header-text;
-    padding: 15px;
+  }
+
+  &__header-title {
+    flex: 1 1 auto;
     font-size: 20px;
+  }
+
+  &__header-button {
+    flex: 0 0 auto;
   }
 
   &__body {

@@ -76,19 +76,32 @@
 {% endif %}
 
 {% if pending_qualifiers %}
-{% module "Pending Review" %}
-<table class="data-table">
-  <tr class="data-table__headers">
-    <th>Player</th>
-    <th>Score</th>
-  </tr>
-  {% for qualifier in pending_qualifiers %}
-  <tr class="data-table__row {% cycle "data-table__row--even" "data-table__row--odd" %}">
-    <td><a href="{{ qualifier.user.get_absolute_url }}">{{ qualifier.user.display_name }}</a></td>
-    <td>{{ qualifier.qualifying_score|intcomma }}</td>
-  </tr>
-  {% endfor %}
-</table>
-{% endmodule %}
+<div class="module">
+  <div class="module__header">
+    <div class="module__header-title">
+      Pending Review
+    </div>
+
+    {% if current_user.permissions.review_qualifiers %}
+    <div class="module__header-button">
+      <a href="{% url "review_qualifiers:index" %}" class="btn btn--primary">Review Qualifiers</a>
+    </div>
+    {% endif %}
+  </div>
+  <div class="module__body">
+    <table class="data-table">
+      <tr class="data-table__headers">
+        <th>Player</th>
+        <th>Score</th>
+      </tr>
+      {% for qualifier in pending_qualifiers %}
+      <tr class="data-table__row {% cycle "data-table__row--even" "data-table__row--odd" %}">
+        <td><a href="{{ qualifier.user.get_absolute_url }}">{{ qualifier.user.display_name }}</a></td>
+        <td>{{ qualifier.qualifying_score|intcomma }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
 {% endif %}
 {% endblock %}
