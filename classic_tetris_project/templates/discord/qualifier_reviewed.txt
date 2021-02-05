@@ -1,3 +1,4 @@
+{% autoescape off %}
 Your qualifier for [{{ event_name }}]({{ event_url }}) was **{% if qualifier.approved %}approved{% else %}rejected{% endif %}** by {{ qualifier.reviewed_by.display_name }}.\
 \
 {% if checks %}\
@@ -11,3 +12,4 @@ Your qualifier for [{{ event_name }}]({{ event_url }}) was **{% if qualifier.app
 
 {{ qualifier.review_data.notes }}
 {% endif %}
+{% endautoescape %}
