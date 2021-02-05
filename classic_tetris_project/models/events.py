@@ -74,6 +74,7 @@ class Qualifier(models.Model):
         ("rom", "Unmodified ROM"),
         ("timer", "Timer on screen"),
         ("reset", "Hard reset before starting"),
+        ("auth_word", "Entered correct auth word"),
     ]
 
     user = models.ForeignKey(User, on_delete=models.PROTECT)
