@@ -21,6 +21,7 @@ class WebsiteUserInline(admin.StackedInline):
 @admin.register(User)
 class UserAdmin(DjangoObjectActions, admin.ModelAdmin):
     inlines = [DiscordUserInline, TwitchUserInline, WebsiteUserInline]
+    search_fields = ("display_name", "discord_user__username", "twitch_user__username")
 
     # Don't allow this on production as this is a security vulnerability
     if settings.DEBUG:
@@ -34,6 +35,7 @@ class UserAdmin(DjangoObjectActions, admin.ModelAdmin):
 @admin.register(DiscordUser)
 class DiscordUserAdmin(admin.ModelAdmin):
     list_display = ("username", "discriminator", "discord_id")
+    search_fields = ("username",)
 
 @admin.register(TwitchUser)
 class TwitchUserAdmin(admin.ModelAdmin):
