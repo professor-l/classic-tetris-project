@@ -18,6 +18,7 @@ ENV = environ.Env(
     CACHE_URL=(str, 'rediscache://'),
     BASE_URL=(str, 'http://dev.monthlytetris.info:8000'),
     DISCORD_USER_ID_WHITELIST=(list, []),
+    DISCORD_CHANNEL_MESSAGES=(bool, False),
     ROLLBAR_ENABLED=(bool, False),
     ROLLBAR_TOKEN=(str, ''),
 )
@@ -113,7 +114,10 @@ WSGI_APPLICATION = 'classic_tetris_project_django.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    'default': ENV.db()
+    'default': {
+        **ENV.db(),
+        "ATOMIC_REQUESTS": True,
+    }
 }
 
 CACHES = {

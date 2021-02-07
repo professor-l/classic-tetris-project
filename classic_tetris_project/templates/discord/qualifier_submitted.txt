@@ -3,7 +3,9 @@
 {% autoescape off %}
 {{ qualifier.user.discord_user.user_tag|safe }} submitted a qualifier for [{{ event_name }}]({{ event_url }})!
 
-Score: {{ qualifier.qualifying_score|intcomma }}
+{% for label, value in qualifier.type.display_values %}\
+{{ label }}: {{ value|intcomma }}
+{% endfor %}\
 VOD: {{ qualifier.vod }}
 {% if qualifier.details %}
 {{ qualifier.details }}

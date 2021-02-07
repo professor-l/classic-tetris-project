@@ -10,7 +10,7 @@ class EventFactory(factory.django.DjangoModelFactory):
         model = Event
     name = factory.Sequence(lambda n: f"Event {n}")
     slug = factory.LazyAttribute(lambda o: slugify(o.name))
-    qualifying_type = Event.QualifyingType.HIGHEST_SCORE
+    qualifying_type = 1
 
 class QualifierFactory(factory.django.DjangoModelFactory):
     class Meta:

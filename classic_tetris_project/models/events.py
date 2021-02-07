@@ -9,18 +9,15 @@ from furl import furl
 from markdownx.models import MarkdownxField
 
 from .users import User
+from ..facades import qualifying_types
 from ..words import Words
+from ..util import lazy
 
 
 class Event(models.Model):
-    class QualifyingType(models.IntegerChoices):
-        HIGHEST_SCORE = 1
-        HIGHEST_2_SCORES = 2
-        HIGHEST_3_SCORES = 3
-
     name = models.CharField(max_length=64)
     slug = models.SlugField(db_index=True)
-    qualifying_type = models.IntegerField(choices=QualifyingType.choices)
+    qualifying_type = models.IntegerField(choices=qualifying_types.CHOICES)
     qualifying_open = models.BooleanField(default=False)
     pre_qualifying_instructions = MarkdownxField(blank=True)
     qualifying_instructions = MarkdownxField(blank=True)
@@ -43,18 +40,6 @@ class Event(models.Model):
         if not hasattr(user, "discord_user"):
             return "link_discord"
         return None
-
-    @property
-    def form_class(self):
-        from classic_tetris_project.private.forms import qualify as qualify_forms
-        if self.qualifying_type == self.QualifyingType.HIGHEST_SCORE:
-            return qualify_forms.HighestScoreForm
-        elif self.qualifying_type == self.QualifyingType.HIGHEST_2_SCORES:
-            return qualify_forms.Highest2ScoresForm
-        elif self.qualifying_type == self.QualifyingType.HIGHEST_3_SCORES:
-            return qualify_forms.Highest3ScoresForm
-        else:
-            raise Exception("invalid qualifying type")
 
     def get_absolute_url(self, include_base=False):
         path = reverse("event:index", args=[self.slug])
@@ -80,7 +65,7 @@ class Qualifier(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     event = models.ForeignKey(Event, related_name="qualifiers", on_delete=models.CASCADE)
     auth_word = models.CharField(max_length=6)
-    qualifying_type = models.IntegerField(choices=Event.QualifyingType.choices)
+    qualifying_type = models.IntegerField(choices=qualifying_types.CHOICES)
     qualifying_score = models.IntegerField(blank=True, null=True)
     qualifying_data = models.JSONField(blank=True, null=True)
     vod = models.URLField(null=True)
@@ -116,6 +101,10 @@ class Qualifier(models.Model):
     def report_reviewed(self):
         from classic_tetris_project import tasks
         tasks.report_reviewed_qualifier.delay(self.id)
+
+    @lazy
+    def type(self):
+        return qualifying_types.QUALIFYING_TYPES[self.qualifying_type](self)
 
     @staticmethod
     def before_save(sender, instance, **kwargs):
