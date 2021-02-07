@@ -144,8 +144,8 @@ class QualifyView_(Spec):
             assert_that(response, redirects_to(f"/event/{self.event.slug}/qualifier/"))
             assert_that(Qualifier.objects.count(), equal_to(1))
 
-        @patch("classic_tetris_project.tasks.announce_qualifier.delay")
-        def test_creates_qualifier(self, announce_qualifier):
+        @patch.object(Qualifier, "report_started")
+        def test_creates_qualifier(self, report_started):
             assert_that(Qualifier.objects.count(), equal_to(0))
             response = self.post()
 
@@ -157,7 +157,7 @@ class QualifyView_(Spec):
                 event=self.event,
                 submitted=False,
             ))
-            announce_qualifier.assert_called_once_with(qualifier.id)
+            report_started.assert_called_once()
 
 
 class QualifierView_(Spec):
@@ -213,8 +213,8 @@ class QualifierView_(Spec):
 
             assert_that(response, redirects_to(f"/event/{self.event.slug}/qualify/"))
 
-        @patch("classic_tetris_project.tasks.report_submitted_qualifier.delay")
-        def test_submits_qualifier(self, report_submitted_qualifier):
+        @patch.object(Qualifier, "report_submitted")
+        def test_submits_qualifier(self, report_submitted):
             response = self.post({ "vod": "https://twitch.tv/qual1", "score": 200000, "details": "Hi there" })
 
             assert_that(response, redirects_to(f"/event/{self.event.slug}/"))
@@ -226,4 +226,4 @@ class QualifierView_(Spec):
                 qualifying_score=200000,
                 details="Hi there",
             ))
-            report_submitted_qualifier.assert_called_once_with(self.qualifier.id)
+            report_submitted.assert_called_once()
