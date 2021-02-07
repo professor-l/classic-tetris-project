@@ -4,7 +4,6 @@ from disco.types.message import MessageEmbed
 from django.template.loader import render_to_string
 
 from . import discord_disco as discord
-from .models import Qualifier
 from .env import env
 
 
@@ -14,6 +13,7 @@ QUALIFIER_COLOR_REJECTED = 0xE60000
 
 @shared_task
 def announce_qualifier(qualifier_id):
+    from .models import Qualifier
     qualifier = Qualifier.objects.get(id=qualifier_id)
     event = qualifier.event
     discord_user = qualifier.user.discord_user
@@ -32,6 +32,7 @@ def announce_qualifier(qualifier_id):
 
 @shared_task
 def report_submitted_qualifier(qualifier_id):
+    from .models import Qualifier
     qualifier = Qualifier.objects.get(id=qualifier_id)
     event = qualifier.event
     discord_user = qualifier.user.discord_user
@@ -51,6 +52,7 @@ def report_submitted_qualifier(qualifier_id):
 
 @shared_task
 def report_reviewed_qualifier(qualifier_id):
+    from .models import Qualifier
     qualifier = Qualifier.objects.get(id=qualifier_id)
     event = qualifier.event
     discord_user = qualifier.user.discord_user

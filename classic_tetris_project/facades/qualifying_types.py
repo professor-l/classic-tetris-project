@@ -71,8 +71,7 @@ class QualifyingType:
         self.save()
 
         if submit:
-            from classic_tetris_project import tasks
-            tasks.report_submitted_qualifier.delay(self.qualifier.id)
+            self.qualifier.report_submitted()
 
 
 

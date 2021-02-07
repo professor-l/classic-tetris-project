@@ -74,8 +74,8 @@ class Qualifier_(Spec):
         return QualifierFactory()
 
     class review:
-        @patch("classic_tetris_project.tasks.report_reviewed_qualifier.delay")
-        def test_sets_reviewer_columns(self, report_reviewed_qualifier):
+        @patch.object(Qualifier, "report_reviewed")
+        def test_sets_reviewer_columns(self, report_reviewed):
             reviewer = UserFactory()
             self.qualifier.review(True, reviewer, notes="Great job", checks={
                 "announced": True,
@@ -98,4 +98,4 @@ class Qualifier_(Spec):
                     },
                 }
             ))
-            report_reviewed_qualifier.assert_called_once_with(self.qualifier.id)
+            report_reviewed.assert_called_once()

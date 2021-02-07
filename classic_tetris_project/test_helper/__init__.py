@@ -1,4 +1,5 @@
 import itertools
+import pytest
 import re
 from hamcrest import *
 from django.db import transaction, connections

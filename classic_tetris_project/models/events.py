@@ -1,13 +1,14 @@
 from django.conf import settings
 from django.contrib.auth.models import User as AuthUser
 from django.core.exceptions import ValidationError
-from django.db import models
+from django.db import models, transaction
 from django.db.models import signals
 from django.urls import reverse
 from django.utils import timezone
 from furl import furl
 from markdownx.models import MarkdownxField
 
+from .. import tasks
 from .users import User
 from ..facades import qualifying_types
 from ..words import Words
@@ -98,10 +99,6 @@ class Qualifier(models.Model):
         self.save()
         self.report_reviewed()
 
-    def report_reviewed(self):
-        from classic_tetris_project import tasks
-        tasks.report_reviewed_qualifier.delay(self.id)
-
     @lazy
     def type(self):
         return qualifying_types.QUALIFYING_TYPES[self.qualifying_type](self)
@@ -112,6 +109,15 @@ class Qualifier(models.Model):
             instance.auth_word = Words.get_word()
         if not instance.qualifying_type:
             instance.qualifying_type = instance.event.qualifying_type
+
+    def report_started(self):
+        transaction.on_commit(lambda: tasks.announce_qualifier.delay(self.id))
+
+    def report_submitted(self):
+        transaction.on_commit(lambda: tasks.report_submitted_qualifier.delay(self.id))
+
+    def report_reviewed(self):
+        transaction.on_commit(lambda: tasks.report_reviewed_qualifier.delay(self.id))
 
     def __str__(self):
         return f"{self.user.display_name} ({self.event.name})"
