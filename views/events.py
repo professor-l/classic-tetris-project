@@ -75,7 +75,7 @@ class QualifierView(LoginRequiredMixin, EventView):
         return render(request, "event/qualifier.html", {
             "event": self.event,
             "qualifier": self.qualifier,
-            "form": (self.event.form_class)(),
+            "form": self.qualifier.type.form(),
         })
 
     def post(self, request, event_slug):
@@ -84,9 +84,9 @@ class QualifierView(LoginRequiredMixin, EventView):
         if not self.qualifier:
             return redirect(reverse("event:qualify", args=[self.event.slug]))
 
-        form = (self.event.form_class)(request.POST)
+        form = self.qualifier.type.form(request.POST)
         if form.is_valid():
-            form.save(self.qualifier)
+            form.save()
             messages.info(self.request, "Qualifier successfully recorded.")
             return redirect(reverse("event:index", args=[self.event.slug]))
         else:

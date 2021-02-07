@@ -126,6 +126,7 @@ class ReviewView_(Spec):
             @patch("classic_tetris_project.tasks.report_reviewed_qualifier.delay")
             def test_with_qualifier(self, report_reviewed_qualifier):
                 response = self.post({
+                    "score": self.qualifier.qualifying_score,
                     "approved": True, 
                     "notes": "Great job",
                     "announced": True,
@@ -133,6 +134,7 @@ class ReviewView_(Spec):
                     "rom": True,
                     "timer": True,
                     "reset": True,
+                    "auth_word": True,
                 })
 
                 assert_that(response, redirects_to("/review_qualifiers/"))
@@ -148,6 +150,7 @@ class ReviewView_(Spec):
                             "rom": True,
                             "timer": True,
                             "reset": True,
+                            "auth_word": True,
                         },
                     }
                 ))

@@ -20,8 +20,26 @@
 <form method="post" class="form">
   {% csrf_token %}
   {{ form.non_field_errors }}
+
   <div class="field-list">
-    {% include form.qualify_template %}
+    {% for field in form.submit_fields %}
+    <div class="field-list__row">
+      <div class="field-list__label field-list__label--input">
+        {{ field.label_tag }}
+      </div>
+      <div class="field-list__value">
+        {{ field }}
+        {{ field.errors }}
+      </div>
+    </div>
+    {% endfor %}
+
+    <div class="field-list__row">
+      <div class="field-list__label"></div>
+      <div class="field-list__value">
+        <input type="submit" value="Submit" class="btn btn--primary">
+      </div>
+    </div>
   </div>
 </form>
 {% endblock %}

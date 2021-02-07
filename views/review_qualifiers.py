@@ -31,7 +31,8 @@ class ReviewView(ReviewQualifiersView):
 
         return render(request, "review_qualifiers/review.html", {
             "qualifier": self.qualifier,
-            "form": ReviewQualifierForm(),
+            "edit_form": self.qualifier.type.form(),
+            "review_form": ReviewQualifierForm(),
         })
 
     def post(self, request, qualifier_id):
@@ -39,9 +40,11 @@ class ReviewView(ReviewQualifiersView):
             messages.info(self.request, "That qualifier has already been reviewed.")
             return redirect(reverse("review_qualifiers:index"))
 
-        form = ReviewQualifierForm(request.POST)
-        if form.is_valid():
-            form.save(self.qualifier, self.current_user)
+        edit_form = self.qualifier.type.form(request.POST)
+        review_form = ReviewQualifierForm(request.POST)
+        if edit_form.is_valid() and review_form.is_valid():
+            edit_form.save()
+            review_form.save(self.qualifier, self.current_user)
             if self.qualifier.approved:
                 messages.info(self.request, "Qualifier approved")
             elif self.qualifier.approved:
@@ -50,7 +53,8 @@ class ReviewView(ReviewQualifiersView):
         else:
             return render(request, "review_qualifiers/review.html", {
                 "qualifier": self.qualifier,
-                "form": form,
+                "edit_form": edit_form,
+                "review_form": review_form,
             })
 
     @lazy
