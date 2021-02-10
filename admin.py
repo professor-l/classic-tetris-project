@@ -17,11 +17,12 @@ class TwitchUserInline(admin.StackedInline):
 
 class WebsiteUserInline(admin.StackedInline):
     model = WebsiteUser
+    autocomplete_fields = ("auth_user",)
 
 @admin.register(User)
 class UserAdmin(DjangoObjectActions, admin.ModelAdmin):
     inlines = [DiscordUserInline, TwitchUserInline, WebsiteUserInline]
-    search_fields = ("display_name", "discord_user__username", "twitch_user__username")
+    search_fields = ("preferred_name", "discord_user__username", "twitch_user__username")
 
     # Don't allow this on production as this is a security vulnerability
     if settings.DEBUG:
@@ -35,21 +36,25 @@ class UserAdmin(DjangoObjectActions, admin.ModelAdmin):
 @admin.register(DiscordUser)
 class DiscordUserAdmin(admin.ModelAdmin):
     list_display = ("username", "discriminator", "discord_id")
+    autocomplete_fields = ("user",)
     search_fields = ("username",)
 
 @admin.register(TwitchUser)
 class TwitchUserAdmin(admin.ModelAdmin):
     list_display = ("username", "twitch_id")
+    autocomplete_fields = ("user",)
     search_fields = ("username",)
 
 
 class GameInline(admin.TabularInline):
     model = Game
+    autocomplete_fields = ("winner",)
 
 @admin.register(Match)
 class MatchAdmin(admin.ModelAdmin):
     inlines = [GameInline]
     list_display = ('__str__', 'player1', 'wins1', 'player2', 'wins2', 'channel', 'ended_at')
+    autocomplete_fields = ("player1", "player2", "channel")
 
 
 class CustomCommandInline(admin.TabularInline):
@@ -59,8 +64,8 @@ class CustomCommandInline(admin.TabularInline):
 class TwitchChannelAdmin(admin.ModelAdmin):
     inlines = [CustomCommandInline]
     list_display = ("twitch_user", "connected")
-    search_fields = ("twitch_user__username",)
     autocomplete_fields = ("twitch_user",)
+    search_fields = ("twitch_user__username",)
 
 
 @admin.register(Page)
