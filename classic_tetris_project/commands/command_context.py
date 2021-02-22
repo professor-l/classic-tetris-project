@@ -79,8 +79,8 @@ class DiscordCommandContext(CommandContext):
         self.log(discord.client.user, self.channel, message)
         return result
 
-    def send_file(self, file):
-        f = discordpy.File(fp=file)
+    def send_file(self, file, filename=None):
+        f = discordpy.File(fp=file, filename=filename)
         result = async_to_sync(self.channel.send)(file=f)
         self.log(discord.client.user, self.channel, f"<FILE UPLOAD>")
 
