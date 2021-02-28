@@ -18,8 +18,7 @@ class ReviewQualifiersView(PermissionRequiredMixin, BaseView):
 class IndexView(ReviewQualifiersView):
     def get(self, request):
         return render(request, "review_qualifiers/index.html", {
-            "qualifiers": list(Qualifier.objects.filter(submitted=True, approved=None)
-                               .order_by("created_at")),
+            "qualifiers": list(Qualifier.objects.pending_review().order_by("created_at")),
         })
 
 

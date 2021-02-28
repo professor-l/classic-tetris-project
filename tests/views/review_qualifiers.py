@@ -34,6 +34,7 @@ class IndexView_(Spec):
 
             def test_renders_no_qualifiers(self):
                 QualifierFactory(submitted_=True, approved=True)
+                QualifierFactory(submitted_=True, withdrawn=True)
                 QualifierFactory()
 
                 response = self.get()

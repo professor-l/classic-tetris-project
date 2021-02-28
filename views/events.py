@@ -20,9 +20,12 @@ class EventView(BaseView):
 
     @lazy
     def qualifier(self):
-        return Qualifier.objects.filter(user=self.current_user, event=self.event, submitted=False).first()
+        return Qualifier.objects.filter(user=self.current_user, event=self.event).first()
 
     def ineligible_redirect(self):
+        if self.qualifier and self.qualifier.submitted:
+            return redirect(reverse("qualifier", args=[self.qualifier.id]))
+
         messages.info(self.request,
                       "You are no longer able to qualify for this event. If this is in error, "
                       "please contact a moderator.")
@@ -35,7 +38,7 @@ class IndexView(EventView):
             "event": self.event,
             "user_ineligible_reason": self.event.user_ineligible_reason(self.current_user),
             "qualifier_groups": QualifierTable(self.event).groups(),
-            "pending_qualifiers": list(self.event.qualifiers.filter(submitted=True, approved=None)
+            "pending_qualifiers": list(self.event.qualifiers.pending_review()
                                        .order_by("-qualifying_score")),
         })
 

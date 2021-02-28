@@ -67,7 +67,7 @@ h2 {
 
   &__header {
     display: flex;
-    align-items: baseline;
+    align-items: flex-end;
     justify-content: space-between;
     padding: 6px;
     border-bottom: 1px colors.$border-gray solid;
@@ -75,10 +75,6 @@ h2 {
 
   &__title {
     margin: 0;
-  }
-
-  &__edit {
-    text-decoration: none;
   }
 
   &__body {
@@ -153,7 +149,7 @@ h2 {
     padding: 5px 10px;
 
     &--seed {
-      flex: 1 0 30px;
+      flex: 0 0 30px;
     }
 
     &--user {

@@ -48,7 +48,7 @@
           <a href="{{ qualifier_row.qualifier.user.get_absolute_url }}">{{ qualifier_row.qualifier.user.display_name }}</a>
         </div>
         <div class="qualifier-row__cell qualifier-row__cell--score">
-          {{ qualifier_row.qualifier.qualifying_score|intcomma }}
+          <a href="{% url "qualifier" qualifier_row.qualifier.id %}">{{ qualifier_row.qualifier.qualifying_score|intcomma }}</a>
         </div>
       </div>
       {% elif qualifier_row.placeholder %}
@@ -97,7 +97,7 @@
       {% for qualifier in pending_qualifiers %}
       <tr class="data-table__row {% cycle "data-table__row--even" "data-table__row--odd" %}">
         <td><a href="{{ qualifier.user.get_absolute_url }}">{{ qualifier.user.display_name }}</a></td>
-        <td>{{ qualifier.qualifying_score|intcomma }}</td>
+        <td><a href="{% url "qualifier" qualifier.id %}">{{ qualifier.qualifying_score|intcomma }}</a></td>
       </tr>
       {% endfor %}
     </table>

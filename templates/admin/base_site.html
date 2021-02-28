@@ -1,0 +1,7 @@
+{% extends "admin/base_site.html" %}
+
+{% load render_bundle from webpack_loader %}
+
+{% block extrahead %}
+    {% render_bundle "main" %}
+{% endblock %}

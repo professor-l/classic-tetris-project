@@ -185,6 +185,13 @@ class QualifierView_(Spec):
 
             assert_that(response, redirects_to(f"/event/{self.event.slug}/"))
 
+        def test_with_submitted_qualifier(self):
+            self.qualifier.submitted = True
+            self.qualifier.save()
+            response = self.get()
+
+            assert_that(response, redirects_to(f"/qualifier/{self.qualifier.id}/"))
+
         def test_without_qualifier(self):
             self.qualifier.delete()
             response = self.get()

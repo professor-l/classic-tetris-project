@@ -81,13 +81,14 @@ class EventAdmin(MarkdownxModelAdmin):
 
 @admin.register(Qualifier)
 class QualifierAdmin(admin.ModelAdmin):
-    list_display = ("user", "event", "qualifying_score", "approved", "reviewed_at")
+    list_display = ("user", "event", "qualifying_score", "status_tag", "reviewed_at")
     list_filter = ("approved",)
 
     fieldsets = (
         ("Qualifier Data", {
             "fields": ("user", "event", "qualifying_type", "qualifying_score", "qualifying_data",
-                       "vod", "auth_word", "details", "submitted", "created_at", "submitted_at"),
+                       "vod", "auth_word", "details", "submitted", "withdrawn", "created_at",
+                       "submitted_at"),
         }),
         ("Moderator Data", {
             "fields": ("approved", "reviewed_by", "reviewed_at", "review_data"),
@@ -96,4 +97,5 @@ class QualifierAdmin(admin.ModelAdmin):
                             "reviewed again.")
         }),
     )
-    readonly_fields = ("user", "event", "qualifying_type", "created_at", "submitted_at", "reviewed_at", "reviewed_by", "review_data")
+    readonly_fields = ("user", "event", "qualifying_type", "created_at", "submitted_at",
+                       "reviewed_at", "reviewed_by", "review_data")
