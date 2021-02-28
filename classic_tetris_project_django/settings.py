@@ -168,6 +168,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Expires after 180 days
+SESSION_COOKIE_AGE = 180 * 24 * 60 * 60
+
 STATIC_URL = '/static/'
 STATIC_ROOT = '/var/www/tetris/static/'
 STATICFILES_DIRS = (
