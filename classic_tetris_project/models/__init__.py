@@ -5,5 +5,6 @@ from .twitch import TwitchChannel
 from .coin import Side
 from .commands import CustomCommand
 from .pages import Page
-from .events import Event, Qualifier
+from .events import Event
+from .qualifiers import Qualifier
 from .tournaments import Tournament, TournamentPlayer

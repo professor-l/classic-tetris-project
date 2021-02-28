@@ -1,7 +1,8 @@
 from django.db import models
 
 from .users import User
-from .events import Event, Qualifier
+from .events import Event
+from .qualifiers import Qualifier
 
 
 class Tournament(models.Model):

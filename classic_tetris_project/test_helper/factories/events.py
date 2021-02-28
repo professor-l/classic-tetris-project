@@ -25,3 +25,8 @@ class QualifierFactory(factory.django.DjangoModelFactory):
             vod="https://twitch.tv/asdf",
             submitted=True,
         )
+
+        approved_ = factory.Trait(
+            submitted_=True,
+            approved=True
+        )
