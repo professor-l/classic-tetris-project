@@ -9,7 +9,7 @@ class Words:
     @staticmethod
     def populate(path=WORDS_CSV_PATH):
         with open(path, "r") as f:
-            Words.FULL_LIST = list(csv.reader(f))[0]
+            Words.FULL_LIST = [row[0] for row in csv.reader(f)]
 
     @staticmethod
     def get_word():
