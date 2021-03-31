@@ -16,7 +16,7 @@ factory_boy==2.12.0
 furl==2.1.0
 ipython==7.5.0
 irc==17.1
-lxml==4.5.1
+lxml==4.6.3
 markdown==3.3.3
 Pillow==7.1.1
 PyHamcrest==2.0.2
