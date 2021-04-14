@@ -17,7 +17,9 @@ class TwitchChannel(models.Model):
     def summon_bot(self):
         self.connected = True
         self.save()
-        twitch.client.join_channel(self.name)
+        # TODO add ability to join/leave channels from a different process
+        if twitch.client.connection.connected:
+            twitch.client.join_channel(self.name)
 
     def eject_bot(self):
         self.connected = False
