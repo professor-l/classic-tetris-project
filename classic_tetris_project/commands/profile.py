@@ -50,7 +50,8 @@ TEMPLATE = ("""
 PLAYSTYLE_EMOJI = {
                    "das": "lovedas",
                    "hypertap": "lovetap",
-                   "hybrid": "lovehyb"
+                   "hybrid": "lovehyb",
+                   "roll": "loveroll"
                  }
 
 TETRIS_X = "tetrisx"

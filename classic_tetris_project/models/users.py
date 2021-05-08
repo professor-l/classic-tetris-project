@@ -28,6 +28,7 @@ class User(models.Model):
         "das": "DAS",
         "hypertap": "Hypertap",
         "hybrid": "Hybrid",
+        "roll": "Roll",
     }
 
     preferred_name = models.CharField(max_length=64, null=True, blank=True)
