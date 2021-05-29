@@ -8,6 +8,7 @@ from ..models import Side, TwitchChannel
 from ..util import Platform
 from ..discord import GUILD_ID, client as discord_client
 from..util.fieldgen.hz_simulation import HzSimulation
+from ..words import Words
 
 
 COIN_FLIP_TIMEOUT = 10
@@ -112,3 +113,11 @@ class StatsCommand(Command):
         channels = TwitchChannel.objects.filter(connected=True).count()
 
         self.send_message(f"I'm in {guilds} Discord servers and {channels} Twitch channels.")
+
+@Command.register_twitch("authword", usage="authword")
+class AuthWordCommand(Command):
+
+    def execute(self, *args):
+        self.check_moderator()
+        word = Words.get_word()
+        self.send_message(f"Authword: {word}")
