@@ -3,5 +3,5 @@
 {% block title %}{{ page.title }}{% endblock %}j
 
 {% block content %}
-{{ page.content|markdown }}
+{% markdown page.content %}
 {% endblock %}

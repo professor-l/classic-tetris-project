@@ -6,7 +6,7 @@
 <h1>Qualify for {{ event.name }}</h1>
 
 {% if event.qualifying_instructions %}
-{{ event.qualifying_instructions|markdown }}
+{% markdown event.qualifying_instructions %}
 {% endif %}
 
 <div class="auth-word alert alert--light-info">

@@ -8,7 +8,7 @@
 <h1>{{ event.name }}</h1>
 
 {% if event.event_info %}
-{{ event.event_info|markdown }}
+{% markdown event.event_info %}
 {% endif %}
 
 {% if user_ineligible_reason %}

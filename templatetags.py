@@ -1,4 +1,5 @@
 from django import template
+from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
 import markdown as md
@@ -8,16 +9,18 @@ from classic_tetris_project.models import Page
 
 register = template.Library()
 
-@register.filter
+@register.simple_tag
 def markdown(value):
-    return mark_safe(md.markdown(value))
+    return render_to_string("templatetags/markdown.html", {
+        "content": mark_safe(md.markdown(value, extensions=settings.MARKDOWNX_MARKDOWN_EXTENSIONS)),
+    })
 
 
 @register.simple_tag
 def page(slug):
     try:
         page = Page.objects.get(slug=slug)
-        return mark_safe(md.markdown(page.content))
+        return markdown(page.content)
     except Page.DoesNotExist:
         return ""
 
