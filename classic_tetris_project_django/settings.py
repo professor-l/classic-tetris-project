@@ -171,6 +171,10 @@ USE_TZ = True
 # Expires after 180 days
 SESSION_COOKIE_AGE = 180 * 24 * 60 * 60
 
+MARKDOWNX_MARKDOWN_EXTENSIONS = [
+    'markdown.extensions.extra',
+]
+
 STATIC_URL = '/static/'
 STATIC_ROOT = '/var/www/tetris/static/'
 STATICFILES_DIRS = (
