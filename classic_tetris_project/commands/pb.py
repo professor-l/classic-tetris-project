@@ -65,7 +65,11 @@ class SetPBCommand(Command):
         if score < 0:
             raise CommandException("Invalid PB.")
 
-        if score > 1500000:
+        # I no longer feel comfortable setting a limit here, beyond "8 digits."
+        # Even that upper bound, I implement knowing it may someday be broken.
+        # I cannot predict the future of this game, nor do I wish to try.
+        # Kudos to those who push the limits of what is possible.
+        if score > 9999999:
             raise CommandException("You wish, kid >.>")
 
         if level is not None and (level < 0 or level > 29):
