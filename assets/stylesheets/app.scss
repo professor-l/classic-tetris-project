@@ -10,3 +10,6 @@
 @use 'qualify';
 @use 'status_tags';
 @use 'structure';
+
+// External libraries
+@import '~jquery-datetimepicker/jquery.datetimepicker.css';

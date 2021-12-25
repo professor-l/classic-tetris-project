@@ -40,6 +40,11 @@ h2 {
   background-color: colors.$module-bg;
   box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.32);
 
+  @include media.mobile-only {
+    margin-left: -30px;
+    margin-right: -30px;
+  }
+
   &__header {
     display: flex;
     align-items: center;
@@ -59,6 +64,7 @@ h2 {
 
   &__body {
     padding: 15px;
+    overflow-x: auto;
   }
 }
 
@@ -164,5 +170,9 @@ h2 {
       flex: 1 0 90px;
       text-align: left;
     }
+  }
+
+  &__status {
+    margin-left: 10px;
   }
 }

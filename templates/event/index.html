@@ -2,7 +2,7 @@
 
 {% load humanize %}
 
-{% block title %}{{ event.name }} Qualifiers{% endblock %}
+{% block title %}{{ event.name }}{% endblock %}
 
 {% block content %}
 <h1>{{ event.name }}</h1>
@@ -22,64 +22,10 @@
 <div class="spacer"></div>
 
 {% if qualifier_groups %}
-{% module "Approved" %}
-<div class="data-table">
-  <div class="qualifier-row qualifier-row--headers data-table__headers">
-    <div class="qualifier-row__cell qualifier-row__cell--seed">#</div>
-    <div class="qualifier-row__cell qualifier-row__cell--user">Player</div>
-    <div class="qualifier-row__cell qualifier-row__cell--score">Score</div>
-  </div>
-  {% for group in qualifier_groups %}
-  <div class="qualifier-group" style="background-color: {{ group.color }};">
-    <div class="qualifier-group__sidebar">
-      <div class="qualifier-group__name">
-        {{ group.name }}
-      </div>
-    </div>
-    <div class="qualifier-group__rows">
-      {% for qualifier_row in group.qualifier_rows %}
-      {% cycle 'data-table__row--even' 'data-table__row--odd' as row_class silent %}
-      {% if qualifier_row.qualifier %}
-      <div class="qualifier-row data-table__row {{ row_class }}">
-        <div class="qualifier-row__cell qualifier-row__cell--seed">
-          {{ forloop.counter }}
-        </div>
-        <div class="qualifier-row__cell qualifier-row__cell--user">
-          <a href="{{ qualifier_row.qualifier.user.get_absolute_url }}">{{ qualifier_row.qualifier.user.display_name }}</a>
-        </div>
-        <div class="qualifier-row__cell qualifier-row__cell--score">
-          <a href="{% url "qualifier" qualifier_row.qualifier.id %}">{{ qualifier_row.qualifier.qualifying_score|intcomma }}</a>
-        </div>
-      </div>
-      {% elif qualifier_row.placeholder %}
-      <div class="qualifier-row data-table__row {{ row_class }}">
-        <div class="qualifier-row__cell qualifier-row__cell--seed">
-          {{ forloop.counter }}
-        </div>
-        <div class="qualifier-row__cell qualifier-row__cell--user">
-          {{ qualifier_row.placeholder }}
-        </div>
-      </div>
-      {% else %}
-      <div class="qualifier-row data-table__row {{ row_class }}">
-        <div class="qualifier-row__cell qualifier-row__cell--seed">
-          {{ forloop.counter }}
-        </div>
-      </div>
-      {% endif %}
-      {% endfor %}
-    </div>
-  </div>
-  {% endfor %}
-</div>
-{% endmodule %}
-{% endif %}
-
-{% if pending_qualifiers %}
 <div class="module">
   <div class="module__header">
     <div class="module__header-title">
-      Pending Review
+      Qualifiers
     </div>
 
     {% if current_user.permissions.review_qualifiers %}
@@ -89,19 +35,9 @@
     {% endif %}
   </div>
   <div class="module__body">
-    <table class="data-table">
-      <tr class="data-table__headers">
-        <th>Player</th>
-        <th>Score</th>
-      </tr>
-      {% for qualifier in pending_qualifiers %}
-      <tr class="data-table__row {% cycle "data-table__row--even" "data-table__row--odd" %}">
-        <td><a href="{{ qualifier.user.get_absolute_url }}">{{ qualifier.user.display_name }}</a></td>
-        <td><a href="{% url "qualifier" qualifier.id %}">{{ qualifier.qualifying_score|intcomma }}</a></td>
-      </tr>
-      {% endfor %}
-    </table>
+    {% include "event/qualifier_table.html" with qualifier_groups=qualifier_groups %}
   </div>
 </div>
 {% endif %}
+
 {% endblock %}

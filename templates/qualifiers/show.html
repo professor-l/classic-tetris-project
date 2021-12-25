@@ -45,6 +45,18 @@
           </a>
         </div>
       </div>
+      {% if qualifier.tournament %}
+      <div class="field-list__row">
+        <div class="field-list__label">
+          Tournament:
+        </div>
+        <div class="field-list__value">
+          <a href="{{ qualifier.tournament.get_absolute_url }}">
+            {{ qualifier.tournament.name }}
+          </a>
+        </div>
+      </div>
+      {% endif %}
       <div class="field-list__row">
         <div class="field-list__label">
           Status:

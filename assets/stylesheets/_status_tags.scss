@@ -2,7 +2,7 @@
 
 .status-tag {
   display: inline-block;
-  padding: 0 10px;
+  padding: 0 0.5em;
   line-height: 1.5;
   color: colors.$status-tag-text;
 
@@ -16,5 +16,10 @@
 
   &--gray {
     background-color: colors.$status-tag-gray-bg;
+  }
+
+
+  &--small {
+    font-size: 12px;
   }
 }

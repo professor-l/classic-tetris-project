@@ -1,12 +1,14 @@
+from django import forms
 from django.conf import settings
-from django.contrib import admin, auth
-from django.shortcuts import redirect
+from django.contrib import admin, auth, messages
+from django.shortcuts import redirect, render
 from django.urls import reverse
-from django.utils import timezone
+from django.utils import text, timezone
 from django_object_actions import DjangoObjectActions
 from markdownx.admin import MarkdownxModelAdmin
+from adminsortable2.admin import SortableInlineAdminMixin
 
-from ..models import User, DiscordUser, TwitchUser, WebsiteUser, Match, Game, TwitchChannel, CustomCommand, Page, Event, Qualifier
+from ..models import *
 
 
 class DiscordUserInline(admin.StackedInline):
@@ -74,10 +76,31 @@ class PageAdmin(MarkdownxModelAdmin):
     list_display = ("title", "slug", "public", "updated_at")
 
 
+class TournamentInline(SortableInlineAdminMixin, admin.StackedInline):
+    class TournamentForm(forms.ModelForm):
+        # Duplicates logic in Tournament#before_save, required for formset validation
+        def clean_slug(self):
+            if self.cleaned_data["slug"]:
+                return self.cleaned_data["slug"]
+            else:
+                return text.slugify(self.cleaned_data["short_name"])
+
+    model = Tournament
+    form = TournamentForm
+    extra = 0
+    show_change_link = True
+
 @admin.register(Event)
-class EventAdmin(MarkdownxModelAdmin):
+class EventAdmin(DjangoObjectActions, MarkdownxModelAdmin):
+    inlines = [TournamentInline]
     prepopulated_fields = { "slug": ("name",) }
     list_display = ("name", "qualifying_open")
+
+    def seed_tournaments(self, request, obj):
+        obj.seed_tournaments()
+        messages.success(request, "Tournaments seeded")
+
+    change_actions = ("seed_tournaments",)
 
 @admin.register(Qualifier)
 class QualifierAdmin(admin.ModelAdmin):
@@ -99,3 +122,56 @@ class QualifierAdmin(admin.ModelAdmin):
     )
     readonly_fields = ("user", "event", "qualifying_type", "created_at", "submitted_at",
                        "reviewed_at", "reviewed_by", "review_data")
+
+class TournamentPlayerInline(admin.TabularInline):
+    model = TournamentPlayer
+    extra = 0
+    show_change_link = True
+
+    raw_id_fields = ("qualifier",)
+    autocomplete_fields = ("user",)
+
+class TournamentMatchInline(admin.TabularInline):
+    model = TournamentMatch
+    extra = 0
+    show_change_link = True
+
+    readonly_fields = ("player1", "player2", "winner", "loser", "match")
+
+
+from django.urls import path
+from classic_tetris_project.util import bracket_generator
+
+@admin.register(Tournament)
+class TournamentAdmin(DjangoObjectActions, admin.ModelAdmin):
+    inlines = [TournamentPlayerInline, TournamentMatchInline]
+
+    change_actions = ("generate_matches", "update_bracket")
+
+    def generate_matches(self, request, obj):
+        # TODO intermediate page to select bracket type
+        generator = bracket_generator.SingleElimination(obj)
+        try:
+            generator.generate()
+            messages.success(request, "Matches added")
+        except bracket_generator.BracketGenerationError as e:
+            messages.error(request, str(e))
+
+    def update_bracket(self, request, obj):
+        obj.update_bracket()
+        messages.success(request, "Bracket updated")
+
+@admin.register(TournamentMatch)
+class TournamentMatchAdmin(admin.ModelAdmin):
+    list_display = ("match_number", "tournament", "player1", "player2")
+    list_filter = ("tournament",)
+
+    raw_id_fields = ("match", "player1", "player2", "winner", "loser")
+
+@admin.register(TournamentPlayer)
+class TournamentPlayerAdmin(admin.ModelAdmin):
+    list_display = ("user", "tournament", "seed")
+    list_filter = ("tournament",)
+
+    raw_id_fields = ("qualifier",)
+    autocomplete_fields = ("user",)

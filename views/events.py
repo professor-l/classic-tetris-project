@@ -38,8 +38,6 @@ class IndexView(EventView):
             "event": self.event,
             "user_ineligible_reason": self.event.user_ineligible_reason(self.current_user),
             "qualifier_groups": QualifierTable(self.event).groups(),
-            "pending_qualifiers": list(self.event.qualifiers.pending_review()
-                                       .order_by("-qualifying_score")),
         })
 
 

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Restream Match{% endblock %}
+
+{% block content %}
+<a href="{{ match.get_absolute_url }}">
+  Back to Match
+</a>
+
+<div class="section">
+  <div class="section__header">
+    <h2 class="section__title">
+      Restream Match
+    </h2>
+  </div>
+
+  <div class="section__body">
+    <form method="post" class="form">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div class="field-list">
+        <div class="field-list__row">
+          <div class="field-list__label">
+            Tournament:
+          </div>
+          <div class="field-list__value">
+            <a href="{{ match.tournament.get_absolute_url }}">{{ match.tournament.name }}</a>
+          </div>
+        </div>
+        <div class="field-list__row">
+          <div class="field-list__label">
+            Player 1:
+          </div>
+          <div class="field-list__value">
+            {% if match.player1.user %}
+            <a href="{{ match.player1.user.get_absolute_url }}">{{ match.player1.display_name }}</a>
+            {% else %}
+            {{ match.player1_display_name }}
+            {% endif %}
+          </div>
+        </div>
+        <div class="field-list__row">
+          <div class="field-list__label">
+            Player 2:
+          </div>
+          <div class="field-list__value">
+            {% if match.player2.user %}
+            <a href="{{ match.player2.user.get_absolute_url }}">{{ match.player2.display_name }}</a>
+            {% else %}
+            {{ match.player2_display_name }}
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="field-list__row">
+          <div class="field-list__label field-list__label--input">
+            <label for="{{ form.channel.id_for_label }}">Twitch channel:</label>
+          </div>
+          <div class="field-list__value">
+            {{ form.channel }}
+            {{ form.channel.errors }}
+          </div>
+        </div>
+
+        <div class="field-list__row">
+          <div class="field-list__label field-list__label--input">
+            <label for="{{ form.start_date.id_for_label }}">Time (UTC):</label>
+          </div>
+          <div class="field-list__value">
+            {{ form.start_date }}
+            {{ form.start_date.errors }}
+          </div>
+        </div>
+
+        <div class="field-list__row">
+          <div class="field-list__label"></div>
+          <div class="field-list__value">
+            <input type="submit" value="Restream" class="btn btn--primary">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{{ form.media }}
+{% endblock %}

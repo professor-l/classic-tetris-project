@@ -1,5 +1,6 @@
 from django.urls import include, path
 
+from .views import autocomplete
 from .views import oauth
 from .views import simulations
 from .views.index import index
@@ -10,6 +11,14 @@ from .views import pages
 from .views import events
 from .views import qualifiers
 from .views import review_qualifiers
+from .views import tournaments
+from .views import tournament_matches
+
+
+autocomplete_patterns = ([
+    path("twitch-channel/", autocomplete.TwitchChannelAutocomplete.as_view(),
+         name="twitch_channel"),
+], "autocomplete")
 
 oauth_patterns = ([
     path("login/", oauth.login, name="login"),
@@ -31,10 +40,21 @@ policy_patterns = ([
     path("cookies/", policy.cookies, name="cookies"),
 ], "policy")
 
+tournament_match_patterns = ([
+    path("", tournament_matches.IndexView.as_view(), name="index"),
+    path("restream/", tournament_matches.RestreamView.as_view(), name="restream"),
+], "match")
+
+tournament_patterns = ([
+    path("", tournaments.IndexView.as_view(), name="index"),
+    path("match/<int:match_number>/", include(tournament_match_patterns)),
+], "tournament")
+
 event_patterns = ([
     path("", events.IndexView.as_view(), name="index"),
     path("qualify/", events.QualifyView.as_view(), name="qualify"),
     path("qualifier/", events.QualifierView.as_view(), name="qualifier"),
+    path("<slug:tournament_slug>/", include(tournament_patterns)),
 ], "event")
 
 review_qualifiers_patterns = ([
@@ -45,6 +65,7 @@ review_qualifiers_patterns = ([
 
 urlpatterns = [
     path("", index, name="index"),
+    path("ac/", include(autocomplete_patterns)),
     path("oauth/", include(oauth_patterns)),
     path("simulations/", include(simulations_patterns)),
     path("user/<str:id>/", user.UserView.as_view(), name="user"),
