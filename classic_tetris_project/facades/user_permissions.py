@@ -2,6 +2,7 @@ from ..util import lazy
 
 class UserPermissions:
     REVIEW_QUALIFIERS = "classic_tetris_project.change_qualifier"
+    RESTREAM = "classic_tetris_project.restream"
 
     def __init__(self, user):
         self.user = user
@@ -14,3 +15,6 @@ class UserPermissions:
 
     def review_qualifiers(self):
         return self.auth_user is not None and self.auth_user.has_perm(self.REVIEW_QUALIFIERS)
+
+    def restream(self):
+        return self.auth_user is not None and self.auth_user.has_perm(self.RESTREAM)

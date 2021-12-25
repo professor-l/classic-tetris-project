@@ -49,3 +49,4 @@ class UserMerger:
         Game.objects.filter(winner=self.user2).update(winner=self.user1)
         Qualifier.objects.filter(user=self.user2).update(user=self.user1)
         TournamentPlayer.objects.filter(user=self.user2).update(user=self.user1)
+        Restreamer.objects.filter(user=self.user2).update(user=self.user1)

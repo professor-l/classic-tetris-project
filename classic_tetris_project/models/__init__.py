@@ -7,4 +7,4 @@ from .commands import CustomCommand
 from .pages import Page
 from .events import Event
 from .qualifiers import Qualifier
-from .tournaments import Tournament, TournamentPlayer
+from .tournaments import Tournament, TournamentPlayer, TournamentMatch

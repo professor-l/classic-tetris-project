@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import environ
+import django
+import os
+
 ENV = environ.Env(
     SECRET_KEY=(str, 'd0$j=wune9kn70srt1lt!g3a8fim7ug#j@x8+zmy0gi_mv7&dk'),
     DEBUG=(bool, True),
@@ -23,8 +26,6 @@ ENV = environ.Env(
     ROLLBAR_TOKEN=(str, ''),
 )
 environ.Env.read_env('.env')
-
-import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -54,6 +55,8 @@ if DEBUG:
 
 INSTALLED_APPS = [
     'classic_tetris_project.apps.ClassicTetrisProjectConfig',
+    'dal',
+    'dal_select2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -66,6 +69,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_object_actions',
     'markdownx',
+    'adminsortable2',
+    'colorfield',
     'webpack_loader',
 ]
 
@@ -85,12 +90,14 @@ ROOT_URLCONF = 'classic_tetris_project_django.urls'
 
 LOGIN_URL = '/oauth/login/'
 
+FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, "classic_tetris_project", "templates"),
             os.path.join(BASE_DIR, "classic_tetris_project", "private", "templates"),
+            os.path.join(django.__path__[0], "forms", "templates"),
         ],
         'APP_DIRS': True,
         'OPTIONS': {

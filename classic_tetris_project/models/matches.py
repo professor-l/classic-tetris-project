@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
-from .users import User, TwitchUser
+from .users import User
+from .twitch import TwitchChannel
 
 
 class Match(models.Model):
@@ -9,8 +10,9 @@ class Match(models.Model):
     player2 = models.ForeignKey(User, on_delete=models.PROTECT, related_name="+")
     wins1 = models.IntegerField(default=0)
     wins2 = models.IntegerField(default=0)
-    channel = models.ForeignKey(TwitchUser, null=True, on_delete=models.PROTECT)
+    channel = models.ForeignKey(TwitchChannel, null=True, on_delete=models.PROTECT)
 
+    start_date = models.DateTimeField(null=True, blank=True)
     # Null until the match has ended
     ended_at = models.DateTimeField(null=True)
 

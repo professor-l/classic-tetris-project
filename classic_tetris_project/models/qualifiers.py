@@ -18,6 +18,8 @@ class QualifierQuerySet(models.QuerySet):
     def active(self):
         return self.filter(submitted=True, approved=True, withdrawn=False)
 
+    def public(self):
+        return self.filter(submitted=True, withdrawn=False).exclude(approved=False)
 
 class Qualifier(models.Model):
     REVIEWER_CHECKS = [
@@ -72,6 +74,11 @@ class Qualifier(models.Model):
     @lazy
     def type(self):
         return qualifying_types.QUALIFYING_TYPES[self.qualifying_type](self)
+
+    @lazy
+    def tournament(self):
+        if hasattr(self, "tournament_player"):
+            return self.tournament_player.tournament
 
     def status_tag(self):
         # Move this somewhere better in the future
