@@ -7,7 +7,7 @@ QUEUE_TIMEOUT = 60 * 60 * 24
 class Queue:
     def __init__(self, channel_name):
         self.channel_name = channel_name
-        self.channel = TwitchUser.from_username(channel_name, True)
+        self.channel = TwitchUser.from_username(channel_name, True).get_or_create_channel()
         self._matches = []
         self._open = False
 
