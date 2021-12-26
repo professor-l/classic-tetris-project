@@ -23,12 +23,12 @@ class QualifierQuerySet(models.QuerySet):
 
 class Qualifier(models.Model):
     REVIEWER_CHECKS = [
-        ("announced", "Announced attempt"),
         ("stencil", "Stencil ready"),
         ("rom", "Unmodified ROM"),
         ("timer", "Timer on screen"),
         ("reset", "Hard reset before starting"),
         ("auth_word", "Entered correct auth word"),
+        ("correct_scores", "Submitted correct score(s)"),
     ]
 
     user = models.ForeignKey(User, on_delete=models.PROTECT)
