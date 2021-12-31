@@ -173,7 +173,7 @@ class SetPBCommand_(CommandSpec):
         def test_errors(self):
             self.assert_discord("!setpb asdf", [re.compile("^Usage:")])
             self.assert_discord("!setpb -5", ["Invalid PB."])
-            self.assert_discord("!setpb 1600000", ["You wish, kid >.>"])
+            self.assert_discord("!setpb 10000000", ["You wish, kid >.>"])
             self.assert_discord("!setpb 100000 NTSC -5", ["Invalid level."])
             self.assert_discord("!setpb 100000 NTSC 30", ["Invalid level."])
             self.assert_discord("!setpb 100000 foo", [re.compile("^Invalid PB type")])

@@ -34,10 +34,6 @@ class Command(ABC):
                 if num_args < min_args or (max_args is not None and num_args > max_args):
                     raise CommandException(send_usage=True)
                 else:
-                    # Close expired database conections before and after each command to avoid
-                    # timeouts. This emulates Django's built-in behavior of closing connections
-                    # before and after each web request.
-                    django.db.close_old_connections()
                     self.execute(*self.args)
             except CommandException as e:
                 if e.message:
@@ -45,12 +41,12 @@ class Command(ABC):
                 if e.send_usage:
                     self.send_usage()
             except Exception as e:
+                if settings.TESTING:
+                    raise e
                 self.send_message("Internal error :(")
                 rollbar.report_exc_info(extra_data=self.context.report_data())
                 if settings.DEBUG:
                     traceback.print_exc()
-            finally:
-                django.db.close_old_connections()
         else:
             self.send_message("Command not supported on this platform.")
 

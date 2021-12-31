@@ -41,6 +41,7 @@ SECRET_KEY = ENV('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = ENV('DEBUG')
+TESTING = False
 
 ALLOWED_HOSTS = [
     'ctm.gg',
@@ -124,6 +125,7 @@ DATABASES = {
     'default': {
         **ENV.db(),
         "ATOMIC_REQUESTS": True,
+        "CONN_MAX_AGE": 60,
     }
 }
 

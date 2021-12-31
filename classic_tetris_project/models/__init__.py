@@ -8,3 +8,4 @@ from .pages import Page
 from .events import Event
 from .qualifiers import Qualifier
 from .tournaments import Tournament, TournamentPlayer, TournamentMatch
+from .restreamers import Restreamer

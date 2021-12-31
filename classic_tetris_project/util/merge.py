@@ -1,7 +1,10 @@
 from django.db import transaction
-from ..models import Game, Match, ScorePB, Qualifier, TournamentPlayer
+from ..models import Game, Match, ScorePB, Qualifier, TournamentPlayer, Restreamer
 
 class UserMerger:
+    class MergeError(Exception):
+        pass
+
     def __init__(self, user1, user2):
         """
         Always keep the user associated with the DiscordUser if possible
@@ -27,7 +30,7 @@ class UserMerger:
     def check_valid_merge(self):
         if ((hasattr(self.user1, "discord_user") and hasattr(self.user2, "discord_user")) or
                 (hasattr(self.user1, "twitch_user") and hasattr(self.user2, "twitch_user"))):
-            raise Exception("conflicting platform users")
+            raise UserMerger.MergeError("conflicting platform users")
 
     def update_user_fields(self):
         self.user1.preferred_name = self.user1.preferred_name or self.user2.preferred_name
