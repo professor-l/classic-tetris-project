@@ -66,7 +66,7 @@ class AuthorizeView(OauthView):
         if self.state["merge_accounts"] and self.current_user:
             try:
                 user = UserMerger(user, self.current_user).merge()
-            except Exception:
+            except UserMerger.MergeError:
                 messages.info(self.request, "Failed to link accounts, please contact a dev.")
                 return
         website_user = WebsiteUser.fetch_by_user(user)

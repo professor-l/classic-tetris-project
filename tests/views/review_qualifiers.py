@@ -130,12 +130,12 @@ class ReviewView_(Spec):
                     "score": self.qualifier.qualifying_score,
                     "approved": True, 
                     "notes": "Great job",
-                    "announced": True,
                     "stencil": True,
                     "rom": True,
                     "timer": True,
                     "reset": True,
                     "auth_word": True,
+                    "correct_scores": True,
                 })
 
                 assert_that(response, redirects_to("/review_qualifiers/"))
@@ -146,12 +146,12 @@ class ReviewView_(Spec):
                     review_data={
                         "notes": "Great job",
                         "checks": {
-                            "announced": True,
                             "stencil": True,
                             "rom": True,
                             "timer": True,
                             "reset": True,
                             "auth_word": True,
+                            "correct_scores": True,
                         },
                     }
                 ))
