@@ -24,6 +24,7 @@ ENV = environ.Env(
     DISCORD_CHANNEL_MESSAGES=(bool, False),
     ROLLBAR_ENABLED=(bool, False),
     ROLLBAR_TOKEN=(str, ''),
+    GOOGLE_SERVICE_ACCOUNT_FILE=(str, ''),
 )
 environ.Env.read_env('.env')
 
@@ -100,7 +101,6 @@ TEMPLATES = [
             os.path.join(BASE_DIR, "classic_tetris_project", "private", "templates"),
             os.path.join(django.__path__[0], "forms", "templates"),
         ],
-        'APP_DIRS': True,
         'OPTIONS': {
             'builtins': [
                 'classic_tetris_project.private.templatetags',
@@ -111,6 +111,11 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'classic_tetris_project.private.context_processors.session_processor',
+            ],
+            'loaders': [
+                'hamlpy.template.loaders.HamlPyFilesystemLoader',
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
             ],
         },
     },
@@ -176,6 +181,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # Expires after 180 days
 SESSION_COOKIE_AGE = 180 * 24 * 60 * 60

@@ -70,3 +70,9 @@ def report_reviewed_qualifier(qualifier_id):
     }).replace("\\\n", "").strip()
     user_embed.color = (QUALIFIER_COLOR_APPROVED if qualifier.approved else QUALIFIER_COLOR_REJECTED)
     discord.send_direct_message(discord_user.discord_id, embed=user_embed)
+
+@shared_task
+def update_tournament_bracket(tournament_id):
+    from .models import Tournament
+    tournament = Tournament.objects.get(id=tournament_id)
+    tournament.update_bracket()

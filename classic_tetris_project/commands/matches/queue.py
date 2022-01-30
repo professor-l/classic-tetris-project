@@ -279,9 +279,10 @@ class EndMatchCommand(QueueCommand):
         self.check_queue_exists()
         self.check_current_match()
 
+        user = self.context.user
         match = self.current_match
         winner = match.get_current_winner()
-        self.queue.end_match()
+        self.queue.end_match(user)
 
         # TODO: Handle ties?
         if winner:
