@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}{{ user.display_name }}{% endblock %}
+{% block title %}{{ user.preferred_display_name }}{% endblock %}
 
 {% block content %}
 <div class="profile">
   <div class="profile-header">
     <h1 class="profile-header__title">
-      {{ user.display_name }}
+      {{ user.preferred_display_name }}
     </h1>
     {% if user.pronouns %}
     <div class="profile-header__subtitle">

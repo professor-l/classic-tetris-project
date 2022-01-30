@@ -1,5 +1,3 @@
-@use 'admin';
-
 @use 'alerts';
 @use 'buttons';
 @use 'bootstrap';
@@ -12,4 +10,4 @@
 @use 'structure';
 
 // External libraries
-@import '~jquery-datetimepicker/jquery.datetimepicker.css';
+@import '~simplepicker/dist/simplepicker.css';

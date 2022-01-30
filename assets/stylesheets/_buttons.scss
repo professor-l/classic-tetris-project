@@ -31,6 +31,14 @@
     }
   }
 
+  &--secondary {
+    background-color: colors.$button-secondary-bg;
+    color: colors.$button-secondary-text;
+    &:hover {
+      background-color: lighten(colors.$button-secondary-bg, 5%);
+    }
+  }
+
   &--red {
     background-color: colors.$button-red-bg;
     color: colors.$button-red-text;

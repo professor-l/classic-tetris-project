@@ -42,7 +42,8 @@ policy_patterns = ([
 
 tournament_match_patterns = ([
     path("", tournament_matches.IndexView.as_view(), name="index"),
-    path("restream/", tournament_matches.RestreamView.as_view(), name="restream"),
+    path("schedule/", tournament_matches.ScheduleView.as_view(), name="schedule"),
+    path("report/", tournament_matches.ReportView.as_view(), name="report"),
 ], "match")
 
 tournament_patterns = ([

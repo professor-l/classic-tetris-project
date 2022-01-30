@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib import admin, auth, messages
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from django.utils import text, timezone
+from django.utils import html, text, timezone
 from django_object_actions import DjangoObjectActions
 from markdownx.admin import MarkdownxModelAdmin
 from adminsortable2.admin import SortableInlineAdminMixin
@@ -23,6 +23,7 @@ class WebsiteUserInline(admin.StackedInline):
 
 @admin.register(User)
 class UserAdmin(DjangoObjectActions, admin.ModelAdmin):
+    list_display = ("id", "twitch_user_link", "discord_user_link", "website_user_link")
     inlines = [DiscordUserInline, TwitchUserInline, WebsiteUserInline]
     search_fields = ("preferred_name", "discord_user__username", "twitch_user__username")
 
@@ -34,6 +35,30 @@ class UserAdmin(DjangoObjectActions, admin.ModelAdmin):
             return redirect(reverse("index"))
 
         change_actions = ("login_as",)
+
+    @admin.display(description="Twitch User")
+    def twitch_user_link(self, obj):
+        if obj.twitch_user:
+            return html.format_html("<a href='{}'>{}</a>",
+                reverse("admin:classic_tetris_project_twitchuser_change", args=(obj.twitch_user.id,)),
+                obj.twitch_user
+            )
+
+    @admin.display(description="Discord User")
+    def discord_user_link(self, obj):
+        if obj.discord_user:
+            return html.format_html("<a href='{}'>{}</a>",
+                reverse("admin:classic_tetris_project_discorduser_change", args=(obj.discord_user.id,)),
+                obj.discord_user
+            )
+
+    @admin.display(description="Website User")
+    def website_user_link(self, obj):
+        if obj.website_user and obj.website_user.auth_user:
+            return html.format_html("<a href='{}'>{}</a>",
+                reverse("admin:auth_user_change", args=(obj.website_user.auth_user.id,)),
+                obj.website_user.auth_user.username
+            )
 
 @admin.register(DiscordUser)
 class DiscordUserAdmin(admin.ModelAdmin):
@@ -57,6 +82,7 @@ class MatchAdmin(admin.ModelAdmin):
     inlines = [GameInline]
     list_display = ('__str__', 'player1', 'wins1', 'player2', 'wins2', 'channel', 'ended_at')
     autocomplete_fields = ("player1", "player2", "channel")
+    readonly_fields = ("reported_by",)
 
 
 class CustomCommandInline(admin.TabularInline):
@@ -89,6 +115,7 @@ class TournamentInline(SortableInlineAdminMixin, admin.StackedInline):
     form = TournamentForm
     extra = 0
     show_change_link = True
+    exclude = ("details", "google_sheets_id", "google_sheets_range")
 
 @admin.register(Event)
 class EventAdmin(DjangoObjectActions, MarkdownxModelAdmin):
@@ -97,8 +124,11 @@ class EventAdmin(DjangoObjectActions, MarkdownxModelAdmin):
     list_display = ("name", "qualifying_open")
 
     def seed_tournaments(self, request, obj):
-        obj.seed_tournaments()
-        messages.success(request, "Tournaments seeded")
+        if obj.qualifying_open:
+            messages.error(request, f"Qualifying must be closed first")
+        else:
+            obj.seed_tournaments()
+            messages.success(request, "Tournaments seeded")
 
     change_actions = ("seed_tournaments",)
 
@@ -140,7 +170,7 @@ class TournamentMatchInline(admin.TabularInline):
 
 
 from django.urls import path
-from classic_tetris_project.util import bracket_generator
+from classic_tetris_project.util import bracket_generator, tournament_sheet_updater
 
 @admin.register(Tournament)
 class TournamentAdmin(DjangoObjectActions, admin.ModelAdmin):
@@ -158,8 +188,11 @@ class TournamentAdmin(DjangoObjectActions, admin.ModelAdmin):
             messages.error(request, str(e))
 
     def update_bracket(self, request, obj):
-        obj.update_bracket()
-        messages.success(request, "Bracket updated")
+        try:
+            obj.update_bracket()
+            messages.success(request, "Bracket updated")
+        except tournament_sheet_updater.TournamentSheetUpdateError as e:
+            messages.error(request, f"Error updating spreadsheet: {e}")
 
 @admin.register(TournamentMatch)
 class TournamentMatchAdmin(admin.ModelAdmin):

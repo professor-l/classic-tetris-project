@@ -42,3 +42,49 @@ class ModuleNode(template.Node):
             "header_style": self.header_style.resolve(context) if self.header_style else None,
             "content": self.nodelist.render(context),
         })
+
+@register.tag
+def field_list_row(parser, token):
+    nodelist = parser.parse(("endfield_list_row",))
+    parser.delete_first_token()
+    return FieldListRowNode(nodelist, *token.split_contents()[1:])
+
+class FieldListRowNode(template.Node):
+    def __init__(self, nodelist, label, value=None):
+        self.nodelist = nodelist
+        self.label = template.Variable(label)
+        self.value = template.Variable(value) if value else None
+
+    def render(self, context):
+        return render_to_string("templatetags/field_list_row.haml", {
+            "label": self.label.resolve(context),
+            "value": self.value.resolve(context) if self.value else self.nodelist.render(context),
+        })
+
+@register.tag
+def field_list_input_row(parser, token):
+    nodelist = parser.parse(("endfield_list_input_row",))
+    parser.delete_first_token()
+    return FieldListInputRowNode(nodelist, *token.split_contents()[1:])
+
+class FieldListInputRowNode(template.Node):
+    def __init__(self, nodelist, label, field=None):
+        self.nodelist = nodelist
+        self.label = template.Variable(label)
+        self.field = template.Variable(field) if field else None
+
+    def render(self, context):
+        return render_to_string("templatetags/field_list_input_row.haml", {
+            "label": self.label.resolve(context),
+            "field": self.field.resolve(context) if self.field else None,
+            "content": self.nodelist.render(context),
+        })
+
+
+# TODO automate this on registration
+import hamlpy.template.loaders
+hamlpy.template.loaders.options["custom_self_closing_tags"] = {
+    "module": "endmodule",
+    "field_list_row": "endfield_list_row",
+    "field_list_input_row": "endfield_list_input_row",
+}

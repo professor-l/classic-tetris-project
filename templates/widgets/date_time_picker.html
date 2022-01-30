@@ -1,6 +1,11 @@
-<input type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %}>
-<script>
-  $('#{{ widget.attrs.id }}').datetimepicker({
-    format: "Y-m-d H:s"
-  });
-</script>
+<div data-controller="date-picker">
+  <button class="btn btn--secondary" data-action="click->date-picker#open">Select</button>
+  <input type="{{ widget.type }}"
+         name="{{ widget.name }}"
+         {% if widget.value %}value="{{ widget.value }}"{% endif %}
+         data-date-picker-target="input"
+         {% include "django/forms/widgets/attrs.html" %}
+         >
+  <div data-date-picker-target="displayLocal"></div>
+  <div data-date-picker-target="displayUTC"></div>
+</div>

@@ -1,0 +1,9 @@
+.field-list__row
+  .field-list__label.field-list__label--input
+    %label{for: "{{ field.id_for_label }}"}= label
+  .field-list__value
+    - if field
+      = field
+      = field.errors
+    - else
+      = content
