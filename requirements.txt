@@ -1,4 +1,4 @@
-asgiref==3.2.10
+asgiref==3.5.0
 authlib==0.14.1
 celery==5.0.5
 coverage==5.0.4
