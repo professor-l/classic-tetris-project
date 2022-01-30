@@ -115,12 +115,19 @@ class User(models.Model):
         self.save()
         return True
 
-    @lazy
-    def display_name(self):
+    @property
+    def preferred_display_name(self):
         if self.preferred_name:
             return self.preferred_name
-        elif hasattr(self, "twitch_user"):
+        else:
+            return self.display_name
+
+    @property
+    def display_name(self):
+        if hasattr(self, "twitch_user"):
             return self.twitch_user.username
+        elif self.preferred_name:
+            return self.preferred_name
         elif hasattr(self, "discord_user"):
             return self.discord_user.display_name()
         else:

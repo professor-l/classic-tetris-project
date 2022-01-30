@@ -85,16 +85,16 @@ class User_(Spec):
             assert_that(self.user.get_pb(console_type="pal"), equal_to(500000))
 
     class display_name:
-        def test_with_preferred_name(self):
-            self.discord_user
-            self.twitch_user
-            self.user.preferred_name = "Preferred Name"
-            assert_that(self.user.display_name, equal_to("Preferred Name"))
-
         def test_with_twitch_user(self):
             self.discord_user
             self.twitch_user
+            self.user.preferred_name = "Preferred Name"
             assert_that(self.user.display_name, equal_to(self.twitch_user.username))
+
+        def test_with_preferred_name(self):
+            self.discord_user
+            self.user.preferred_name = "Preferred Name"
+            assert_that(self.user.display_name, equal_to("Preferred Name"))
 
         def test_with_discord_user(self):
             self.discord_user
@@ -102,6 +102,25 @@ class User_(Spec):
 
         def test_with_nothing(self):
             assert_that(self.user.display_name, equal_to(f"User {self.user.id}"))
+
+    class preferred_display_name:
+        def test_with_preferred_name(self):
+            self.discord_user
+            self.twitch_user
+            self.user.preferred_name = "Preferred Name"
+            assert_that(self.user.preferred_display_name, equal_to("Preferred Name"))
+
+        def test_with_twitch_user(self):
+            self.discord_user
+            self.twitch_user
+            assert_that(self.user.preferred_display_name, equal_to(self.twitch_user.username))
+
+        def test_with_discord_user(self):
+            self.discord_user
+            assert_that(self.user.preferred_display_name, equal_to(self.discord_user.username))
+
+        def test_with_nothing(self):
+            assert_that(self.user.preferred_display_name, equal_to(f"User {self.user.id}"))
 
     class profile_id:
         def test_with_twitch_user(self):

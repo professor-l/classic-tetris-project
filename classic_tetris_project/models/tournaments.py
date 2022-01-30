@@ -1,9 +1,13 @@
-from django.db import models
+from django.conf import settings
+from django.db import models, transaction
 from django.db.models import signals, Q
 from django.urls import reverse
 from django.utils.text import slugify
 from colorfield.fields import ColorField
+from furl import furl
+from markdownx.models import MarkdownxField
 
+from classic_tetris_project import tasks
 from .users import User
 from .events import Event
 from .matches import Match
@@ -38,6 +42,17 @@ class Tournament(models.Model):
         default=False,
         help_text="Determines whether this tournament's matches can be restreamed by default"
     )
+    active = models.BooleanField(
+        default=True,
+        help_text="Controls whether this tournament's bracket should be updated on match completion"
+    )
+    details = MarkdownxField(
+        blank=True,
+        help_text="Details to show on the tournament page"
+    )
+
+    google_sheets_id = models.CharField(max_length=255, null=True, blank=True)
+    google_sheets_range = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         constraints = [
@@ -47,8 +62,10 @@ class Tournament(models.Model):
         ordering = ["order"]
 
     def update_bracket(self):
+        from ..util.tournament_sheet_updater import TournamentSheetUpdater
         for match in self.matches.filter(Q(player1__isnull=True) | Q(player2__isnull=True)):
             match.update_players()
+        TournamentSheetUpdater(self).update()
 
     @staticmethod
     def before_save(sender, instance, **kwargs):
@@ -57,8 +74,12 @@ class Tournament(models.Model):
         if not instance.slug:
             instance.slug = slugify(instance.short_name)
 
-    def get_absolute_url(self):
-        return reverse("event:tournament:index", args=[self.event.slug, self.slug])
+    def get_absolute_url(self, include_base=False):
+        path = reverse("event:tournament:index", args=[self.event.slug, self.slug])
+        if include_base:
+            return furl(settings.BASE_URL, path=path).url
+        else:
+            return path
 
     def __str__(self):
         return self.name
@@ -80,8 +101,8 @@ class TournamentPlayer(models.Model):
     name_override = models.CharField(max_length=64, null=True, blank=True)
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=["tournament", "seed"], name="unique_tournament_seed")
+        indexes = [
+            models.Index(fields=["tournament", "seed"])
         ]
 
     def display_name(self):
@@ -97,6 +118,7 @@ class TournamentPlayer(models.Model):
 
 class TournamentMatch(models.Model):
     class Meta:
+        verbose_name_plural = "tournament matches"
         permissions = [
             ("restream", "Can schedule and report restreamed matches"),
         ]
@@ -108,7 +130,8 @@ class TournamentMatch(models.Model):
         MATCH_LOSER = 4
 
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name="matches")
-    match = models.OneToOneField(Match, on_delete=models.PROTECT, null=True, blank=True)
+    match = models.OneToOneField(Match, on_delete=models.PROTECT, null=True, blank=True,
+                                 related_name="tournament_match")
     match_number = models.IntegerField()
     round_number = models.IntegerField(null=True, blank=True)
     restreamed = models.BooleanField(default=False)
@@ -148,28 +171,6 @@ class TournamentMatch(models.Model):
             if match:
                 return match.loser
 
-    def display_name_from_source(self, source_type, source_data):
-        if source_type == TournamentMatch.PlayerSource.NONE:
-            return None
-        elif source_type == TournamentMatch.PlayerSource.SEED:
-            return f"Seed {source_data}"
-        elif source_type == TournamentMatch.PlayerSource.MATCH_WINNER:
-            return f"Winner of Match {source_data}"
-        elif source_type == TournamentMatch.PlayerSource.MATCH_LOSER:
-            return f"Loser of Match {source_data}"
-
-    def player1_display_name(self):
-        if self.player1:
-            return self.player1.display_name()
-        else:
-            return self.display_name_from_source(self.source1_type, self.source1_data)
-
-    def player2_display_name(self):
-        if self.player2:
-            return self.player2.display_name()
-        else:
-            return self.display_name_from_source(self.source2_type, self.source2_data)
-
     def is_playable(self):
         return self.player1 and self.player1.user and self.player2 and self.player2.user and not self.winner
 
@@ -179,9 +180,26 @@ class TournamentMatch(models.Model):
             self.save()
         return self.match
 
-    def get_absolute_url(self):
-        return reverse("event:tournament:match:index",
+    def update_from_match(self):
+        if self.match:
+            if self.match.wins1 > self.match.wins2:
+                self.winner = self.player1
+                self.loser = self.player2
+            elif self.match.wins2 > self.match.wins1:
+                self.winner = self.player2
+                self.loser = self.player1
+            self.save()
+            if self.tournament.active:
+                transaction.on_commit(
+                    lambda: tasks.update_tournament_bracket.delay(self.tournament.id))
+
+    def get_absolute_url(self, include_base=False):
+        path = reverse("event:tournament:match:index",
                        args=[self.tournament.event.slug, self.tournament.slug, self.match_number])
+        if include_base:
+            return furl(settings.BASE_URL, path=path).url
+        else:
+            return path
 
     def __str__(self):
         return f"{self.tournament} Match {self.match_number}"

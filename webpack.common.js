@@ -8,7 +8,10 @@ const devMode = process.env.NODE_ENV !== 'production';
 module.exports = {
   context: __dirname,
 
-  entry: './classic_tetris_project/private/assets/app',
+  entry: {
+    main: './classic_tetris_project/private/assets/app',
+    admin: './classic_tetris_project/private/assets/admin',
+  },
 
   output: {
     path: path.resolve('./static/bundles/'),
@@ -40,6 +43,18 @@ module.exports = {
         options: {
           exposes: ['$', 'jQuery'],
         },
+      },
+      {
+        test: /\.m?js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              ['@babel/preset-env', { targets: "defaults" }]
+            ]
+          }
+        }
       },
     ],
   },

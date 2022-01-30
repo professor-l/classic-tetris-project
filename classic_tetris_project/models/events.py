@@ -55,7 +55,7 @@ class Event(models.Model):
                     continue
 
                 for qualifier_row in group["qualifier_rows"]:
-                    if "qualifier" in qualifier_row:
+                    if "qualifier" in qualifier_row and qualifier_row["qualifier"]:
                         tournament.tournament_players.create(
                             seed=qualifier_row["seed"],
                             qualifier=qualifier_row["qualifier"],

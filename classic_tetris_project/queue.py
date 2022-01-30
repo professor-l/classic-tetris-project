@@ -49,9 +49,9 @@ class Queue:
         match.delete()
         self.save()
 
-    def end_match(self):
+    def end_match(self, ended_by):
         match = self._matches.pop(0)
-        match.end()
+        match.end(ended_by)
         self.save()
 
     def clear(self):
