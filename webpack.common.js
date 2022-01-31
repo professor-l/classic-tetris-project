@@ -8,7 +8,10 @@ const devMode = process.env.NODE_ENV !== 'production';
 module.exports = {
   context: __dirname,
 
-  entry: './classic_tetris_project/private/assets/app',
+  entry: {
+    main: './classic_tetris_project/private/assets/app',
+    admin: './classic_tetris_project/private/assets/admin',
+  },
 
   output: {
     path: path.resolve('./static/bundles/'),
