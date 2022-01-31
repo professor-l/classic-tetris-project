@@ -23,7 +23,7 @@ google-auth-httplib2==0.1.0
 google-auth-oauthlib==0.4.6
 ipython==7.5.0
 irc==17.1
-lxml==4.5.1
+lxml==4.6.5
 markdown==3.3.3
 Pillow==7.1.1
 PyHamcrest==2.0.2
