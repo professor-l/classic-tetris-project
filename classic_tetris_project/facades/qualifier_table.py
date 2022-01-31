@@ -5,7 +5,16 @@ class QualifierTable:
     def __init__(self, event):
         self.event = event
         self.tournaments = list(self.event.tournaments.order_by("order"))
-        self.qualifiers = list(self.event.qualifiers.public().order_by("-qualifying_score"))
+        self.withheld_qualifier_ids = []
+        for tournament in self.tournaments:
+            if tournament.placeholders:
+                for placeholder in tournament.placeholders.values():
+                    if "qualifier" in placeholder:
+                        self.withheld_qualifier_ids.append(int(placeholder["qualifier"]))
+
+        self.qualifiers = list(self.event.qualifiers.public()
+                               .exclude(id__in=self.withheld_qualifier_ids)
+                               .order_by("-qualifying_score"))
 
     def groups(self):
         groups_data = []
@@ -24,15 +33,21 @@ class QualifierTable:
             for seed in range(1, tournament.seed_count + 1):
                 if offset >= len(self.qualifiers):
                     break
+                qualifier = self.qualifiers[offset]
+
                 if str(seed) in tournament.placeholders:
+                    placeholder = tournament.placeholders[str(seed)]
+                    qualifier = (self.event.qualifiers.get(id=int(placeholder["qualifier"]))
+                                 if "qualifier" in placeholder else None)
                     qualifier_rows.append({
                         "seed": seed,
-                        "placeholder": tournament.placeholders[str(seed)]
+                        "placeholder": placeholder["name"],
+                        "qualifier": qualifier
                     })
                 else:
                     qualifier_rows.append({
                         "seed": seed,
-                        "qualifier": self.qualifiers[offset]
+                        "qualifier": qualifier
                     })
                     offset += 1
             return {

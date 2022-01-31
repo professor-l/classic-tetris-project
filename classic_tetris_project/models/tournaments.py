@@ -101,8 +101,8 @@ class TournamentPlayer(models.Model):
     name_override = models.CharField(max_length=64, null=True, blank=True)
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=["tournament", "seed"], name="unique_tournament_seed")
+        indexes = [
+            models.Index(fields=["tournament", "seed"])
         ]
 
     def display_name(self):
