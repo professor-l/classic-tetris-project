@@ -83,6 +83,21 @@ h2 {
     margin: 0;
   }
 
+  &__header-buttons {
+    display: flex;
+    .btn {
+      margin-left: 15px;
+    }
+    @include media.mobile-only {
+      flex-direction: column;
+      .btn {
+        &:not(:first-child) {
+          margin-top: 15px;
+        }
+      }
+    }
+  }
+
   &__body {
     margin: 15px;
   }

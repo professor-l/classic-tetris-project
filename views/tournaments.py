@@ -24,9 +24,7 @@ class IndexView(TournamentView):
         all_matches = [TournamentMatchDisplay(match, self.current_user) for match in
                        self.tournament.matches.order_by("match_number")]
         playable_matches = [match_display for match_display in all_matches
-                            if (not match_display.tournament_match.winner and
-                                match_display.tournament_match.player1 and
-                                match_display.tournament_match.player2)]
+                            if match_display.tournament_match.is_playable()]
 
         return render(request, "tournament/index.haml", {
             "tournament": self.tournament,

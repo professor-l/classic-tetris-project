@@ -56,6 +56,13 @@ class ScheduleView(UserPassesTestMixin, MatchView):
                 "form": form
             })
 
+    def delete(self, request, event_slug, tournament_slug, match_number):
+        if self.match.match:
+            self.match.match.start_date = None
+            self.match.match.channel = None
+            self.match.match.save()
+        return redirect(self.match.get_absolute_url())
+
     def test_func(self):
         return self.match_display.can_restream()
 

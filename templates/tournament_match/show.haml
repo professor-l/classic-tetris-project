@@ -13,16 +13,26 @@
         = match
 
       - if match_display.can_restream
-        %a.btn.btn--primary{href: '{% url "event:tournament:match:schedule" match.tournament.event.slug match.tournament.slug match.match_number %}'}
-          Schedule
-        %a.btn.btn--primary{href: '{% url "event:tournament:match:report" match.tournament.event.slug match.tournament.slug match.match_number %}'}
-          Report
+        .section__header-buttons
+          %a.btn.btn--primary{href: '{% url "event:tournament:match:schedule" match.tournament.event.slug match.tournament.slug match.match_number %}'}
+            - if match_display.tournament_match.is_scheduled
+              Reschedule
+            - else
+              Schedule
+          %a.btn.btn--primary{href: '{% url "event:tournament:match:report" match.tournament.event.slug match.tournament.slug match.match_number %}'}
+            Report
+          - if match_display.tournament_match.is_scheduled
+            %a.btn.btn--red{href: '{% url "event:tournament:match:schedule" match.tournament.event.slug match.tournament.slug match.match_number %}', data-method: "delete", data-confirm: "Are you sure you want to unschedule this match?"}
+              Unschedule
 
     - if current_user.permissions.report_all
       %a{href: '{% url "admin:classic_tetris_project_tournamentmatch_change" match.id %}'}
 
     .section__body
       .field-list
+        - field_list_row "Tournament:"
+          %a{href: "{{ match.tournament.get_absolute_url }}"}= match.tournament.name
+
         - field_list_row "Player 1:"
           - if match.player1.user
             %a{href: "{{ match.player1.user.get_absolute_url }}"}= match.player1.display_name

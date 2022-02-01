@@ -83,3 +83,6 @@
             %td
               - if match_display.tournament_match.match.start_date
                 = match_display.tournament_match.match.start_date
+                - if match_display.tournament_match.match.channel
+                  @
+                  %a{href: "{{ match_display.tournament_match.match.channel.twitch_url }}", target: "_blank"}= match_display.tournament_match.match.channel.name
