@@ -53,14 +53,13 @@ class TournamentSheetUpdater:
         return data
 
     def match_data(self, match):
-        match_display = TournamentMatchDisplay(match)
         return {
             MATCH_NUMBER: match.match_number,
             ROUND_NUMBER: match.round_number,
-            PLAYER_1: match_display.player1_display_name(),
+            PLAYER_1: match.player1.user.display_name if match.player1 and match.player1.user else "",
             PLAYER_1_SEED: match.player1.seed if match.player1 else "",
             PLAYER_1_WINS: match.match.wins1 if match.match and match.match.ended_at else "",
-            PLAYER_2: match_display.player2_display_name(),
+            PLAYER_2: match.player2.user.display_name if match.player2 and match.player2.user else "",
             PLAYER_2_SEED: match.player2.seed if match.player2 else "",
             PLAYER_2_WINS: match.match.wins2 if match.match and match.match.ended_at else "",
             WINNER: match.winner.display_name() if match.winner else "",
