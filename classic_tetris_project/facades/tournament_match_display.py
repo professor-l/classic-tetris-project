@@ -22,11 +22,11 @@ class TournamentMatchDisplay:
                 text
             )
 
-        if self.tournament_match.winner:
+        if self.tournament_match.is_complete():
             return render_tag("Complete", "green")
-        elif self.tournament_match.match and self.tournament_match.match.start_date:
+        elif self.tournament_match.is_scheduled():
             return render_tag("Scheduled", "yellow")
-        elif self.tournament_match.player1 and self.tournament_match.player2:
+        elif self.tournament_match.is_playable():
             return render_tag("Playable", "gray")
 
     def display_name_from_source(self, source_type, source_data):

@@ -172,7 +172,15 @@ class TournamentMatch(models.Model):
                 return match.loser
 
     def is_playable(self):
-        return self.player1 and self.player1.user and self.player2 and self.player2.user and not self.winner
+        return bool(self.player1 and self.player1.user and
+                    self.player2 and self.player2.user and
+                    not self.winner)
+
+    def is_scheduled(self):
+        return bool(self.match and self.match.start_date)
+
+    def is_complete(self):
+        return bool(self.winner)
 
     def get_or_create_match(self):
         if not self.match:
