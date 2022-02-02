@@ -21,6 +21,7 @@ class IndexView(TournamentView):
         if not self.tournament.public:
             raise Http404()
 
+        all_players = list(self.tournament.tournament_players.order_by("seed"))
         all_matches = [TournamentMatchDisplay(match, self.current_user) for match in
                        self.tournament.matches.order_by("match_number")]
         playable_matches = [match_display for match_display in all_matches
@@ -28,7 +29,7 @@ class IndexView(TournamentView):
 
         return render(request, "tournament/index.haml", {
             "tournament": self.tournament,
-            "tournament_players": list(self.tournament.tournament_players.all()),
+            "tournament_players": all_players,
             "tournament_matches": all_matches,
             "playable_matches": playable_matches,
         })

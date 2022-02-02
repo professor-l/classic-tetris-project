@@ -158,6 +158,7 @@ class TournamentPlayerInline(admin.TabularInline):
     extra = 0
     show_change_link = True
 
+    ordering = ("seed",)
     raw_id_fields = ("qualifier",)
     autocomplete_fields = ("user",)
 
@@ -166,6 +167,7 @@ class TournamentMatchInline(admin.TabularInline):
     extra = 0
     show_change_link = True
 
+    ordering = ("match_number",)
     readonly_fields = ("player1", "player2", "winner", "loser", "match")
 
 
