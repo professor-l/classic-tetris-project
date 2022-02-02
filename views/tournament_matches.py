@@ -1,7 +1,9 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.db import transaction
 from django.http import Http404
 from django.shortcuts import redirect, render
 
+from classic_tetris_project import tasks
 from classic_tetris_project.facades.tournament_match_display import TournamentMatchDisplay
 from classic_tetris_project.models import TournamentMatch
 from classic_tetris_project.util import lazy
@@ -47,6 +49,9 @@ class ScheduleView(UserPassesTestMixin, MatchView):
         form = match_forms.ScheduleForm(request.POST, instance=self.match.get_or_create_match())
         if form.is_valid():
             form.save()
+            if self.match.restreamed:
+                transaction.on_commit(lambda:
+                                      tasks.announce_scheduled_tournament_match.delay(self.match.id))
             return redirect(self.match.get_absolute_url())
         else:
             return render(request, "tournament_match/schedule.haml", {
@@ -87,6 +92,9 @@ class ReportView(UserPassesTestMixin, MatchView):
         form = match_forms.ReportForm(request.POST, instance=self.match.get_or_create_match())
         if form.is_valid():
             form.save(self.current_user)
+            if self.match.restreamed:
+                transaction.on_commit(lambda:
+                                      tasks.report_tournament_match.delay(self.match.id))
             return redirect(self.match.get_absolute_url())
         else:
             return render(request, "tournament_match/report.haml", {

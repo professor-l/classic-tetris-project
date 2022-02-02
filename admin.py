@@ -115,7 +115,7 @@ class TournamentInline(SortableInlineAdminMixin, admin.StackedInline):
     form = TournamentForm
     extra = 0
     show_change_link = True
-    exclude = ("details", "google_sheets_id", "google_sheets_range")
+    exclude = ("details", "google_sheets_id", "google_sheets_range", "discord_emote_string")
 
 @admin.register(Event)
 class EventAdmin(DjangoObjectActions, MarkdownxModelAdmin):
