@@ -53,6 +53,7 @@ class Tournament(models.Model):
 
     google_sheets_id = models.CharField(max_length=255, null=True, blank=True)
     google_sheets_range = models.CharField(max_length=255, null=True, blank=True)
+    discord_emote_string = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         constraints = [
@@ -80,6 +81,9 @@ class Tournament(models.Model):
             return furl(settings.BASE_URL, path=path).url
         else:
             return path
+
+    def color_int(self):
+        return int(self.color[1:], base=16)
 
     def __str__(self):
         return self.name
