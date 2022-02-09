@@ -44,8 +44,10 @@ class CommandContext:
     def display_name(self, platform_user):
         if (self.platform == Platform.DISCORD and isinstance(platform_user, DiscordUser) and self.guild):
             return platform_user.display_name(self.guild.id)
-        else:
+        elif isinstance(platform_user, DiscordUser):
             return platform_user.display_name()
+        else:
+            return platform_user.display_name or platform_user.username
 
     def format_code(self, message):
         return message
@@ -244,5 +246,5 @@ class TwitchCommandContext(CommandContext):
     @memoize
     def platform_user(self):
         twitch_user = TwitchUser.fetch_or_create_by_twitch_id(self.author.id)
-        twitch_user.update_username(self.author.username)
+        twitch_user.update_username(self.author)
         return twitch_user

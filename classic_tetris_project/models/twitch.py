@@ -12,7 +12,7 @@ class TwitchChannel(models.Model):
 
     @property
     def name(self):
-        return self.twitch_user.username
+        return self.twitch_user.display_name
 
     def summon_bot(self):
         self.connected = True
@@ -35,7 +35,7 @@ class TwitchChannel(models.Model):
         self.client_channel.send_message(message)
 
     def twitch_url(self):
-        return f"https://twitch.tv/{self.name}"
+        return self.twitch_user.twitch_url
 
     def __str__(self):
         return str(self.twitch_user)

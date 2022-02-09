@@ -19,3 +19,4 @@ class TwitchUserFactory(factory.django.DjangoModelFactory):
         model = TwitchUser
     twitch_id = factory.Sequence(lambda n: str(n))
     username = factory.Sequence(lambda n: f"user_{n}")
+    display_name = factory.LazyAttribute(lambda o: o.username)

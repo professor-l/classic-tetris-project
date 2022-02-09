@@ -46,6 +46,7 @@ class MockTwitchAPIUser:
     def __init__(self, id, username):
         self.id = id
         self.username = username
+        self.display_name = username
 
     def send(self, channel, content):
         message = MockTwitchMessage(self, content, channel)

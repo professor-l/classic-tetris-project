@@ -14,7 +14,8 @@ class QualifierTable:
 
         self.qualifiers = list(self.event.qualifiers.public()
                                .exclude(id__in=self.withheld_qualifier_ids)
-                               .order_by("-qualifying_score"))
+                               .order_by("-qualifying_score")
+                               .prefetch_related("user__twitch_user"))
 
     def groups(self):
         groups_data = []

@@ -89,7 +89,7 @@ class User_(Spec):
             self.discord_user
             self.twitch_user
             self.user.preferred_name = "Preferred Name"
-            assert_that(self.user.display_name, equal_to(self.twitch_user.username))
+            assert_that(self.user.display_name, equal_to(self.twitch_user.display_name))
 
         def test_with_preferred_name(self):
             self.discord_user
@@ -113,7 +113,7 @@ class User_(Spec):
         def test_with_twitch_user(self):
             self.discord_user
             self.twitch_user
-            assert_that(self.user.preferred_display_name, equal_to(self.twitch_user.username))
+            assert_that(self.user.preferred_display_name, equal_to(self.twitch_user.display_name))
 
         def test_with_discord_user(self):
             self.discord_user

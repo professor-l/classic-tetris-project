@@ -125,7 +125,7 @@ class User(models.Model):
     @property
     def display_name(self):
         if hasattr(self, "twitch_user"):
-            return self.twitch_user.username
+            return self.twitch_user.display_name or self.twitch_user.username
         elif self.preferred_name:
             return self.preferred_name
         elif hasattr(self, "discord_user"):
@@ -186,6 +186,7 @@ class TwitchUser(PlatformUser):
     - TwitchUser.from_username is called with fetch=True
     """
     username = models.CharField(max_length=25, unique=True, blank=False) # unique index
+    display_name = models.CharField(max_length=25, null=True)
 
     @staticmethod
     def fetch_by_twitch_id(twitch_id):
@@ -214,7 +215,7 @@ class TwitchUser(PlatformUser):
                 if user_obj is not None:
                     twitch_user = TwitchUser.fetch_by_twitch_id(user_obj.id)
                     if twitch_user is not None:
-                        twitch_user.update_username(user_obj.username)
+                        twitch_user.update_username(user_obj)
                         return twitch_user
 
             return None
@@ -236,21 +237,19 @@ class TwitchUser(PlatformUser):
     def get_or_create_from_user_obj(user_obj):
         try:
             twitch_user = TwitchUser.objects.get(twitch_id=str(user_obj.id))
-            twitch_user.update_username(user_obj.username)
+            twitch_user.update_username(user_obj)
             return twitch_user
         except TwitchUser.DoesNotExist:
             return TwitchUser.objects.create(
                 twitch_id=str(user_obj.id),
-                username=user_obj.username
+                username=user_obj.username,
+                display_name=user_obj.display_name,
             )
 
 
     @lazy
     def user_obj(self):
         return twitch.client.get_user(self.twitch_id)
-
-    def display_name(self):
-        return self.username
 
     @property
     def user_tag(self):
@@ -267,9 +266,11 @@ class TwitchUser(PlatformUser):
     def send_message(self, message):
         self.user_obj.send_message(message)
 
-    def update_username(self, username):
-        if self.username != username:
-            self.username = username
+    def update_username(self, user_obj=None):
+        user_obj = user_obj or self.user_obj
+        if self.username != user_obj.username or self.display_name != user_obj.display_name:
+            self.username = user_obj.username
+            self.display_name = user_obj.display_name
             self.save()
             if hasattr(self, "channel") and self.channel.connected:
                 self.channel.summon_bot()
@@ -296,7 +297,7 @@ class TwitchUser(PlatformUser):
         self.__dict__.update(state)
 
     def __str__(self):
-        return self.username
+        return self.display_name or self.username
 
 signals.pre_save.connect(TwitchUser.before_save, sender=TwitchUser)
 
