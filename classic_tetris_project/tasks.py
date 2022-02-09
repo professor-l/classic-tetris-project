@@ -97,13 +97,11 @@ def announce_scheduled_tournament_match(tournament_match_id):
         )
         embed.url = tournament_match.get_absolute_url(True)
         embed.color = tournament.color_int()
-        embed.description = "{} vs {}".format(
-            (user1.discord_user.user_tag
-             if user1 and hasattr(user1, "discord_user")
-             else match_display.player1_display_name()),
-            (user2.discord_user.user_tag
-             if user2 and hasattr(user2, "discord_user")
-             else match_display.player2_display_name()),
+        embed.description = "[{}]({}) vs [{}]({})".format(
+            user1.display_name,
+            user1.get_absolute_url(True),
+            user2.display_name,
+            user2.get_absolute_url(True),
         )
         embed.add_field(name="Tournament",
                         value="[{}]({})".format(tournament.name, tournament.get_absolute_url(True)),
