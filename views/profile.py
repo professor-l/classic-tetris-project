@@ -13,7 +13,7 @@ class ProfileView(LoginRequiredMixin, BaseView):
 
 class ProfileEditView(LoginRequiredMixin, UpdateView):
     form_class = ProfileForm
-    template_name = "profile/edit.html"
+    template_name = "profile/edit.haml"
 
     def get_object(self):
         return self.request.user.website_user.user

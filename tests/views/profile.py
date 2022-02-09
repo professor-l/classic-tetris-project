@@ -28,7 +28,7 @@ class ProfileEditView_(Spec):
             response = self.get()
 
             assert_that(response.status_code, equal_to(200))
-            assert_that(response, uses_template("profile/edit.html"))
+            assert_that(response, uses_template("profile/edit.haml"))
 
     class POST:
         def test_redirects_when_logged_out(self):

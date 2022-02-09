@@ -21,9 +21,12 @@ class IndexView(TournamentView):
         if not self.tournament.public:
             raise Http404()
 
-        all_players = list(self.tournament.tournament_players.order_by("seed"))
+        all_players = list(self.tournament.tournament_players.order_by("seed")
+                           .prefetch_related("user__twitch_user", "qualifier"))
         all_matches = [TournamentMatchDisplay(match, self.current_user) for match in
-                       self.tournament.matches.order_by("match_number")]
+                       self.tournament.matches.order_by("match_number")
+                       .prefetch_related("player1__user__twitch_user", "player2__user__twitch_user",
+                                         "winner", "match")]
         playable_matches = [match_display for match_display in all_matches
                             if match_display.tournament_match.is_playable()]
 

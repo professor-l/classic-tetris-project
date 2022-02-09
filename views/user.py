@@ -13,7 +13,7 @@ class UserView(BaseView):
         if hasattr(user, "twitch_user") and id != user.twitch_user.username:
             return redirect(reverse("user", args=[user.twitch_user.username]))
 
-        return render(request, "user/show.html", {
+        return render(request, "user/show.haml", {
             "user": user,
             "discord_user": (user.discord_user if hasattr(user, "discord_user") else None),
             "twitch_user": (user.twitch_user if hasattr(user, "twitch_user") else None),

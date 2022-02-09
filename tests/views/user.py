@@ -6,7 +6,7 @@ class UserView_(Spec):
         response = self.client.get(f"/user/{self.current_user.id}/")
 
         assert_that(response.status_code, equal_to(200))
-        assert_that(response, uses_template("user/show.html"))
+        assert_that(response, uses_template("user/show.haml"))
         assert_that(response, has_html("a[href='/profile/edit/']", "Edit"))
 
     def test_with_other_profile_id(self):
