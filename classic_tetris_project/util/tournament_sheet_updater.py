@@ -13,7 +13,7 @@ PLAYER_2_SEED = "player 2 seed"
 PLAYER_2_WINS = "player 2 wins"
 WINNER = "winner"
 LOSER = "loser"
-START_TIME = "start time"
+TIME = "time"
 CHANNEL = "channel"
 VOD = "vod"
 MATCH_URL = "match url"
@@ -23,7 +23,7 @@ HEADERS = [
     PLAYER_1, PLAYER_1_SEED, PLAYER_1_WINS,
     PLAYER_2, PLAYER_2_SEED, PLAYER_2_WINS,
     WINNER, LOSER,
-    START_TIME, CHANNEL, VOD, MATCH_URL,
+    TIME, CHANNEL, VOD, MATCH_URL,
 ]
 
 class TournamentSheetUpdateError(Exception):
@@ -53,6 +53,7 @@ class TournamentSheetUpdater:
         return data
 
     def match_data(self, match):
+        match_time = match.match.start_date or match.match.ended_at if match.match else None
         return {
             MATCH_NUMBER: match.match_number,
             ROUND_NUMBER: match.round_number,
@@ -64,7 +65,7 @@ class TournamentSheetUpdater:
             PLAYER_2_WINS: match.match.wins2 if match.match and match.match.ended_at else "",
             WINNER: match.winner.display_name() if match.winner else "",
             LOSER: match.loser.display_name() if match.loser else "",
-            START_TIME: match.match.start_date.isoformat() if match.match and match.match.start_date else "",
+            TIME: match_time.isoformat() if match_time else "",
             CHANNEL: match.match.channel.name if match.match and match.match.channel else "",
             VOD: match.match.vod if match.match else "",
             MATCH_URL: match.get_absolute_url(include_base=True),
