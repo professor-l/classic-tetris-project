@@ -7,20 +7,19 @@ from threading import Thread
 
 from .env import env
 
-
-TWITCH_API = "https://api.twitch.tv/kraken/"
-TWITCH_API_HELIX = "https://api.twitch.tv/helix/"
+TWITCH_API = "https://api.twitch.tv/helix/"
 TWITCH_SERVER = "irc.chat.twitch.tv"
 TWITCH_PORT = 6667
 
 logger = logging.getLogger("twitch-bot")
 
 class APIClient:
-    def __init__(self, client_id):
+    def __init__(self, client_id, token):
         self.client_id = client_id
+        self.token =  token
         self.headers = {
-            "Accept": "application/vnd.twitchtv.v5+json",
-            "Client-ID": client_id
+            "Client-ID": client_id,
+            "Authorization": f"Bearer {token}"
         }
 
     def _request(self, endpoint, params={}, headers={}, api=TWITCH_API):
@@ -28,34 +27,30 @@ class APIClient:
                                 headers={**self.headers, **headers})
         return response.json()
 
-    def user_from_username(self, username, client=None):
-        response = self._request("users", { "login": username })
+    def user(self, client=None, **user_params):
+        params = {}
+
+        if ("login" in user_params):
+            params["login"] = user_params["login"]
+        if ("id" in user_params):
+            params["id"] = user_params["id"]
+
+        response = self._request("users", params)
+
         if "error" in response:
             return None
-        elif response["users"]:
-            user_obj = response["users"][0]
+        elif response["data"]:
+            user_obj = response["data"][0]
             return self.wrap_user_dict(user_obj, client)
-        else:
-            return None
+
+    def user_from_username(self, username=None, client=None):
+        return self.user(client, login=username)
 
     def user_from_id(self, user_id, client=None):
-        response = self._request(f"users/{user_id}")
-        if "error" in response:
-            return None
-        else:
-            return self.wrap_user_dict(response, client)
+        return self.user(client, id=user_id)
 
     def own_user(self, token, client=None):
-        user_data = self._request(f"users", api=TWITCH_API_HELIX,
-                                  headers={"Authorization": f"Bearer {token}"})
-        user_dict = user_data["data"][0]
-        return User(
-            client=client,
-            username=user_dict["login"],
-            id=user_dict["id"],
-            display_name=user_dict["display_name"],
-            tags=user_dict
-        )
+        return self.user(client)
 
     def usernames_in_channel(self, channel):
         response = self._request(f"group/user/{channel}/chatters", api="http://tmi.twitch.tv/")
@@ -64,8 +59,8 @@ class APIClient:
     def wrap_user_dict(self, user_dict, client=None):
         return User(
             client=client,
-            username=user_dict["name"],
-            id=user_dict["_id"],
+            username=user_dict["login"],
+            id=user_dict["id"],
             display_name=user_dict["display_name"],
             tags=user_dict
         )
@@ -192,11 +187,14 @@ class Whisper(Channel):
 
 
 
-API = APIClient(env("TWITCH_CLIENT_ID", default=""))
+API = APIClient(
+    env("TWITCH_CLIENT_ID", default=""),
+    env("TWITCH_TOKEN", default="")
+)
 
 if API.client_id != "":
     client = Client(
         env("TWITCH_USERNAME", default=""),
-        env("TWITCH_TOKEN"),
+        f'oauth:{env("TWITCH_TOKEN")}',
         default_channels=[env("TWITCH_USERNAME", default="")]
     )
