@@ -8,6 +8,7 @@ __pycache__/
 static/
 logs/
 cache/
+data/
 node_modules/
 htmlcov/
 .env
