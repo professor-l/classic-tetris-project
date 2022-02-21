@@ -50,7 +50,13 @@ class APIClient:
         return self.user(client, id=user_id)
 
     def own_user(self, token, client=None):
-        return self.user(client)
+        response = self._request("users", headers={ "Authorization": f"Bearer {token}" })
+
+        if "error" in response:
+            return None
+        elif response["data"]:
+            user_obj = response["data"][0]
+            return self.wrap_user_dict(user_obj, client)
 
     def usernames_in_channel(self, channel):
         response = self._request(f"group/user/{channel}/chatters", api="http://tmi.twitch.tv/")
