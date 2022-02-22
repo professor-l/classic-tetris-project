@@ -83,15 +83,26 @@ Now, we're ready to create your bot accounts. These are the accounts that your b
 
 #### Twitch
 
- First, create a **new Twitch account** that will act as your bot for testing. My test account is called ClassicTetrisBotTest, but you can call yours anything you want. I recommend doing this in a private browsing/incognito window (or in a browser you don't normally use for Twitch) so you don't have to log out of your actual Twitch account. Next, in that same window in a new tab, go to `https://twitchapps.com/tmi/`. TMI stands for "Twitch Messaging Interface", and this webpage will generate an OAuth token that allows your bot to actually log into the Twitch account. Click the "Continue" button, then "Authorize" on the next page. Once you are presented with the OAuth key, **copy it into a text document or otherwise save it for later**. This includes the `oauth:` prefix. Then, you may close the tab.
+First, create a **new Twitch account** that will act as your bot for testing. My test account is called ClassicTetrisBotTest, but you can call yours anything you want. I recommend doing this in a private browsing/incognito window (or in a browser you don't normally use for Twitch) so you don't have to log out of your actual Twitch account.
 
-Next, ideally in the same browser window, head to `https://dev.twitch.tv`. Click "Log in with Twitch" in the top right, and then "Authorize" on the subsequent page. When you're redirected back to the dev homepage, click on the "Your Console" button in the top right (right where the login button used to be). On the right, in the Applications panel, click "Register Your Application". The *Name* field can be whatever you want, but you should add `http://localhost` as an *OAuth Redirect URL*, and the *Category* should be "Chat Bot". Complete the captcha and click "Create". Then, click "Manage", and **copy and store the contents of the Client ID field in the same place you stored your OAuth key.** Make sure you remember which is which (the OAuth key should still have that `oauth:` prefix).
+Next, in the same browser window (logged in to new account), head to `https://dev.twitch.tv`. Click "Log in with Twitch" in the top right, and then "Authorize" on the subsequent page. When you're redirected back to the dev homepage, click on the "Your Console" button in the top right (right where the login button used to be). On the right, in the Applications panel, click "Register Your Application". The *Name* field can be whatever you want, but you should add `http://localhost` as an *OAuth Redirect URL*, and the *Category* should be "Chat Bot". Complete the captcha and click "Create". Then, click "Manage", and **copy and store the contents of the Client ID field and label it as such.** 
+
+Finally for our Twitch setup, we need an OAuth token to be used for API calls and for chat functionality.  To do this, we can follow the steps outlined here: https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#oauth-implicit-code-flow.  Note that this is the preferred way to generate a token as opposed to third party token generation apps as we must ensure our oauth token matches our client ID for the Twitch Helix API.
+
+Here is an example GET request that we can use (replace with your client ID):
+```
+https://id.twitch.tv/oauth2/authorize?client_id={client_id}&redirect_uri=http://localhost&response_type=token&scope=user:read:email chat:read chat:edit
+```
+
+That will return a URL with an access token on it. **copy it into a text document or otherwise save it for later**.
 
 #### Discord
 
 Now, we can move on to Discord. Back in your usual browser, make sure you're logged in to [Discord](https://discordapp.com), then head to their [developer portal](https://discordapp.com/developers/applications). Click "New Application" in the top right, and give it any name you wish; both my production and test applications have identical names to their Twitch counterparts. Once you've created the application, take a minute to explore the interface if you so desire, then head to the "Bot" section on the left. There should be an "Add Bot" button that's just *begging* to be clicked.
 
 By default, the bot you create has the same username as the name of your project, but it is of course editable at any point. What you're interested in is the *token*. There should be a TOKEN label directly beneath the username of your bot. Click the "Copy" button right there, which copies the token to your clipboard, and paste it in the same place as your Twitch OAuth key and Client ID, making sure to keep everything labeled so you know what's what.
+
+After this, scroll down to the "Privileged Gateway Intents" section and enable the "Server Members Intent" option.
 
 Next, head to the OAuth tab on the left, and check the permission boxes exactly according to the following images:
 
@@ -116,7 +127,7 @@ DISCORD_TOKEN=<Your Discord token>
 DISCORD_GUILD_ID=<Your new Discord server's ID>
 
 TWITCH_USERNAME=<Your Twitch bot's username>
-TWITCH_TOKEN=<Your Twitch OAuth token (including the "oauth" prefix)>
+TWITCH_TOKEN=<Your Twitch OAuth token (excluding the "oauth" prefix)>
 TWITCH_CLIENT_ID=<Your Twitch Client ID>
 ```
 
