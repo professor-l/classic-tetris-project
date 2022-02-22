@@ -3,28 +3,34 @@ import logging
 import re
 import requests
 import time
+from django.core.cache import cache
 from threading import Thread
 
 from .env import env
 
-TWITCH_API = "https://api.twitch.tv/helix/"
+TWITCH_API = "https://api.twitch.tv/helix"
+TWITCH_OAUTH_API = "https://id.twitch.tv/oauth2"
+TWITCH_MESSAGING_API = "https://tmi.twitch.tv"
 TWITCH_SERVER = "irc.chat.twitch.tv"
 TWITCH_PORT = 6667
 
 logger = logging.getLogger("twitch-bot")
 
 class APIClient:
-    def __init__(self, client_id, token):
+    def __init__(self, client_id, client_secret):
         self.client_id = client_id
-        self.token =  token
-        self.headers = {
-            "Client-ID": client_id,
+        self.token_manager = TokenManager(client_id, client_secret)
+
+    def default_headers(self):
+        token = self.token_manager.get()
+        return {
+            "Client-ID": self.client_id,
             "Authorization": f"Bearer {token}"
         }
 
     def _request(self, endpoint, params={}, headers={}, api=TWITCH_API):
-        response = requests.get(f"{api}{endpoint}", params=params,
-                                headers={**self.headers, **headers})
+        headers = { **self.default_headers(), **headers }
+        response = requests.get(f"{api}/{endpoint}", params=params, headers=headers)
         return response.json()
 
     def user(self, client=None, **user_params):
@@ -51,7 +57,6 @@ class APIClient:
 
     def own_user(self, token, client=None):
         response = self._request("users", headers={ "Authorization": f"Bearer {token}" })
-
         if "error" in response:
             return None
         elif response["data"]:
@@ -59,7 +64,7 @@ class APIClient:
             return self.wrap_user_dict(user_obj, client)
 
     def usernames_in_channel(self, channel):
-        response = self._request(f"group/user/{channel}/chatters", api="http://tmi.twitch.tv/")
+        response = self._request(f"group/user/{channel}/chatters", api=TWITCH_MESSAGING_API)
         return sum((group for group in response["chatters"].values()), [])
 
     def wrap_user_dict(self, user_dict, client=None):
@@ -72,7 +77,46 @@ class APIClient:
         )
 
 
+# Fetches, stores, and renews an app access token as described in
+# https://dev.twitch.tv/docs/authentication/getting-tokens-oauth#oauth-client-credentials-flow
 
+# TODO Much of this can probably be done through authlib:
+# https://docs.authlib.org/en/latest/client/frameworks.html#accessing-oauth-resources
+class TokenManager:
+    # Get a new token 24 hours before the current one expires
+    EXPIRATION_BUFFER = 24 * 60 * 60
+
+    def __init__(self, client_id, client_secret):
+        self.client_id = client_id
+        self.client_secret = client_secret
+
+    def get(self):
+        token = cache.get("twitch.oauth.app_access_token")
+        if token:
+            return token
+        else:
+            return self.create_token()
+
+    def create_token(self):
+        response = requests.post(f"{TWITCH_OAUTH_API}/token", params={
+            "client_id": self.client_id,
+            "client_secret": self.client_secret,
+            "grant_type": "client_credentials",
+        })
+        data = response.json()
+        if "access_token" not in data:
+            raise Exception(str(data["message"]) or "oauth failed")
+
+        token = data["access_token"]
+        expires_in = int(data["expires_in"])
+        self.store(token, expires_in)
+        return token
+
+    def store(self, token, expires_in):
+        cache.set("twitch.oauth.app_access_token", token, timeout=expires_in - TokenManager.EXPIRATION_BUFFER)
+
+
+# IRC client wrapper for interacting with Twitch chat
 class Client:
     def __init__(self, username, token, default_channels=[]):
         self.username = username
@@ -195,7 +239,7 @@ class Whisper(Channel):
 
 API = APIClient(
     env("TWITCH_CLIENT_ID", default=""),
-    env("TWITCH_TOKEN", default="")
+    env("TWITCH_CLIENT_SECRET", default="")
 )
 
 if API.client_id != "":
