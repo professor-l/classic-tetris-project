@@ -13,6 +13,10 @@
   text-decoration: none;
   cursor: pointer;
 
+  a {
+    color: colors.$button-primary-text;
+  }
+
   &:hover {
     border: none;
     box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.4);

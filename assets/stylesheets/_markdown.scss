@@ -1,7 +1,12 @@
 @use 'colors';
 
-
 .markdown {
+  color: var(--text-primary);
+  
+  a {
+    color: var(--link-primary);
+  }
+
   table {
     border-collapse: collapse;
 

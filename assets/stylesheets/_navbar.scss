@@ -6,7 +6,7 @@
   flex-flow: row nowrap;
   width: 100%;
   min-height: 60px;
-  background-color: colors.$navbar-bg;
+  background-color: var(--bg-nav);
   @include media.mobile-only {
     flex-flow: row wrap;
   }
@@ -22,7 +22,7 @@
     @include media.mobile-only {
       flex: 0 0 100%;
       flex-flow: column;
-      background-color: colors.$navbar-drawer-bg;
+      background-color: var(--bg-nav-drawer);
     }
   }
 
@@ -63,5 +63,9 @@
     .icon {
       stroke: colors.$icon-white;
     }
+  }
+
+  .theme-toggle {
+    position: relative;
   }
 }

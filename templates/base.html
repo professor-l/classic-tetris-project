@@ -15,6 +15,21 @@
     {% render_bundle "main" %}
 
     <title>{% block title %}Classic Tetris Monthly{% endblock %}</title>
+    <script>
+      function setTheme(theme) {
+        const body = document.querySelector('body')
+        body.setAttribute('data-theme', theme)
+      }
+      function updateTheme(element) {
+        try {
+          const theme = element.checked ? "dark" : "light"
+          setTheme(theme)
+          localStorage.setItem("CTM_THEME", theme)
+        } catch (e) {
+          console.error(e)
+        }
+      }
+    </script>
   </head>
   <body>
     <nav class="navbar">
@@ -28,15 +43,23 @@
 
       <div class="collapse navbar__collapse" id="navbar-collapse">
         {% if current_user %}
-        <div class="navbar__item">
-          Hello, <a href="{{ current_user.get_absolute_url }}">{{ current_user.display_name }}</a>.
-        </div>
-        {% if auth_user.is_staff %}
-        <a href="{% url "admin:index" %}" class="navbar__item">Admin</a>
+          <div class="navbar__item">
+            Hello, <a href="{{ current_user.get_absolute_url }}">{{ current_user.display_name }}</a>.
+          </div>
         {% endif %}
-        <a href="{% url "oauth:logout" %}" class="navbar__item">Logout</a>
+        <div class="navbar__item theme-toggle">
+          <label class="toggle">
+            <input type="checkbox" onchange="updateTheme(this)" />
+            <span class="slide"></span>
+          </label>
+        </div>
+        {% if current_user %}
+          {% if auth_user.is_staff %}
+            <a href="{% url "admin:index" %}" class="navbar__item">Admin</a>
+          {% endif %}
+            <a href="{% url "oauth:logout" %}" class="navbar__item">Logout</a>
         {% else %}
-        <a href="{% url "oauth:login" %}" class="navbar__item">Login</a>
+          <a href="{% url "oauth:login" %}" class="navbar__item">Login</a>
         {% endif %}
       </div>
     </nav>
@@ -51,4 +74,12 @@
 
     {% block footer %}{% endblock %}
   </body>
+  <script>
+    ;(function () {
+      const theme = localStorage.getItem("CTM_THEME") || 'light'
+      const toggle = document.querySelector(".toggle input")
+      if (theme === 'dark') { toggle.checked = true }
+      setTheme(theme)
+    })()
+  </script>
 </html>

@@ -6,6 +6,7 @@ body {
   font-family: "Roboto";
   font-size: 16px;
   line-height: 1.5;
+  background: var(--bg-primary);
 }
 
 .main-content {
@@ -14,6 +15,20 @@ body {
   padding: 30px;
   @include media.tablet-and-desktop {
     padding-top: 60px;
+  }
+
+  color: var(--text-primary);
+
+  a {
+    color: var(--link-primary);
+
+    &.btn {
+      color: colors.$button-primary-text;
+    }
+  }
+
+  .login-buttons a {
+    color: colors.$button-primary-text;
   }
 }
 
@@ -38,7 +53,7 @@ h2 {
 .module {
   margin-bottom: 30px;
   background-color: colors.$module-bg;
-  box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.32);
+  box-shadow: 1px 1px 8px rgba(var(--drop-shadow), 0.32);
 
   @include media.mobile-only {
     margin-left: -30px;
@@ -49,7 +64,7 @@ h2 {
     display: flex;
     align-items: center;
     padding: 15px;
-    background-color: colors.$module-header-bg;
+    background-color: var(--bg-module-header);
     color: colors.$module-header-text;
   }
 
@@ -65,11 +80,14 @@ h2 {
   &__body {
     padding: 15px;
     overflow-x: auto;
+    background: var(--bg-primary);
+    color: var(--text-primary);
   }
 }
 
 .section {
   margin-top: 30px;
+  color: var(--text-primary);
 
   &__header {
     display: flex;
@@ -119,11 +137,11 @@ h2 {
 
   &__row {
     &--even {
-      background-color: colors.$data-table-even-bg;
+      background-color: var(--bg-table-data-even);
     }
 
     &--odd {
-      background-color: colors.$data-table-odd-bg;
+      background-color: var(--bg-table-data-odd);
     }
 
     td {
@@ -140,6 +158,10 @@ h2 {
   &__sidebar {
     flex: 0 0 30px;
     position: relative;
+
+    a {
+      color: colors.$button-primary-text;
+    }
   }
 
   &__name {
