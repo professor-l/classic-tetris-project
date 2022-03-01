@@ -28,6 +28,7 @@ class Qualifier(models.Model):
         ("timer", "Timer on screen"),
         ("reset", "Hard reset before starting"),
         ("auth_word", "Entered correct auth word"),
+        ("auth_word_score", "Auth word score over 10k"),
         ("correct_scores", "Submitted correct score(s)"),
     ]
 
