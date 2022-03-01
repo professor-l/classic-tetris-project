@@ -135,6 +135,7 @@ class ReviewView_(Spec):
                     "timer": True,
                     "reset": True,
                     "auth_word": True,
+                    "auth_word_score": True,
                     "correct_scores": True,
                 })
 
@@ -151,6 +152,7 @@ class ReviewView_(Spec):
                             "timer": True,
                             "reset": True,
                             "auth_word": True,
+                            "auth_word_score": True,
                             "correct_scores": True,
                         },
                     }
