@@ -218,3 +218,30 @@ h2 {
   width: 100%;
   height: 800px;
 }
+
+.bracket {
+  display: flex;
+  flex-direction: row;
+
+  .bracket-round {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+
+  .bracket-match {
+    margin: 20px 0;
+  }
+
+  .bracket-match-player {
+    padding: 5px;
+
+    &:nth-child(even) {
+      background: var(--bg-table-data-even);
+    }
+    &:nth-child(odd) {
+      background: var(--bg-table-data-odd);
+    }
+  }
+}
