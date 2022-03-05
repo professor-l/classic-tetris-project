@@ -228,20 +228,53 @@ h2 {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    margin-right: 2px;
   }
 
   .bracket-match {
     margin: 20px 0;
   }
 
-  .bracket-match-player {
-    padding: 5px;
+  .bracket-match-placeholder {
+    vertical-align: middle;
+    text-align: center;
+    line-height: 35px;
+  }
 
-    &:nth-child(even) {
-      background: var(--bg-table-data-even);
+  .bracket-match-player {
+    height: 35px;
+    margin: 2px 0;
+    background: var(--bg-table-data-even);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &.color-1 {
+      background: colors.$bracket-1;
     }
-    &:nth-child(odd) {
-      background: var(--bg-table-data-odd);
+
+    &.color-2 {
+      background: colors.$bracket-2;
+    }
+
+    &.color-3 {
+      background: colors.$bracket-3;
+    }
+
+    &.color-4 {
+      background: colors.$bracket-4;
+    }
+
+    .player-seed {
+      width: 25px;
+      text-align: center;
+      border-right: 1px solid var(--text-primary);
+    }
+
+    .player-seed, .player-name {
+      display: inline-block;
+      vertical-align: middle;
+      padding: 5px;
     }
   }
 }

@@ -16,17 +16,23 @@
   - module "Bracket"
     %div{class: 'bracket'}
       - for matches in bracket_matches
-        %div{class: 'bracket-round'}
+        %div{class: ['bracket-round', "round-{{ forloop.counter }}"]}
           - for match in matches
             %div{class: 'bracket-match'}
-              - if match_display.tournament_match.player1.user
-                %div{class: 'bracket-match-player'}= match.tournament_match.player1.display_name
+              - if match.tournament_match.player1.user
+                %div{class: ['bracket-match-player', "color-{{match.player1_color}}"]}
+                  %div{class: 'player-seed'}= match.tournament_match.player1.seed
+                  %div{class: 'player-name'}= match.tournament_match.player1.display_name
               - else
-                %div{class: 'bracket-match-player'}= match.player1_display_name
-              - if match_display.tournament_match.player2.user
-                %div{class: 'bracket-match-player'}= match.tournament_match.player2.display_name
+                %div{class: ['bracket-match-player', "color-{{match.player1_color}}", 'bracket-match-placeholder']}
+                  = match.player1_display_name
+              - if match.tournament_match.player2.user
+                   %div{class: ['bracket-match-player', "color-{{match.player2_color}}"]}
+                    %div{class: 'player-seed'}= match.tournament_match.player2.seed
+                    %div{class: 'player-name'}= match.tournament_match.player2.display_name
               - else
-                %div{class: 'bracket-match-player'}= match.player2_display_name
+                %div{class: ['bracket-match-player', "color-{{match.player2_color}}", 'bracket-match-placeholder']}
+                  = match.player2_display_name
 
   - module "Players"
     %table.data-table
