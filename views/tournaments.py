@@ -33,11 +33,14 @@ class IndexView(TournamentView):
 
         bracket_matches = []
         all_matches_copy = all_matches.copy()
-        player_count = len(all_players)
+        all_matches_copy.reverse()
+        num_matches_in_round = 1
 
-        while player_count > 1:
-            player_count //= 2
-            bracket_matches.append(TournamentMatchDisplay.generate_round(player_count, all_matches_copy))
+        while len(all_matches_copy) > 0:
+            bracket_matches.append(TournamentMatchDisplay.generate_round(num_matches_in_round, all_matches_copy))
+            num_matches_in_round *= 2
+
+        bracket_matches.reverse()
 
         return render(request, "tournament/index.haml", {
             "tournament": self.tournament,
