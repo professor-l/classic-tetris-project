@@ -222,6 +222,18 @@ h2 {
 .bracket {
   display: flex;
   flex-direction: row;
+  overflow: hidden;
+
+  &.has-feed-ins {
+    .bracket-match {
+      margin-top: -20px;
+      margin-bottom: -20px;
+    }
+  }
+
+  .bracket-hide {
+    visibility: hidden;
+  }
 
   .bracket-round {
     flex: 1;

@@ -11,26 +11,26 @@
   %h1= tournament.name
 
   - module "Bracket"
-    %div{class: 'bracket'}
+    %div{class: ['bracket', '{% if has_feed_ins %}has-feed-ins{% endif %}']}
       - for matches in bracket_matches
         %div{class: ['bracket-round', "round-{{ forloop.counter }}"]}
-          - for match in matches
-            %div{class: 'bracket-match'}
-              %div{class: 'bracket-match-number'} Match {{ match.tournament_match.match_number }}
-              - if match.tournament_match.player1.user
-                %div{class: ['bracket-match-player', "color-{{match.player1_color}}"]}
-                  %div{class: 'player-seed'}= match.tournament_match.player1.seed
-                  %div{class: 'player-name'}= match.tournament_match.player1.display_name
+          - for node in matches
+            %div{class: ['bracket-match', '{% if forloop.parentloop.counter == 1 and not node.color_left %} bracket-hide {% endif %}']}
+              %div{class: 'bracket-match-number'} Match {{ node.match.tournament_match.match_number }}
+              - if node.match.tournament_match.player1.user
+                %div{class: ['bracket-match-player', "color-{{node.color_left}}"]}
+                  %div{class: 'player-seed'}= node.match.tournament_match.player1.seed
+                  %div{class: 'player-name'}= node.match.tournament_match.player1.display_name
               - else
-                %div{class: ['bracket-match-player', "color-{{match.player1_color}}", 'bracket-match-placeholder']}
-                  = match.player1_display_name
-              - if match.tournament_match.player2.user
-                   %div{class: ['bracket-match-player', "color-{{match.player2_color}}"]}
-                    %div{class: 'player-seed'}= match.tournament_match.player2.seed
-                    %div{class: 'player-name'}= match.tournament_match.player2.display_name
+                %div{class: ['bracket-match-player', "color-{{node.color_left}}", 'bracket-match-placeholder']}
+                  = node.match.player1_display_name
+              - if node.match.tournament_match.player2.user
+                   %div{class: ['bracket-match-player', "color-{{node.color_right}}"]}
+                    %div{class: 'player-seed'}= node.match.tournament_match.player2.seed
+                    %div{class: 'player-name'}= node.match.tournament_match.player2.display_name
               - else
-                %div{class: ['bracket-match-player', "color-{{match.player2_color}}", 'bracket-match-placeholder']}
-                  = match.player2_display_name
+                %div{class: ['bracket-match-player', "color-{{node.color_right}}", 'bracket-match-placeholder']}
+                  = node.match.player2_display_name
 
   - module "Players"
     %table.data-table
