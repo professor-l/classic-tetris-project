@@ -2,7 +2,6 @@ from django.utils.html import format_html
 
 from ..models import TournamentMatch
 
-
 class TournamentMatchDisplay:
     def __init__(self, tournament_match, user=None):
         self.tournament_match = tournament_match
