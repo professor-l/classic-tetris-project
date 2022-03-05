@@ -6,10 +6,9 @@ from ..models import TournamentMatch
 
 
 class TournamentMatchDisplay:
-    def __init__(self, tournament_match, user=None, player_count=16):
+    def __init__(self, tournament_match, user=None):
         self.tournament_match = tournament_match
         self.user = user
-        self.player_count = player_count
 
     def can_restream(self):
         return (self.user and
