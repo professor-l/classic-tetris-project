@@ -10,15 +10,13 @@
 
   %h1= tournament.name
 
-  - if tournament.details
-    - markdown tournament.details
-
   - module "Bracket"
     %div{class: 'bracket'}
       - for matches in bracket_matches
         %div{class: ['bracket-round', "round-{{ forloop.counter }}"]}
           - for match in matches
             %div{class: 'bracket-match'}
+              %div{class: 'bracket-match-number'} Match {{ match.tournament_match.match_number }}
               - if match.tournament_match.player1.user
                 %div{class: ['bracket-match-player', "color-{{match.player1_color}}"]}
                   %div{class: 'player-seed'}= match.tournament_match.player1.seed
