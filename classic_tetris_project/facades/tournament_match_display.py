@@ -57,13 +57,11 @@ class TournamentMatchDisplay:
                                                  self.tournament_match.source2_data)
 
     def player1_color(self):
-        player_count = self.tournament_match.tournament.seed_count
-        return self.get_color_for_player_index(player_count, self.tournament_match, 1)
+        return self.get_color_for_player_index(self.tournament_match, 1)
 
 
     def player2_color(self):
-        player_count = self.tournament_match.tournament.seed_count
-        return self.get_color_for_player_index(player_count, self.tournament_match, 0)
+        return self.get_color_for_player_index(self.tournament_match, 0)
 
     @staticmethod
     def generate_round(match_count, all_matches):
@@ -79,16 +77,20 @@ class TournamentMatchDisplay:
         return new_matches
 
     @staticmethod
-    def get_color_for_player_index(player_count, match, player_position):
-        round_num = match.round_number
-        adjusted_round_num = round_num if (player_count & (player_count-1) == 0) and player_count != 0 else round_num - 1
-        adjusted_round_num = adjusted_round_num or 1
-
+    def get_color_for_player_index(match, player_position):
         player_count = match.tournament.seed_count
-        adjusted_player_count = TournamentMatchDisplay.highest_power_of_2(player_count)
-        color_section_count = adjusted_player_count / 4
-        match_num = match.match_number
+        round_num = match.round_number
+        is_power_of_2 = (player_count & (player_count-1) == 0) and player_count != 0
+        adjusted_round_num = round_num if is_power_of_2 else round_num - 1
 
+        if adjusted_round_num <= 0:
+            return 5
+
+        adjusted_player_count = TournamentMatchDisplay.highest_power_of_2(player_count)
+        adjusted_count_discrepancy = player_count - adjusted_player_count
+
+        color_section_count = adjusted_player_count / 4
+        match_num = match.match_number - adjusted_count_discrepancy
 
         mod_value = (adjusted_player_count / 2**(adjusted_round_num-1)) if adjusted_round_num > 1 else adjusted_player_count
         player_index = (match_num * 2 - player_position) % mod_value or mod_value
