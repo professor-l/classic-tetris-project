@@ -1,9 +1,6 @@
 from django.utils.html import format_html
 
-import math
-
 from ..models import TournamentMatch
-
 
 class TournamentMatchDisplay:
     def __init__(self, tournament_match, user=None):
@@ -54,63 +51,3 @@ class TournamentMatchDisplay:
         else:
             return self.display_name_from_source(self.tournament_match.source2_type,
                                                  self.tournament_match.source2_data)
-
-    def player1_color(self):
-        return self.get_color_for_player_index(self.tournament_match, 1)
-
-
-    def player2_color(self):
-        return self.get_color_for_player_index(self.tournament_match, 0)
-
-    @staticmethod
-    def generate_round(match_count, all_matches):
-        new_matches = []
-        matches_to_generate = match_count if len(all_matches) >= match_count else len(all_matches)
-        for _ in range(matches_to_generate):
-            next_match = {}
-            if len(all_matches) != 0:
-                next_match = all_matches.pop(0)
-            new_matches.append(next_match)
-        
-        new_matches.reverse()
-        return new_matches
-
-    @staticmethod
-    def get_color_for_player_index(match, player_position):
-        player_count = match.tournament.seed_count
-        round_num = match.round_number
-        is_power_of_2 = (player_count & (player_count-1) == 0) and player_count != 0
-        adjusted_round_num = round_num if is_power_of_2 else round_num - 1
-
-        if adjusted_round_num <= 0:
-            return 5
-
-        adjusted_player_count = TournamentMatchDisplay.highest_power_of_2(player_count)
-        adjusted_count_discrepancy = player_count - adjusted_player_count
-
-        color_section_count = adjusted_player_count / 4
-        match_num = match.match_number - adjusted_count_discrepancy
-
-        mod_value = (adjusted_player_count / 2**(adjusted_round_num-1)) if adjusted_round_num > 1 else adjusted_player_count
-        player_index = (match_num * 2 - player_position) % mod_value or mod_value
-
-        color_index = 1
-        if player_index > (color_section_count / 2**(adjusted_round_num - 1)):
-            color_index = 2
-        if player_index > (color_section_count / 2**(adjusted_round_num - 1))*2:
-            color_index = 3
-        if player_index > (color_section_count / 2**(adjusted_round_num - 1))*3:
-            color_index = 4
-
-        return color_index or color_section_count if adjusted_round_num < math.log2(adjusted_player_count) else 5
-
-    @staticmethod
-    def highest_power_of_2(n):
-        res = 0
-        for i in range(n, 0, -1):
-            # If i is a power of 2
-            if ((i & (i - 1)) == 0):
-                res = i
-                break
-            
-        return res
