@@ -1,4 +1,5 @@
 import random
+import re
 from django.core.cache import cache
 from discord import Embed
 from datetime import datetime
@@ -67,7 +68,9 @@ class SeedGenerationCommand(Command):
         seed = 0
         while (seed % 0x100 < 0x3):
             seed = random.randint(0x200, 0xffffff)
-        self.send_message(("RANDOM SEED: [%06x]" % seed))
+        seed_hex_string = ("%06x" % seed).upper()
+        spaced_string = " ".join(re.findall('..', seed_hex_string))
+        self.send_message(f"RANDOM SEED: [{spaced_string}]")
 
 
 @Command.register("coin", "flip", "coinflip", usage="flip")
