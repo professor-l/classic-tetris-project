@@ -105,5 +105,7 @@ class IndexView(TournamentView):
             "playable_matches": playable_matches,
             "bracket_matches": bracket_matches,
             "root_bracket_node": bracket_nodes[-1],
-            "has_feed_ins": has_feed_ins
+            "has_feed_ins": has_feed_ins,
+            "finals_round_index": len(bracket_matches),
+            "semifinals_round_index": len(bracket_matches) - 1
         })

@@ -14,6 +14,13 @@
     %div{class: ['bracket', '{% if has_feed_ins %}has-feed-ins{% endif %}']}
       - for matches in bracket_matches
         %div{class: ['bracket-round', "round-{{ forloop.counter }}"]}
+          %div{class: 'round-indicator'}
+            - if forloop.counter == finals_round_index
+              Finals
+            - if forloop.counter == semifinals_round_index
+              Semifinals
+            - if forloop.counter < semifinals_round_index
+              Round {{ forloop.counter }}
           - for node in matches
             %div{class: ['bracket-match', '{% if forloop.parentloop.counter == 1 and not node.color_left %} bracket-hide {% endif %}']}
               %div{class: 'bracket-match-number'} Match {{ node.match.tournament_match.match_number }}

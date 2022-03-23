@@ -241,6 +241,17 @@ h2 {
     flex-direction: column;
     justify-content: space-around;
     margin-right: 2px;
+    position: relative;
+    padding-top: 15px;
+  }
+
+  .round-indicator {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    font-weight: 600;
   }
 
   .bracket-match {
@@ -264,24 +275,46 @@ h2 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    border: 1px solid var(--text-primary);
+    text-align: center;
+    position: relative;
+    font-weight: 500;
 
     &.color-1 {
       background: colors.$bracket-1;
+
+      .player-seed {
+        background: darken(colors.$bracket-1, 20%);
+      }
     }
 
     &.color-2 {
       background: colors.$bracket-2;
+
+      .player-seed {
+        background: darken(colors.$bracket-2, 20%);
+      }
     }
 
     &.color-3 {
       background: colors.$bracket-3;
+
+      .player-seed {
+        background: darken(colors.$bracket-3, 20%);
+      }
     }
 
     &.color-4 {
       background: colors.$bracket-4;
+
+      .player-seed {
+        background: darken(colors.$bracket-4, 20%);
+      }
     }
 
     .player-seed {
+      position: absolute;
+      left: 0;
       width: 25px;
       text-align: center;
       border-right: 1px solid var(--text-primary);
