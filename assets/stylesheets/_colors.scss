@@ -1,7 +1,10 @@
-$navbar-text: #FFFFFF;
+$text-black: #000000;
+$text-white: #FFFFFF;
+
+$navbar-text: $text-white;
 
 $alert-info-bg: #2D9CDB;
-$alert-info-text: #FFFFFF;
+$alert-info-text: $text-white;
 $alert-light-info-border: #2D9CD8;
 $alert-light-info-bg: #BDEFFF;
 $alert-light-info-text: #2D9CD8;
@@ -16,27 +19,28 @@ $icon-white: #FFFFFF;
 $error-text: #B40000;
 
 $button-primary-bg: #27AE60;
-$button-primary-text: #FFFFFF;
+$button-primary-text: $text-white;
 $button-secondary-bg: #2D9CDB;
-$button-secondary-text: #FFFFFF;
+$button-secondary-text: $text-white;
 $button-discord-bg: #7289DA;
-$button-discord-text: #FFFFFF;
+$button-discord-text: $text-white;
 $button-twitch-bg: #9147FF;
-$button-twitch-text: #FFFFFF;
+$button-twitch-text: $text-white;
 $button-red-bg: #EB5757;
-$button-red-text: #FFFFFF;
+$button-red-text: $text-white;
 
 $module-bg: #FFFFFF;
-$module-header-text: #FFFFFF;
+$module-header-text: $text-white;
 
-$qualifier-table-text: #FFFFFF;
+$qualifier-table-text: $text-white;
 
-$status-tag-text: #FFFFFF;
+$status-tag-text: $text-white;
 $status-tag-green-bg: #00C314;
 $status-tag-yellow-bg: #F2C94C;
 $status-tag-red-bg: #C30000;
 $status-tag-gray-bg: #828282;
 
+$bracket-default: #b7b7b7;
 $bracket-1: #e69138;
 $bracket-2: #3d85c6;
 $bracket-3: #6aa84f;
@@ -52,7 +56,7 @@ $bracket-4: #cc0000;
 
   --drop-shadow: 0, 0, 0;
 
-  --text-primary: #000000;
+  --text-primary: #{$text-black};
   --link-primary: #2e8500;
 }
 
@@ -66,6 +70,6 @@ $bracket-4: #cc0000;
 
   --drop-shadow: 255, 255, 255;
 
-  --text-primary: #ffffff;
+  --text-primary: #{$alert-info-text};
   --link-primary: #4bce06;
 }

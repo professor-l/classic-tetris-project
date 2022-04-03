@@ -1,0 +1,105 @@
+@use 'colors';
+
+.bracket-frame {
+  width: 100%;
+  height: 800px;
+}
+
+.bracket-container {
+  width: fit-content;
+  margin: auto;
+}
+
+.bracket {
+  display: flex;
+  flex-direction: row;
+
+  &.has-feed-ins {
+    .bracket-match {
+      margin-top: -20px;
+      margin-bottom: -20px;
+    }
+  }
+
+  .bracket-hide {
+    visibility: hidden;
+  }
+
+  .bracket-round {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-right: 2px;
+    position: relative;
+    padding-top: 15px;
+  }
+
+  .round-indicator {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  .bracket-match {
+    margin: 20px 0;
+    width: 200px;
+  }
+
+  .bracket-match-number {
+    text-align: center;
+  }
+
+  .bracket-match-player {
+    display: flex;
+    height: 35px;
+    margin: 2px 0;
+    color: colors.$text-white;
+    background: colors.$bracket-default;
+    border: 1px solid var(--text-primary);
+    position: relative;
+    font-family: 'Bungee';
+
+    &.color-1 {
+      background: colors.$bracket-1;
+    }
+
+    &.color-2 {
+      background: colors.$bracket-2;
+    }
+
+    &.color-3 {
+      background: colors.$bracket-3;
+    }
+
+    &.color-4 {
+      background: colors.$bracket-4;
+    }
+
+    .player-seed {
+      flex: 0 0 35px;
+      text-align: center;
+      border-right: 1px solid var(--text-primary);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 5px 0;
+    }
+
+    .player-name {
+      flex: 1 0 0px;
+      text-align: center;
+      padding: 5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  a {
+    color: unset;
+    text-decoration: none;
+  }
+
+}

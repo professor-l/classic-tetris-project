@@ -10,34 +10,10 @@
 
   %h1= tournament.name
 
-  - module "Bracket"
-    %div{class: ['bracket', '{% if has_feed_ins %}has-feed-ins{% endif %}']}
-      - for matches in bracket_matches
-        %div{class: ['bracket-round', "round-{{ forloop.counter }}"]}
-          %div{class: 'round-indicator'}
-            - if forloop.counter == finals_round_index
-              Finals
-            - if forloop.counter == semifinals_round_index
-              Semifinals
-            - if forloop.counter < semifinals_round_index
-              Round {{ forloop.counter }}
-          - for node in matches
-            %div{class: ['bracket-match', '{% if forloop.parentloop.counter == 1 and not node.color_left %} bracket-hide {% endif %}']}
-              %div{class: 'bracket-match-number'} Match {{ node.match.tournament_match.match_number }}
-              - if node.match.tournament_match.player1.user
-                %div{class: ['bracket-match-player', "color-{{node.color_left}}"]}
-                  %div{class: 'player-seed'}= node.match.tournament_match.player1.seed
-                  %div{class: 'player-name'}= node.match.tournament_match.player1.display_name
-              - else
-                %div{class: ['bracket-match-player', "color-{{node.color_left}}", 'bracket-match-placeholder']}
-                  = node.match.player1_display_name
-              - if node.match.tournament_match.player2.user
-                   %div{class: ['bracket-match-player', "color-{{node.color_right}}"]}
-                    %div{class: 'player-seed'}= node.match.tournament_match.player2.seed
-                    %div{class: 'player-name'}= node.match.tournament_match.player2.display_name
-              - else
-                %div{class: ['bracket-match-player', "color-{{node.color_right}}", 'bracket-match-placeholder']}
-                  = node.match.player2_display_name
+  - if bracket
+    - module "Bracket"
+      .bracket-container
+        - include "tournament/bracket.haml" with bracket=bracket
 
   - module "Players"
     %table.data-table
@@ -57,31 +33,32 @@
             - if player.qualifier
               %a{href: '{% url "qualifier" player.qualifier.id %}'}= player.qualifier.qualifying_score|intcomma
 
-  - module "All Matches"
-    %table.data-table
-      %tr.data-table__headers
-        %th #
-        %th Player 1
-        %th Player 2
-        %th Score
+  - if tournament_matches
+    - module "All Matches"
+      %table.data-table
+        %tr.data-table__headers
+          %th #
+          %th Player 1
+          %th Player 2
+          %th Score
 
-      - for match_display in tournament_matches
-        %tr.data-table__row{class: '{% cycle "data-table__row--even" "data-table__row--odd" %}'}
-          %td
-            %a{href: "{{ match_display.tournament_match.get_absolute_url }}"}= match_display.tournament_match.match_number
-          %td
-            - if match_display.tournament_match.player1.user
-              %a{href: "{{ match_display.tournament_match.player1.user.get_absolute_url }}"}= match_display.tournament_match.player1.display_name
-            - else
-              = match_display.player1_display_name
-          %td
-            - if match_display.tournament_match.player2.user
-              %a{href: "{{ match_display.tournament_match.player2.user.get_absolute_url }}"}= match_display.tournament_match.player2.display_name
-            - else
-              = match_display.player2_display_name
-          %td
-            - if match_display.tournament_match.winner and match_display.tournament_match.match
-              {{ match_display.tournament_match.match.wins1 }}&ndash;{{ match_display.tournament_match.match.wins2 }}
+        - for match_display in tournament_matches
+          %tr.data-table__row{class: '{% cycle "data-table__row--even" "data-table__row--odd" %}'}
+            %td
+              %a{href: "{{ match_display.tournament_match.get_absolute_url }}"}= match_display.tournament_match.match_number
+            %td
+              - if match_display.tournament_match.player1.user
+                %a{href: "{{ match_display.tournament_match.player1.user.get_absolute_url }}"}= match_display.tournament_match.player1.display_name
+              - else
+                = match_display.player1_display_name
+            %td
+              - if match_display.tournament_match.player2.user
+                %a{href: "{{ match_display.tournament_match.player2.user.get_absolute_url }}"}= match_display.tournament_match.player2.display_name
+              - else
+                = match_display.player2_display_name
+            %td
+              - if match_display.tournament_match.winner and match_display.tournament_match.match
+                {{ match_display.tournament_match.match.wins1 }}&ndash;{{ match_display.tournament_match.match.wins2 }}
 
   - if playable_matches
     - module "Playable Matches"

@@ -1,4 +1,6 @@
+@use 'structure';
 @use 'alerts';
+@use 'bracket';
 @use 'buttons';
 @use 'bootstrap';
 @use 'forms';
@@ -7,7 +9,6 @@
 @use 'profile';
 @use 'qualify';
 @use 'status_tags';
-@use 'structure';
 @use 'toggle';
 
 // External libraries
