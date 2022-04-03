@@ -9,6 +9,7 @@ from markdownx.admin import MarkdownxModelAdmin
 from adminsortable2.admin import SortableInlineAdminMixin
 
 from ..models import *
+from .forms.duplicate_event import DuplicateEventForm
 
 
 class DiscordUserInline(admin.StackedInline):
@@ -130,7 +131,21 @@ class EventAdmin(DjangoObjectActions, MarkdownxModelAdmin):
             obj.seed_tournaments()
             messages.success(request, "Tournaments seeded")
 
-    change_actions = ("seed_tournaments",)
+    def duplicate(self, request, obj):
+        if request.method == "POST":
+            form = DuplicateEventForm(request.POST)
+            if form.is_valid():
+                event = form.save(obj)
+                return redirect(reverse("admin:classic_tetris_project_event_change", args=(event.id,)))
+        else:
+            form = DuplicateEventForm()
+
+        return render(request, "admin/event/duplicate.haml", {
+            "form": form,
+            "event": obj,
+        })
+
+    change_actions = ("seed_tournaments", "duplicate")
 
 @admin.register(Qualifier)
 class QualifierAdmin(admin.ModelAdmin):
