@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models, transaction
+from django.db.models import signals
 from django.urls import reverse
+from django.utils.text import slugify
 from furl import furl
 from markdownx.models import MarkdownxField
 
@@ -66,6 +68,12 @@ class Event(models.Model):
                             seed=qualifier_row["seed"],
                             name_override=qualifier_row["placeholder"],
                         )
+    @staticmethod
+    def before_save(sender, instance, **kwargs):
+        if not instance.slug:
+            instance.slug = slugify(instance.name)
 
     def __str__(self):
         return self.name
+
+signals.pre_save.connect(Event.before_save, sender=Event)
