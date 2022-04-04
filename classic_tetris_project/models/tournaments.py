@@ -8,6 +8,7 @@ from furl import furl
 from markdownx.models import MarkdownxField
 
 from classic_tetris_project import tasks
+from classic_tetris_project.util import memoize
 from .users import User
 from .events import Event
 from .matches import Match
@@ -68,6 +69,12 @@ class Tournament(models.Model):
             match.update_players()
         TournamentSheetUpdater(self).update()
 
+    @memoize
+    def all_matches(self):
+        return [match for match in self.matches.order_by("match_number")
+                .prefetch_related("player1__user__twitch_user", "player2__user__twitch_user",
+                                  "winner", "match")]
+
     @staticmethod
     def before_save(sender, instance, **kwargs):
         if not instance.name:
@@ -114,6 +121,12 @@ class TournamentPlayer(models.Model):
             return self.user.display_name
         else:
             return self.name_override
+
+    def get_absolute_url(self):
+        if self.qualifier_id:
+            return reverse("qualifier", args=[self.qualifier_id])
+        elif self.user:
+            return self.user.get_absolute_url()
 
 
     def __str__(self):
