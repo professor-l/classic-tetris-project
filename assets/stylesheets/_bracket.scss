@@ -1,4 +1,8 @@
+// TODO clean this file up
+
 @use 'colors';
+
+$match-width: 200px;
 
 .bracket-frame {
   width: 100%;
@@ -10,6 +14,64 @@
   margin: auto;
 }
 
+
+.bracket-match-container {
+  display: grid;
+  grid-template-columns: 1fr auto auto $match-width;
+  // This is bad and relies on feed-in rounds being on the bottom, figure out a
+  // better way of putting track 3 vertically in the middle of the "right" area
+  grid-template-rows: auto auto 1fr 1fr;
+  grid-template-areas: "left   .          path-right  node"
+                       "left   path-left  path-right  node"
+                       "right  path-left  path-right  node"
+                       "right  .          path-right  node";
+  align-items: center;
+}
+
+.bracket-match-left {
+  grid-area: left;
+}
+
+.bracket-match-right {
+  grid-area: right;
+}
+
+.bracket-path-left {
+  height: 100%;
+  width: 10px;
+  border: 1px solid var(--text-primary);
+  border-left: none;
+  grid-area: path-left;
+}
+
+.bracket-path-right {
+  width: 10px;
+  height: 0;
+  margin: auto;
+  border-top: 1px solid var(--text-primary);
+  grid-area: path-right;
+}
+
+.bracket-path-top {
+  width: 20px;
+  height: 100%;
+  border-top: 1px solid var(--text-primary);
+  grid-column: 2 / 4;
+  grid-row: 1;
+}
+
+.bracket-path-bottom {
+  width: 20px;
+  height: 100%;
+  border-bottom: 1px solid var(--text-primary);
+  grid-column: 2 / 4;
+  grid-row: 3;
+}
+
+.bracket-spacer {
+  height: 37px;
+}
+
 .bracket {
   display: flex;
   flex-direction: row;
@@ -19,10 +81,6 @@
       margin-top: -20px;
       margin-bottom: -20px;
     }
-  }
-
-  .bracket-hide {
-    visibility: hidden;
   }
 
   .bracket-round {
@@ -45,12 +103,17 @@
   }
 
   .bracket-match {
-    margin: 20px 0;
-    width: 200px;
+    grid-area: node;
+    margin: 15px 0;
+    width: $match-width;
+    position: relative;
   }
 
   .bracket-match-number {
     text-align: center;
+    position: absolute;
+    top: -20px;
+    width: 100%;
   }
 
   .bracket-match-player {
@@ -98,7 +161,7 @@
   }
 
   a {
-    color: unset;
+    color: inherit;
     text-decoration: none;
   }
 

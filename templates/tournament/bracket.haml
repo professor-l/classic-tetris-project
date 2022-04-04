@@ -1,26 +1,2 @@
-
-.bracket{class: '{% if bracket.has_feed_ins %}has-feed-ins{% endif %}'}
-  - for round in bracket.display_rounds
-    .bracket-round{class: "round-{{ round.number }}"}
-      .round-indicator= round.label
-      - for node in round.matches
-        -# .bracket-match{class: '{% if forloop.parentloop.counter == 1 and not node.color_left %} bracket-hide {% endif %}'}
-        .bracket-match{class: "{% if not node %}bracket-hide{% endif %}"}
-          .bracket-match-number
-            %a{href: "{{node.match.get_absolute_url}}"} Match {{ node.match.match_number }}
-          - if node.match.player1.user
-            .bracket-match-player{class: "color-{{node.color_left}}"}
-              .player-seed= node.match.player1.seed
-              .player-name
-                %a{href: "{{node.match.player1.get_absolute_url}}"}= node.match.player1.display_name
-          - else
-            .bracket-match-player{class: "color-{{node.color_left}}"}
-              .player-name= node.display.player1_display_name
-          - if node.match.player2.user
-            .bracket-match-player{class: "color-{{node.color_right}}"}
-              .player-seed= node.match.player2.seed
-              .player-name
-                %a{href: "{{node.match.player2.get_absolute_url}}"}= node.match.player2.display_name
-          - else
-            .bracket-match-player{class: "color-{{node.color_right}}"}
-              .player-name= node.display.player2_display_name
+.bracket
+  - include "tournament/bracket_node.haml" with node=bracket.root
