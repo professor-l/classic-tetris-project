@@ -187,7 +187,7 @@ class TournamentMatchInline(admin.TabularInline):
 
 
 from django.urls import path
-from classic_tetris_project.util import bracket_generator, tournament_sheet_updater
+from classic_tetris_project.util import bracket_generator, google_sheets
 
 @admin.register(Tournament)
 class TournamentAdmin(DjangoObjectActions, admin.ModelAdmin):
@@ -208,7 +208,7 @@ class TournamentAdmin(DjangoObjectActions, admin.ModelAdmin):
         try:
             obj.update_bracket()
             messages.success(request, "Bracket updated")
-        except tournament_sheet_updater.TournamentSheetUpdateError as e:
+        except google_sheets.GoogleSheetsError as e:
             messages.error(request, f"Error updating spreadsheet: {e}")
 
 @admin.register(TournamentMatch)
