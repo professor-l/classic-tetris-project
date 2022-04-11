@@ -1,6 +1,5 @@
-from django.conf import settings
-
 from ..facades.tournament_match_display import TournamentMatchDisplay
+from .google_sheets import GoogleSheetsService
 
 
 MATCH_NUMBER = "match number"
@@ -70,33 +69,3 @@ class TournamentSheetUpdater:
             VOD: match.match.vod if match.match else "",
             MATCH_URL: match.get_absolute_url(include_base=True),
         }
-
-
-from google.oauth2 import service_account
-from googleapiclient import errors
-from googleapiclient.discovery import build
-
-class GoogleSheetsService:
-    SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
-    SERVICE_ACCOUNT_FILE = settings.ENV("GOOGLE_SERVICE_ACCOUNT_FILE")
-
-    def __init__(self):
-        if not self.__class__.SERVICE_ACCOUNT_FILE:
-            raise TournamentSheetUpdateError("Service account not configured")
-        credentials = service_account.Credentials.from_service_account_file(
-            self.__class__.SERVICE_ACCOUNT_FILE,
-            scopes=self.__class__.SCOPES)
-        self.service = build("sheets", "v4", credentials=credentials)
-
-    def update(self, spreadsheet_id, sheet_range, data):
-        request = self.service.spreadsheets().values().update(
-            spreadsheetId=spreadsheet_id,
-            range=sheet_range,
-            valueInputOption="RAW",
-            body={ "values": data },
-        )
-        try:
-            response = request.execute()
-        except errors.HttpError as e:
-            raise TournamentSheetUpdateError(e.error_details)
-        response

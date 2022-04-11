@@ -20,6 +20,9 @@ class Match(models.Model):
     # Null until the match has ended
     ended_at = models.DateTimeField(null=True, blank=True)
 
+    # time synced to match reporting sheet
+    synced_at = models.DateTimeField(null=True, blank=True)
+
     class Meta:
         verbose_name_plural = 'matches'
 
