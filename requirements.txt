@@ -6,7 +6,7 @@ cssselect==1.1.0
 disco-py==0.0.14rc1
 discord.py==1.5.1
 django-admin-sortable2==1.0.3
-django-autocomplete-light==3.8.2
+django-autocomplete-light==3.9.0-rc1
 django-colorfield==0.4.1
 django-environ==0.4.5
 django-extensions==3.1.0
@@ -31,7 +31,7 @@ Pillow==7.1.1
 PyHamcrest==2.0.2
 pytest==4.6.11
 pytest-django==3.10.0
-git+git://github.com/michaelelin/pytest-relaxed@00cb382#egg=pytest-relaxed
+git+https://github.com/michaelelin/pytest-relaxed.git@00cb382#egg=pytest-relaxed
 pyyaml==5.1.2
 requests==2.22.0
 rollbar==0.15.1
