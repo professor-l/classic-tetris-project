@@ -17,7 +17,7 @@ django-object-actions==3.0.1
 django-redis==4.12.1
 django-select2==7.9.0
 django-webpack-loader==0.7.0
-django==3.2.11
+django==3.2.13
 factory_boy==2.12.0
 furl==2.1.0
 google-api-python-client==2.35.0
