@@ -42,8 +42,8 @@ class QualifierView_(Spec):
             assert_that(response, uses_template("qualifiers/show.html"))
             assert_that(response, not_(has_html("input[value='Withdraw']")))
 
-        def test_with_qualifying_closed(self):
-            self.event.qualifying_open = False
+        def test_with_withdrawals_disabled(self):
+            self.event.withdrawals_allowed = False
             self.event.save()
             response = self.get()
 
@@ -87,8 +87,8 @@ class QualifierView_(Spec):
             self.other_qualifier.refresh_from_db()
             assert_that(self.other_qualifier.withdrawn, equal_to(False))
 
-        def test_with_qualifying_closed(self):
-            self.event.qualifying_open = False
+        def test_with_withdrawals_disabled(self):
+            self.event.withdrawals_allowed = False
             self.event.save()
             response = self.post({ "withdrawn": True })
 

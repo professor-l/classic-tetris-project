@@ -48,6 +48,6 @@ class QualifierView(BaseView):
 
     def can_withdraw(self):
         return (self.qualifier.user == self.current_user and
-                self.qualifier.event.qualifying_open and
+                self.qualifier.event.withdrawals_allowed and
                 self.qualifier.submitted and
                 (not self.qualifier.withdrawn))
