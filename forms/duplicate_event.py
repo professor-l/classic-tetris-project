@@ -23,7 +23,6 @@ class DuplicateEventForm(forms.ModelForm):
                 short_name=tournament.short_name,
                 order=tournament.order,
                 seed_count=tournament.seed_count,
-                placeholders=tournament.placeholders,
                 color=tournament.color,
                 restreamed=tournament.restreamed,
                 details=tournament.details,
