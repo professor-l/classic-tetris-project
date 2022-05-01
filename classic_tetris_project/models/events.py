@@ -14,6 +14,10 @@ class Event(models.Model):
     slug = models.SlugField(db_index=True)
     qualifying_type = models.IntegerField(choices=qualifying_types.CHOICES)
     qualifying_open = models.BooleanField(default=False)
+    withdrawals_allowed = models.BooleanField(
+        default=True,
+        help_text="Controls whether users can withdraw their own qualifiers. Automatically disabled when tournaments are seeded."
+    )
     pre_qualifying_instructions = MarkdownxField(blank=True)
     qualifying_instructions = MarkdownxField(blank=True)
     event_info = MarkdownxField(blank=True)
@@ -46,6 +50,10 @@ class Event(models.Model):
 
     @transaction.atomic
     def seed_tournaments(self):
+        self.qualifying_open = False
+        self.withdrawals_allowed = False
+        self.save()
+
         from ..facades.qualifier_table import QualifierTable
         table = QualifierTable(self)
         for group in table.groups():
@@ -68,6 +76,7 @@ class Event(models.Model):
                             seed=qualifier_row["seed"],
                             name_override=qualifier_row["placeholder"],
                         )
+
     @staticmethod
     def before_save(sender, instance, **kwargs):
         if not instance.slug:
