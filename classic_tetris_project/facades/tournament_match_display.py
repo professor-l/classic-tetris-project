@@ -52,3 +52,8 @@ class TournamentMatchDisplay:
         else:
             return self.display_name_from_source(self.tournament_match.source2_type,
                                                  self.tournament_match.source2_data)
+    def player1_winner(self):
+        return self.tournament_match.player1 == self.tournament_match.winner
+
+    def player2_winner(self):
+        return self.tournament_match.player2 == self.tournament_match.winner
