@@ -142,6 +142,10 @@ $match-width: 200px;
       background: colors.$bracket-4;
     }
 
+    &.color-5.winner {
+      background: colors.$bracket-winner;
+    }
+
     .player-seed {
       flex: 0 0 35px;
       text-align: center;
