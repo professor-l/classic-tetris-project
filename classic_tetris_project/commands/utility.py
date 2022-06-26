@@ -65,6 +65,8 @@ class HzCommand(Command):
 @Command.register("seed", "hex", usage="seed")
 class SeedGenerationCommand(Command):
     def execute(self, *args):
+        self.check_moderator()
+
         seed = 0
         while (seed % 0x100 < 0x3):
             seed = random.randint(0x200, 0xffffff)
