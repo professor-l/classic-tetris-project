@@ -45,6 +45,7 @@ DEBUG = ENV('DEBUG')
 TESTING = False
 
 ALLOWED_HOSTS = [
+    'go.ctm.gg',
     'ctm.gg',
     'monthlytetris.info',
     'monthlytetris.com',

@@ -17,11 +17,12 @@ class SourceCodeCommand(Command):
 class StencilCommand(Command):
     def execute(self, *args):
         self.send_message("The stencil helps the streamer line up your Tetris playfield with their "
-                          "broadcast scene. Link here: https://ctm.gg/stencil")
+                          "broadcast scene. Link here: https://go.ctm.gg/stencil")
 
 @Command.register_twitch("ctm", usage="ctm")
 class CTMDiscordCommand(Command):
     def execute(self, *args):
-        self.send_message("Join the Classic Tetris Monthly Discord server to learn more about CTM! https://discord.gg/SYP37aV")
+        self.send_message("Join the Classic Tetris Monthly Discord server to learn more about CTM! "
+                          "https://go.ctm.gg/discord")
 
 
