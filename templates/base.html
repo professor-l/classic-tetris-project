@@ -16,23 +16,9 @@
     {% render_bundle "main" %}
 
     <title>{% block title %}Classic Tetris Monthly{% endblock %}</title>
-    <script>
-      function setTheme(theme) {
-        const body = document.querySelector('body')
-        body.setAttribute('data-theme', theme)
-      }
-      function updateTheme(element) {
-        try {
-          const theme = element.checked ? "dark" : "light"
-          setTheme(theme)
-          localStorage.setItem("CTM_THEME", theme)
-        } catch (e) {
-          console.error(e)
-        }
-      }
-    </script>
   </head>
-  <body>
+  {% block body %}
+  <body data-controller="site-theme">
     <nav class="navbar">
       <a class="navbar__item navbar__item--title" href="{% url "index" %}">Classic Tetris Monthly</a>
 
@@ -50,7 +36,7 @@
         {% endif %}
         <div class="navbar__item theme-toggle">
           <label class="toggle">
-            <input type="checkbox" onchange="updateTheme(this)" />
+            <input type="checkbox" data-site-theme-target="checkbox" data-action="change->site-theme#updateTheme" />
             <span class="slide"></span>
           </label>
         </div>
@@ -75,12 +61,5 @@
 
     {% block footer %}{% endblock %}
   </body>
-  <script>
-    ;(function () {
-      const theme = localStorage.getItem("CTM_THEME") || 'light'
-      const toggle = document.querySelector(".toggle input")
-      if (theme === 'dark') { toggle.checked = true }
-      setTheme(theme)
-    })()
-  </script>
+  {% endblock %}
 </html>

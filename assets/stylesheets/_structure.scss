@@ -6,7 +6,16 @@ body {
   font-family: "Roboto";
   font-size: 16px;
   line-height: 1.5;
+  color: var(--text-primary);
   background: var(--bg-primary);
+
+  a {
+    color: var(--link-primary);
+
+    &.btn {
+      color: colors.$button-primary-text;
+    }
+  }
 }
 
 .main-content {
@@ -15,16 +24,6 @@ body {
   padding: 30px;
   @include media.tablet-and-desktop {
     padding-top: 60px;
-  }
-
-  color: var(--text-primary);
-
-  a {
-    color: var(--link-primary);
-
-    &.btn {
-      color: colors.$button-primary-text;
-    }
   }
 
   .login-buttons a {

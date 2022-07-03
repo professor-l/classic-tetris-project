@@ -2,16 +2,21 @@
 
 @use 'colors';
 
-$match-width: 200px;
-
-.bracket-frame {
-  width: 100%;
-  height: 800px;
-}
+$match-width: 240px;
 
 .bracket-container {
-  width: fit-content;
-  margin: auto;
+  overflow: hidden;
+
+  &--border {
+    // Border inside the div, doesn't affect sizing
+    box-shadow: 0px 0px 0px 1px red inset;
+  }
+
+  &--scaled {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 
@@ -73,34 +78,10 @@ $match-width: 200px;
 }
 
 .bracket {
-  display: flex;
-  flex-direction: row;
-
-  &.has-feed-ins {
-    .bracket-match {
-      margin-top: -20px;
-      margin-bottom: -20px;
-    }
-  }
-
-  .bracket-round {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    margin-right: 2px;
-    position: relative;
-    padding-top: 15px;
-  }
-
-  .round-indicator {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 24px;
-    font-weight: 600;
-  }
+  width: fit-content;
+  height: fit-content;
+  // Bottom padding is 0 (for now) since match nodes have a margin-bottom of 15px
+  padding: 15px 15px 0 15px;
 
   .bracket-match {
     grid-area: node;
@@ -169,4 +150,14 @@ $match-width: 200px;
     text-decoration: none;
   }
 
+}
+
+.bracket-controls {
+  border: 1px #FFF solid;
+  margin-top: 30px;
+  padding: 10px;
+
+  label {
+    display: block;
+  }
 }

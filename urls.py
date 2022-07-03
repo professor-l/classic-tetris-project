@@ -49,6 +49,8 @@ tournament_match_patterns = ([
 tournament_patterns = ([
     path("", tournaments.IndexView.as_view(), name="index"),
     path("match/<int:match_number>/", include(tournament_match_patterns)),
+    path("bracket/", tournaments.BracketView.as_view(), name="bracket"),
+    path("bracket.json", tournaments.BracketJsonView.as_view(), name="bracket_json"),
 ], "tournament")
 
 event_patterns = ([

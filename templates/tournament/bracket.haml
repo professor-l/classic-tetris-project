@@ -1,2 +1,8 @@
-.bracket
-  - include "tournament/bracket_node.haml" with node=bracket.root
+- extends "base.html"
+
+- block title
+  {{ tournament.name }} Bracket
+
+- block body
+  %body{data-theme: "dark"}
+    - react_component "TournamentBracketController" bracket_props

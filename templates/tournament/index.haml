@@ -10,10 +10,15 @@
 
   %h1= tournament.name
 
-  - if bracket
-    - module "Bracket"
-      .bracket-container
-        - include "tournament/bracket.haml" with bracket=bracket
+  - if bracket.root
+    .module
+      .module__header
+        .module__header-title
+          Bracket
+        .module__header-button
+          %a{href: "{{ tournament.get_bracket_url }}", class: "btn btn--secondary"} View in Page
+      .module__body
+        - react_component "TournamentBracketController" bracket.embed_props
 
   - module "Players"
     %table.data-table

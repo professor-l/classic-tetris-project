@@ -1,8 +1,9 @@
+import json
+import markdown as md
 from django import template
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
-import markdown as md
 
 from classic_tetris_project.models import Page
 
@@ -23,6 +24,17 @@ def page(slug):
         return markdown(page.content)
     except Page.DoesNotExist:
         return ""
+
+@register.simple_tag
+def react_component(component, *args, **kwargs):
+    if args:
+        props = args[0]
+    else:
+        props = kwargs
+    return render_to_string("templatetags/react_component.haml", {
+        "component": component,
+        "props": json.dumps(props),
+    })
 
 @register.tag
 def module(parser, token):
