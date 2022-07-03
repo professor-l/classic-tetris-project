@@ -4,5 +4,5 @@
   {{ tournament.name }} Bracket
 
 - block body
-  %body{data-theme: "dark"}
+  %body{class: "{% if embed %}transparent{% endif %}", data-theme: "dark"}
     - react_component "TournamentBracketController" bracket_props

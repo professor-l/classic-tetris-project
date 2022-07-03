@@ -81,6 +81,7 @@ class BracketView(TournamentView):
         return render(request, "tournament/bracket.haml", {
             "tournament": self.tournament,
             "bracket_props": bracket.react_props(bracket_options),
+            "embed": request.GET.get("embed") == "true",
         })
 
 class BracketJsonView(TournamentView):

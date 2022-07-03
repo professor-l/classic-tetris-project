@@ -16,6 +16,10 @@ body {
       color: colors.$button-primary-text;
     }
   }
+
+  &.transparent {
+    background: rgba(0, 0, 0, 0);
+  }
 }
 
 .main-content {
