@@ -1,3 +1,6 @@
+import time
+from django.urls import reverse
+
 from classic_tetris_project.facades.tournament_match_display import TournamentMatchDisplay
 from classic_tetris_project.models import TournamentMatch
 from classic_tetris_project.util import memoize
@@ -54,14 +57,41 @@ class MatchNode:
     def display(self):
         return TournamentMatchDisplay(self.match, self.viewing_user)
 
+    def match_data(self):
+        return {
+            "label": f"Match {self.match.match_number}",
+            "url": self.match.get_absolute_url(),
+            "matchNumber": self.match.match_number,
+            "left": {
+                "playerName": self.display().player1_display_name(),
+                "playerSeed": self.match.player1 and self.match.player1.seed,
+                "url": self.match.player1 and self.match.player1.get_absolute_url(),
+                "color": self.color_left,
+                "winner": self.display().player1_winner(),
+                "child": self.left and self.left.match_data(),
+            },
+            "right": {
+                "playerName": self.display().player2_display_name(),
+                "playerSeed": self.match.player2 and self.match.player2.seed,
+                "url": self.match.player2 and self.match.player2.get_absolute_url(),
+                "color": self.color_right,
+                "winner": self.display().player2_winner(),
+                "child": self.right and self.right.match_data(),
+            },
+        }
+
 class TournamentBracket:
     def __init__(self, tournament, user):
         self.tournament = tournament
         self.user = user
+        self.root = None
 
     def build(self):
         bracket_nodes = { match.match_number: MatchNode(match, self.user) for match in
                          self.tournament.all_matches() }
+
+        if not bracket_nodes:
+            return 
 
         for node in bracket_nodes.values():
             left_source = node.match.source1_type
@@ -96,6 +126,23 @@ class TournamentBracket:
                 "matches": self.root.get_nodes_at_level(self.root.match.round_number - round_number)
             })
         return rounds
+
+    def react_props(self, options={}):
+        return {
+            **self.match_data(),
+            "refreshUrl": self.tournament.get_bracket_url(include_base=True, json=True),
+            "bracketUrl": self.tournament.get_bracket_url(include_base=True),
+            **options
+        }
+
+    def embed_props(self, options={}):
+        return self.react_props({ **options, "embed": True })
+
+    def match_data(self):
+        return {
+            "matches": self.root.match_data(),
+            "ts": int(time.time()),
+        }
 
     @memoize
     def has_feed_ins(self):

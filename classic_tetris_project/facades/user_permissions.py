@@ -4,6 +4,7 @@ class UserPermissions:
     REVIEW_QUALIFIERS = "classic_tetris_project.change_qualifier"
     RESTREAM = "classic_tetris_project.restream"
     REPORT_ALL = "classic_tetris_project.change_tournamentmatch"
+    CHANGE_TOURNAMENT = "classic_tetris_project.change_tournament"
 
     def __init__(self, user):
         self.user = user
@@ -22,3 +23,6 @@ class UserPermissions:
 
     def report_all(self):
         return self.auth_user is not None and self.auth_user.has_perm(self.REPORT_ALL)
+
+    def change_tournament(self):
+        return self.auth_user is not None and self.auth_user.has_perm(self.CHANGE_TOURNAMENT)

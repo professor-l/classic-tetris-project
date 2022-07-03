@@ -45,13 +45,14 @@ module.exports = {
         },
       },
       {
-        test: /\.m?js$/,
+        test: /\.m?jsx?$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
             presets: [
-              ['@babel/preset-env', { targets: "defaults" }]
+              ['@babel/preset-env', { targets: "defaults" }],
+              '@babel/preset-react'
             ]
           }
         }
@@ -61,6 +62,6 @@ module.exports = {
 
   resolve: {
     modules: ['node_modules'],
-    extensions: ['.js']
+    extensions: ['.js', '.jsx']
   },
 }

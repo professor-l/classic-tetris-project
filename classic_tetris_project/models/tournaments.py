@@ -89,6 +89,14 @@ class Tournament(models.Model):
         else:
             return path
 
+    def get_bracket_url(self, include_base=False, json=False):
+        key = "event:tournament:bracket_json" if json else "event:tournament:bracket"
+        path = reverse(key, args=[self.event.slug, self.slug])
+        if include_base:
+            return furl(settings.BASE_URL, path=path).url
+        else:
+            return path
+
     def color_int(self):
         return int(self.color[1:], base=16)
 
