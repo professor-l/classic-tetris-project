@@ -6,6 +6,8 @@ import TournamentBracket from './tournament_bracket';
 import BracketControls from './bracket_controls';
 
 
+export const COMPONENT_NAME = 'TournamentBracketController';
+
 const TournamentBracketController = (props) => {
   const { bracketUrl, refreshUrl } = props;
   const { state, dispatch } = useBracketState(props);

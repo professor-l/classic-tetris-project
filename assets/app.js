@@ -13,7 +13,11 @@ const reactContext = require.context('./js/react', true, /\.jsx?$/);
 window.reactContext = reactContext;
 reactContext.keys().forEach((key) => {
   const module = reactContext(key);
-  window.reactComponents[module.default.name] = module.default;
+  if (module.COMPONENT_NAME) {
+    // Names are minified
+    // TODO figure about a better way of registering these
+    window.reactComponents[module.COMPONENT_NAME] = module.default;
+  }
 });
 
 import './stylesheets/app.scss';
