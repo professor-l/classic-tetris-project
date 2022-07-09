@@ -13,3 +13,7 @@
 
 // External libraries
 @import '~simplepicker/dist/simplepicker.css';
+// Override datepicker text
+.simpilepicker-date-picker {
+  color: #000000;
+}
