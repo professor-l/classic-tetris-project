@@ -202,7 +202,7 @@ class QualifierView_(Spec):
             response = self.get()
 
             assert_that(response.status_code, equal_to(200))
-            assert_that(response, uses_template("event/qualifier.html"))
+            assert_that(response, uses_template("event/qualifier.haml"))
 
     class POST:
         def test_with_qualifying_closed(self):

@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 
-{% load humanize %}
-
 {% block title %}Review Qualifiers{% endblock %}
 
 {% block content %}
@@ -19,7 +17,7 @@
   <tr class="data-table__row {% cycle "data-table__row--even" "data-table__row--odd" %}">
     <td><a href="{{ qualifier.event.get_absolute_url }}">{{ qualifier.event.name }}</a></td>
     <td><a href="{{ qualifier.user.get_absolute_url }}">{{ qualifier.user.display_name }}</a></td>
-    <td>{{ qualifier.qualifying_score|intcomma }}</td>
+    <td>{{ qualifier.type.format_score }}</td>
     <td>{{ qualifier.submitted_at }}</td>
     <td><a href="{% url "review_qualifiers:review" qualifier.id %}" class="btn btn--primary">Review</div></td>
   </tr>

@@ -28,7 +28,7 @@ class ReviewView(ReviewQualifiersView):
             messages.info(self.request, "That qualifier has already been reviewed.")
             return redirect(reverse("review_qualifiers:index"))
 
-        return render(request, "review_qualifiers/review.html", {
+        return render(request, "review_qualifiers/review.haml", {
             "qualifier": self.qualifier,
             "edit_form": self.qualifier.type.form(),
             "review_form": ReviewQualifierForm(),
@@ -50,7 +50,7 @@ class ReviewView(ReviewQualifiersView):
                 messages.info(self.request, "Qualifier rejected")
             return redirect(reverse("review_qualifiers:index"))
         else:
-            return render(request, "review_qualifiers/review.html", {
+            return render(request, "review_qualifiers/review.haml", {
                 "qualifier": self.qualifier,
                 "edit_form": edit_form,
                 "review_form": review_form,

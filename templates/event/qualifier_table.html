@@ -1,5 +1,3 @@
-{% load humanize %}
-
 <div class="data-table">
   <div class="qualifier-row qualifier-row--headers data-table__headers">
     <div class="qualifier-row__cell qualifier-row__cell--seed">#</div>
@@ -29,7 +27,7 @@
           <a href="{{ qualifier_row.qualifier.user.get_absolute_url }}">{{ qualifier_row.qualifier.user.display_name }}</a>
         </div>
         <div class="qualifier-row__cell qualifier-row__cell--score">
-          <a href="{% url "qualifier" qualifier_row.qualifier.id %}">{{ qualifier_row.qualifier.qualifying_score|intcomma }}</a>
+          <a href="{% url "qualifier" qualifier_row.qualifier.id %}">{{ qualifier_row.qualifier.type.format_score }}</a>
           {% if not qualifier_row.qualifier.approved %}
           <span class="status-tag status-tag--gray status-tag--small qualifier-row__status">
             Pending

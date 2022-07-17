@@ -93,7 +93,7 @@ class ReviewView_(Spec):
                 response = self.get()
 
                 assert_that(response.status_code, equal_to(200))
-                assert_that(response, uses_template("review_qualifiers/review.html"))
+                assert_that(response, uses_template("review_qualifiers/review.haml"))
 
     class POST:
         class without_permission:

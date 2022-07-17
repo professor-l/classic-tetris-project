@@ -1,7 +1,5 @@
 - extends "base.html"
 
-- load humanize
-
 - block title
   = tournament.name
 
@@ -36,7 +34,7 @@
               = player.name_override
           %td
             - if player.qualifier
-              %a{href: '{% url "qualifier" player.qualifier.id %}'}= player.qualifier.qualifying_score|intcomma
+              %a{href: '{% url "qualifier" player.qualifier.id %}'}= player.qualifier.type.format_score
 
   - if tournament_matches
     - module "All Matches"

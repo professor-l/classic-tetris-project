@@ -14,6 +14,7 @@ class DuplicateEventForm(forms.ModelForm):
         event = Event.objects.create(
             name=self.cleaned_data["name"],
             qualifying_type=base_event.qualifying_type,
+            vod_required=base_event.vod_required,
             pre_qualifying_instructions=base_event.pre_qualifying_instructions,
             qualifying_instructions=base_event.qualifying_instructions,
             event_info=base_event.event_info,

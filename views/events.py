@@ -72,7 +72,7 @@ class QualifierView(LoginRequiredMixin, EventView):
         if not self.qualifier:
             return redirect(reverse("event:qualify", args=[self.event.slug]))
 
-        return render(request, "event/qualifier.html", {
+        return render(request, "event/qualifier.haml", {
             "event": self.event,
             "qualifier": self.qualifier,
             "form": self.qualifier.type.form(),

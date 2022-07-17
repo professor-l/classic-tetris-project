@@ -1,0 +1,63 @@
+- extends "base.html"
+
+- block title
+  Review Qualifier
+
+- block content
+  %form.form{method: "post"}
+    - csrf_token
+
+    .section
+      .section__header
+        %h2.section__title
+          Review Qualifier
+
+      .section__body
+        .field-list
+          - field_list_row "Event:"
+            %a{href: "{{ qualifier.event.get_absolute_url }}"}= qualifier.event.name
+          - field_list_row "User:"
+            %a{href: "{{ qualifier.user.get_absolute_url }}"}= qualifier.user.display_name
+
+          - for field in edit_form.edit_fields
+            - field_list_input_row field.label_tag
+              = field
+              = field.errors
+
+          - field_list_row "Total score:"
+            = qualifier.type.format_score
+          - field_list_row "VOD:"
+            - if qualifier.vod
+              %a{href: "{{ qualifier.vod }}"}= qualifier.vod
+          - field_list_row "Auth word:"
+            = qualifier.auth_word
+          - field_list_row "Details:"
+            = qualifier.details
+          - field_list_row "Started at:"
+            = qualifier.created_at
+          - field_list_row "Submitted at:"
+            = qualifier.submitted_at
+        %a{href: "{% url 'admin:classic_tetris_project_qualifier_change' qualifier.id %}"}
+          View/edit in admin
+
+    - module "Reviewer Feedback"
+      .form.form--narrow
+        - for check in review_form.checks
+          .form__field
+            = check
+            = check.label_tag
+            = check.errors
+
+        .form__field
+          %label{for: "{{ review_form.notes.id_for_label }}"}
+            Notes for the player:
+          = review_form.notes
+          = review_form.notes.errors
+
+        .form__field
+          - for radio in review_form.approved
+            %div= radio
+          = review_form.approved.errors
+
+        .form__actions
+          %input.btn.btn--primary{type: "submit", value: "Submit"}
