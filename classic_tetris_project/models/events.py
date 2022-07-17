@@ -13,6 +13,7 @@ class Event(models.Model):
     name = models.CharField(max_length=64)
     slug = models.SlugField(db_index=True)
     qualifying_type = models.IntegerField(choices=qualifying_types.CHOICES)
+    vod_required = models.BooleanField(default=True)
     qualifying_open = models.BooleanField(default=False)
     withdrawals_allowed = models.BooleanField(
         default=True,
@@ -21,6 +22,9 @@ class Event(models.Model):
     pre_qualifying_instructions = MarkdownxField(blank=True)
     qualifying_instructions = MarkdownxField(blank=True)
     event_info = MarkdownxField(blank=True)
+
+    def qualifying_type_class(self):
+        return qualifying_types.QUALIFYING_TYPES[self.qualifying_type]
 
     def is_user_eligible(self, user):
         return self.user_ineligible_reason(user) is None

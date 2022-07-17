@@ -38,7 +38,7 @@ class Qualifier(models.Model):
     qualifying_type = models.IntegerField(choices=qualifying_types.CHOICES)
     qualifying_score = models.IntegerField(blank=True, null=True)
     qualifying_data = models.JSONField(blank=True, null=True)
-    vod = models.URLField(null=True)
+    vod = models.URLField(blank=True, null=True)
     details = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     submitted = models.BooleanField(default=False)

@@ -1,20 +1,29 @@
 from django import forms
+from django.db.models.expressions import RawSQL
 from django.utils import timezone
 
 
 class QualifyingType:
+    ORDER_BY = ["-qualifying_score"]
+
     class Form(forms.Form):
         def __init__(self, qualifying_type, *args, **kwargs):
             submitting = kwargs.pop("submitting", True)
             super().__init__(*args, **kwargs)
             self.qualifying_type = qualifying_type
+
+            if not self.qualifying_type.qualifier.event.vod_required:
+                self.fields["vod"].help_text = "(optional)"
+                self.fields["vod"].required = False
+
             # If we're not submitting, ignore vod and details fields
             if not submitting:
                 del self.fields["vod"]
                 del self.fields["details"]
 
         vod = forms.URLField(label="VOD")
-        details = forms.CharField(widget=forms.Textarea, required=False, label="Details")
+        details = forms.CharField(widget=forms.Textarea, required=False, label="Details",
+                                  help_text="(optional)")
 
         # Fields to display when submitting a qualifier
         def submit_fields(self):
@@ -39,7 +48,10 @@ class QualifyingType:
 
     def display_values(self):
         return ([(label, getattr(self, value)) for value, label in self.EXTRA_FIELDS] +
-                [("Total score", self.qualifier.qualifying_score)])
+                [("Total score", self.format_score())])
+
+    def format_score(self):
+        return "{:,}".format(self.qualifier.qualifying_score)
 
     def form(self, *args):
         submitting = not self.qualifier.submitted
@@ -141,9 +153,50 @@ class Highest3Scores(QualifyingType):
         return list(reversed(sorted([self.score1, self.score2, self.score3])))
 
 
+class MostMaxouts(QualifyingType):
+    NAME = "Most Maxouts"
+    EXTRA_FIELDS = [
+        ("maxouts", "Maxout Count"),
+        ("kicker", "Kicker"),
+    ]
+    ORDER_BY = [
+        RawSQL("(qualifying_data::json->>'maxouts')::integer", ()).desc(),
+        RawSQL("(qualifying_data::json->>'kicker')::integer", ()).desc()
+    ]
+
+    class Form(QualifyingType.Form):
+        maxouts = forms.IntegerField(
+            min_value=0, label="Maxout Count",
+            help_text=("Total number of maxouts (scores over 999,999) you got. If you did not "
+                       "maxout, enter 0.")
+        )
+        kicker = forms.IntegerField(
+            min_value=0, label="Kicker",
+            help_text=("Your highest non-maxout score. If you did not maxout, this is your highest "
+                       "score.")
+        )
+
+    def load_data(self, data):
+        self.maxouts = data["maxouts"] if data else None
+        self.kicker = data["kicker"] if data else None
+
+    def qualifying_score(self):
+        return self.maxouts
+
+    def format_score(self):
+        return "{}; {:,}".format(self.maxouts, self.kicker)
+
+    def qualifying_data(self):
+        return {
+            "maxouts": self.maxouts,
+            "kicker": self.kicker,
+        }
+
+
 QUALIFYING_TYPES = {
     1: HighestScore,
     2: Highest2Scores,
     3: Highest3Scores,
+    4: MostMaxouts,
 }
 CHOICES = [(n, qualifying_type.NAME) for n, qualifying_type in QUALIFYING_TYPES.items()]

@@ -6,7 +6,9 @@
 {% for label, value in qualifier.type.display_values %}\
 {{ label }}: {{ value|intcomma }}
 {% endfor %}\
+{% if qualifier.vod %}
 VOD: {{ qualifier.vod }}
+{% endif %}\
 {% if qualifier.details %}
 {{ qualifier.details }}
 {% endif %}
