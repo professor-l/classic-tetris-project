@@ -35,6 +35,7 @@ class Tournament(models.Model):
         help_text="Reserves a seed that won't get automatically populated by a qualifier"
     )
     color = ColorField(default='#000000')
+    bracket_color = ColorField(default=None, null=True, blank=True)
     public = models.BooleanField(
         default=False,
         help_text="Controls whether the tournament page is available to view"

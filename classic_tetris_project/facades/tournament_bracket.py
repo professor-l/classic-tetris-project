@@ -132,6 +132,7 @@ class TournamentBracket:
             **self.match_data(),
             "refreshUrl": self.tournament.get_bracket_url(include_base=True, json=True),
             "bracketUrl": self.tournament.get_bracket_url(include_base=True),
+            "customBracketColor": self.tournament.bracket_color,
             **options
         }
 
