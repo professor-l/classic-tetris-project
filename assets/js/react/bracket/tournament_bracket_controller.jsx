@@ -41,7 +41,7 @@ const TournamentBracketController = (props) => {
 
   return (
     <div>
-      <TournamentBracket matches={matches} {...state}/>
+      <TournamentBracket matches={matches} {...state} />
       {!state.embed &&
       <BracketControls baseUrl={bracketUrl} state={state} dispatch={dispatch}/>
       }

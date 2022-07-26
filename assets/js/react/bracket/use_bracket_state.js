@@ -10,6 +10,7 @@ const DEFAULTS = {
   showBorder: false,
   autoRefresh: true,
   embed: false,
+  customBracketColor: null,
 };
 
 const _parseInt = (value, field) => {
@@ -43,6 +44,7 @@ const initialState = (props) => {
     showBorder: _parseBool(props.showBorder, 'showBorder'),
     autoRefresh: _parseBool(props.autoRefresh, 'autoRefresh'),
     embed: _parseBool(props.embed, 'embed'),
+    customBracketColor: props.customBracketColor,
   }
 };
 

@@ -17,7 +17,7 @@ const findMatch = (matches, root) => {
 };
 
 const TournamentBracket = (props) => {
-  const { matches, scaled, fitToWindow, width, height, depth, root, showBorder } = props;
+  const { matches, scaled, fitToWindow, width, height, depth, root, showBorder, customBracketColor } = props;
 
   const containerRef = useRef(null);
   const bracketRef = useRef(null);
@@ -66,7 +66,7 @@ const TournamentBracket = (props) => {
         height: (fitToWindow ? '100vh' : (height ? `${height}px` : null)),
       }}>
       <div className="bracket" ref={bracketRef}>
-        {rootNode && <BracketNode {...rootNode} depth={depth}/>}
+        {rootNode && <BracketNode {...rootNode} depth={depth} customBracketColor={customBracketColor} />}
       </div>
     </div>
   );
@@ -80,6 +80,7 @@ TournamentBracket.propTypes = {
   root: PropTypes.number,
   showBorder: PropTypes.bool,
   autoRefresh: PropTypes.bool,
+  customBracketColor: PropTypes.string,
 };
 TournamentBracket.defaultProps = {
   scaled: true,
@@ -89,6 +90,7 @@ TournamentBracket.defaultProps = {
   root: null,
   showBorder: false,
   autoRefresh: true,
+  customBracketColor: null,
 };
 
 

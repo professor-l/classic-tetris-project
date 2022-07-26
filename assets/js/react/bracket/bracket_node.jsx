@@ -2,7 +2,7 @@ import React from 'react';
 
 
 const BracketNode = (props) => {
-  const { label, url, left, right, depth } = props;
+  const { label, url, left, right, depth, customBracketColor } = props;
 
   const showChildren = (depth === null || depth > 0)
   const childDepth = depth === null ? null : depth - 1;
@@ -11,7 +11,7 @@ const BracketNode = (props) => {
     if (left.child) {
       return (
         <div className="bracket-match-left">
-          <BracketNode {...left.child} depth={childDepth} />
+          <BracketNode {...left.child} depth={childDepth} customBracketColor={customBracketColor} />
         </div>
       );
     } else {
@@ -27,7 +27,7 @@ const BracketNode = (props) => {
     if (right.child) {
       return (
         <div className="bracket-match-right">
-          <BracketNode {...right.child} depth={childDepth} />
+          <BracketNode {...right.child} depth={childDepth} customBracketColor={customBracketColor} />
         </div>
       );
     } else {
@@ -62,7 +62,7 @@ const BracketNode = (props) => {
     const { playerName, playerSeed, url, color, winner } = node;
 
     return (
-      <div className={`bracket-match-player color-${color}` + (winner ? ' winner' : '')}>
+      <div className={`bracket-match-player color-${color}` + (winner ? ' winner' : '')} style={{ background: customBracketColor }}>
         {playerSeed &&
         <div className="player-seed">{playerSeed}</div>
         }
