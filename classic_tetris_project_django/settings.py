@@ -86,7 +86,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
+    'classic_tetris_project.models.custom_redirect.CustomRedirect',
     'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
 ]
 
