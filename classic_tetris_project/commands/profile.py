@@ -158,4 +158,4 @@ class ProfileCommand(Command):
     def get_twitch(self, user):
         if hasattr(user, "twitch_user"):
             return f"https://www.twitch.tv/{user.twitch_user.username}"
-        return "Not linked (head to ctm.gg)"
+        return "Not linked (head to go.ctm.gg)"
