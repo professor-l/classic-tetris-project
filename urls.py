@@ -1,4 +1,4 @@
-from django.urls import include, path, re_path
+from django.urls import include, path
 
 from .views import autocomplete
 from .views import oauth
@@ -78,7 +78,6 @@ urlpatterns = [
     path("event/<slug:event_slug>/", include(event_patterns)),
     path("qualifier/<int:id>/", qualifiers.QualifierView.as_view(), name="qualifier"),
     path("review_qualifiers/", include(review_qualifiers_patterns)),
-    path("notifications/", include("django_nyt.urls")),
-    re_path(r"^wiki/", include("wiki.urls")),
-    path("markdownx/", include("markdownx.urls")),
+
+    path("markdownx/", include('markdownx.urls')),
 ]
