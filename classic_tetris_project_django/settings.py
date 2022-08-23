@@ -75,15 +75,6 @@ INSTALLED_APPS = [
     'adminsortable2',
     'colorfield',
     'webpack_loader',
-    'django_nyt.apps.DjangoNytConfig',
-    'mptt',
-    'sekizai',
-    'sorl.thumbnail',
-    'wiki.apps.WikiConfig',
-    'wiki.plugins.attachments.apps.AttachmentsConfig',
-    'wiki.plugins.notifications.apps.NotificationsConfig',
-    'wiki.plugins.images.apps.ImagesConfig',
-    'wiki.plugins.macros.apps.MacrosConfig',
 ]
 
 MIDDLEWARE = [
@@ -118,15 +109,10 @@ TEMPLATES = [
             ],
             'context_processors': [
                 'django.template.context_processors.debug',
+                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request',
-                'django.template.context_processors.i18n',
-                'django.template.context_processors.media',
-                'django.template.context_processors.static',
                 'classic_tetris_project.private.context_processors.session_processor',
-                'django.template.context_processors.tz',
-                "sekizai.context_processors.sekizai",
             ],
             'loaders': [
                 'hamlpy.template.loaders.HamlPyFilesystemLoader',
@@ -231,4 +217,3 @@ rollbar.init(**ROLLBAR)
 
 
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379/1',
-WIKI_CHECK_SLUG_URL_AVAILABLE = False
