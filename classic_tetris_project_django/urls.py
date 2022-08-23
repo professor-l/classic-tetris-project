@@ -15,12 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.conf import settings
+from django.conf.urls.static import static
 
 try:
     urlpatterns = [
         path("admin/", admin.site.urls),
         path("", include("classic_tetris_project.private.urls")),
     ]
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 except ModuleNotFoundError as e:
     print("Private urls could not be loaded")
     print(e)
