@@ -82,7 +82,7 @@ packaging==21.3
 parso==0.8.3
 pexpect==4.8.0
 pickleshare==0.7.5
-Pillow==7.1.1
+Pillow==9.0.1
 pluggy==0.13.1
 prompt-toolkit==2.0.10
 protobuf==3.19.4
