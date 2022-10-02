@@ -20,7 +20,7 @@ def announce_qualifier(qualifier_id):
     twitch_user = qualifier.user.twitch_user
 
     # Send message to channel
-    channel_id = env("DISCORD_QUALIFIER_REPORTING_CHANNEL_ID")
+    channel_id = event.qualifying_channel_id
     if channel_id:
         message = "{discord_user} is about to qualify for {event}! Go watch live on {twitch_url}".format(
             discord_user=discord_user.user_tag,
@@ -38,7 +38,7 @@ def report_submitted_qualifier(qualifier_id):
     discord_user = qualifier.user.discord_user
 
     # Send message to channel
-    channel_id = env("DISCORD_QUALIFIER_REPORTING_CHANNEL_ID")
+    channel_id = event.qualifying_channel_id
     if channel_id:
         channel_embed = MessageEmbed()
         channel_embed.description = render_to_string("discord/qualifier_submitted.txt", {
@@ -85,10 +85,11 @@ def announce_scheduled_tournament_match(tournament_match_id):
     match = tournament_match.match
     match_display = TournamentMatchDisplay(tournament_match)
     tournament = tournament_match.tournament
+    event = tournament.event
     user1 = tournament_match.player1.user if tournament_match.player1 else None
     user2 = tournament_match.player2.user if tournament_match.player2 else None
 
-    channel_id = env("DISCORD_TOURNAMENT_REPORTING_CHANNEL_ID")
+    channel_id = event and event.reporting_channel_id
     if channel_id:
         embed = MessageEmbed()
         embed.title = "{} Match {} Scheduled".format(
@@ -136,11 +137,12 @@ def report_tournament_match(tournament_match_id):
     match = tournament_match.match
     match_display = TournamentMatchDisplay(tournament_match)
     tournament = tournament_match.tournament
+    event = tournament.event
     user1 = tournament_match.player1.user if tournament_match.player1 else None
     user2 = tournament_match.player2.user if tournament_match.player2 else None
     winner = tournament_match.winner.user if tournament_match.winner else None
 
-    channel_id = env("DISCORD_TOURNAMENT_REPORTING_CHANNEL_ID")
+    channel_id = event and event.reporting_channel_id
     if channel_id and match and winner:
         discord_winner = (discord.API.users_get(winner.discord_user.discord_id)
                           if hasattr(winner, "discord_user") else None)

@@ -22,6 +22,16 @@ class Event(models.Model):
     pre_qualifying_instructions = MarkdownxField(blank=True)
     qualifying_instructions = MarkdownxField(blank=True)
     event_info = MarkdownxField(blank=True)
+    qualifying_channel_id = models.CharField(
+        max_length=64,
+        blank=True,
+        help_text="Discord channel id that qualifier announcements will be posted to. If blank, announcements will not be posted."
+    )
+    reporting_channel_id = models.CharField(
+        max_length=64,
+        blank=True,
+        help_text="Discord channel id that match reports will be posted to. If blank, messages will not be posted."
+    )
 
     def qualifying_type_class(self):
         return qualifying_types.QUALIFYING_TYPES[self.qualifying_type]
