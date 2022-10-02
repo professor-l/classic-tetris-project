@@ -18,6 +18,8 @@ class DuplicateEventForm(forms.ModelForm):
             pre_qualifying_instructions=base_event.pre_qualifying_instructions,
             qualifying_instructions=base_event.qualifying_instructions,
             event_info=base_event.event_info,
+            qualifying_channel_id=base_event.qualifying_channel_id,
+            reporting_channel_id=base_event.reporting_channel_id,
         )
         for tournament in base_event.tournaments.all():
             event.tournaments.create(
