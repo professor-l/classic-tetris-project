@@ -24,8 +24,8 @@ class MatchSheetReporter:
             match_data = [
                 [
                     match.id,
-                    match.player1.twitch_user.username,
-                    match.player2.twitch_user.username,
+                    self.display_name_for(match.player1),
+                    self.display_name_for(match.player2),
                     match.wins1,
                     match.wins2,
                     (match.start_date.astimezone(pytz.utc).isoformat() if
@@ -76,10 +76,16 @@ class MatchSheetReporter:
             games = indexed_games[match.id]
             game_data[match.id] = [
                 [
-                    game.winner.twitch_user.username,
+                    display_name_for(game.winner),
                     game.losing_score,
                     game.ended_at.astimezone(pytz.utc).isoformat()
                 ]
                 for game in games
             ]
         return game_data
+
+    def display_name_for(self, user):
+        if hasattr(user, "twitch_user"):
+            return user.twitch_user.username
+        else:
+            return user.display_name
