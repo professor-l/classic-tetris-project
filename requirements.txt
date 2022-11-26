@@ -86,7 +86,7 @@ Markdown==3.3.3
 more-itertools==8.12.0
 msgpack==1.0.4
 multidict==4.7.6
-oauthlib==3.2.0
+oauthlib==3.2.1
 orderedmultidict==1.0.1
 packaging==21.3
 parso==0.8.3
