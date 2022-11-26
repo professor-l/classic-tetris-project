@@ -1,0 +1,32 @@
+- extends "base.html"
+
+- block title
+  Submit Live Notification
+
+- block content
+  %form.form{method: "post"}
+    - csrf_token
+
+    .section
+      .section__header
+        %h2.section__title
+          Live Notifiation Submission
+      .form.form--narrow
+        .form__field
+          %label{for: "{{ live_notification_form.message.id_for_label }}"}
+          Message contents
+          = live_notification_form.message
+          = live_notification_form.message.errors
+
+          .form__field
+          %label{for: "{{ live_notification_form.duration.id_for_label }}"}
+          Duration (seconds)
+          = live_notification_form.duration
+          = live_notification_form.duration.errors
+
+          .form__field
+          - for radio in live_notification_form.position
+            %div= radio
+
+        .form__actions
+          %input.btn.btn--primary{type: "submit", value: "Submit"}
