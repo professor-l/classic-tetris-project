@@ -101,6 +101,10 @@ class Qualifier(models.Model):
         else:
             return render_tag("Pending Review", "gray")
 
+    def display_score(self):
+        if self.qualifying_score:
+            return self.type.format_score()
+
     @staticmethod
     def before_save(sender, instance, **kwargs):
         if not instance.auth_word:

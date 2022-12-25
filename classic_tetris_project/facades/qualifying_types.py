@@ -193,10 +193,48 @@ class MostMaxouts(QualifyingType):
         }
 
 
+def format_time(time):
+    minutes = int(time // 60)
+    seconds = time % 60
+    return "{}:{:06.3f}".format(minutes, seconds)
+
+class LowestTime(QualifyingType):
+    NAME = "Lowest Time"
+    EXTRA_FIELDS = [
+        ("time", "Time"),
+    ]
+    ORDER_BY = ["qualifying_score"] # increasing; lowest time comes first
+
+    class Form(QualifyingType.Form):
+        time = forms.DurationField(label="Time", help_text="(e.g. 12:34.567)")
+
+        def __init__(self, *args, **kwargs):
+            if kwargs["initial"]["time"]:
+                kwargs["initial"]["time"] = format_time(kwargs["initial"]["time"])
+            super().__init__(*args, **kwargs)
+
+        def clean_time(self):
+            time = self.cleaned_data["time"]
+            return time.total_seconds()
+
+    def load_data(self, data):
+        self.time = data[0] if data else None
+
+    def qualifying_score(self):
+        return round(self.time * 1000)
+
+    def format_score(self):
+        return format_time(self.time)
+
+    def qualifying_data(self):
+        return [self.time]
+
+
 QUALIFYING_TYPES = {
     1: HighestScore,
     2: Highest2Scores,
     3: Highest3Scores,
     4: MostMaxouts,
+    5: LowestTime,
 }
 CHOICES = [(n, qualifying_type.NAME) for n, qualifying_type in QUALIFYING_TYPES.items()]
