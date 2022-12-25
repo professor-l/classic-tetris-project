@@ -25,7 +25,7 @@ decorator==4.4.2
 Deprecated==1.2.13
 disco-py==0.0.14rc1
 discord.py==1.5.1
-Django==3.2.11
+Django==3.2.16
 django-admin-sortable2==1.0.3
 django-appconf==1.0.5
 django-autocomplete-light==3.9.0rc1
