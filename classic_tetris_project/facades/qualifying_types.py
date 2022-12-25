@@ -47,8 +47,11 @@ class QualifyingType:
         self.load_data(self.qualifier.qualifying_data)
 
     def display_values(self):
-        return ([(label, getattr(self, value)) for value, label in self.EXTRA_FIELDS] +
+        return ([(label, self.format_value(field, getattr(self, field))) for field, label in self.EXTRA_FIELDS] +
                 [("Total score", self.format_score())])
+
+    def format_value(self, field, value):
+        return value
 
     def format_score(self):
         return "{:,}".format(self.qualifier.qualifying_score)
@@ -222,6 +225,12 @@ class LowestTime(QualifyingType):
 
     def qualifying_score(self):
         return round(self.time * 1000)
+
+    def format_value(self, field, value):
+        if field == "time":
+            return format_time(value)
+        else:
+            return value
 
     def format_score(self):
         return format_time(self.time)
