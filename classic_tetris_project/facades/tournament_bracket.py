@@ -13,8 +13,8 @@ class MatchNode:
         self.parent = None
         self.match = match
         self.viewing_user = viewing_user
-        self.color_left = 5
-        self.color_right = 5
+        self.color_left = 99
+        self.color_right = 99
 
     def add_left(self, node):
         if node:
@@ -87,6 +87,7 @@ class TournamentBracket:
         self.root = None
 
     def build(self):
+        seed_count = self.tournament.seed_count
         bracket_nodes = { match.match_number: MatchNode(match, self.user) for match in
                          self.tournament.all_matches() }
 
@@ -107,15 +108,60 @@ class TournamentBracket:
         self.root = next(node for node in bracket_nodes.values() if node.parent is None)
         semi_left = self.root.left
         semi_right = self.root.right
-        semi_left.color_left = 1
-        semi_left.color_right = 2
-        semi_right.color_left = 3
-        semi_right.color_right = 4
 
-        semi_left.left.color_all(1)
-        semi_left.right.color_all(2)
-        semi_right.left.color_all(3)
-        semi_right.right.color_all(4)
+        if seed_count >= 64:
+            semi_left.color_all(98)
+            semi_right.color_all(98)
+
+            semi_left.left.left.color_left = 1
+            semi_left.left.left.color_right = 5
+            semi_left.left.right.color_left = 9
+            semi_left.left.right.color_right = 13
+
+            semi_left.right.left.color_left = 2
+            semi_left.right.left.color_right = 6
+            semi_left.right.right.color_left = 10
+            semi_left.right.right.color_right = 14
+
+            semi_right.left.left.color_left = 3
+            semi_right.left.left.color_right = 7
+            semi_right.left.right.color_left = 11
+            semi_right.left.right.color_right = 15
+
+            semi_right.right.left.color_left = 4
+            semi_right.right.left.color_right = 8
+            semi_right.right.right.color_left = 12
+            semi_right.right.right.color_right = 16
+
+            semi_left.left.left.left.color_all(1)
+            semi_left.left.left.right.color_all(5)
+            semi_left.left.right.left.color_all(9)
+            semi_left.left.right.right.color_all(13)
+
+            semi_left.right.left.left.color_all(2)
+            semi_left.right.left.right.color_all(6)
+            semi_left.right.right.left.color_all(10)
+            semi_left.right.right.right.color_all(14)
+
+            semi_right.left.left.left.color_all(3)
+            semi_right.left.left.right.color_all(7)
+            semi_right.left.right.left.color_all(11)
+            semi_right.left.right.right.color_all(15)
+
+            semi_right.right.left.left.color_all(4)
+            semi_right.right.left.right.color_all(8)
+            semi_right.right.right.left.color_all(12)
+            semi_right.right.right.right.color_all(16)
+        else:
+            semi_left.color_left = 1
+            semi_left.color_right = 2
+            semi_right.color_left = 3
+            semi_right.color_right = 4
+
+            semi_left.left.color_all(1)
+            semi_left.right.color_all(2)
+            semi_right.left.color_all(3)
+            semi_right.right.color_all(4)
 
     def display_rounds(self):
         rounds = []
