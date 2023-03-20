@@ -40,6 +40,14 @@ const BracketControls = (props) => {
         <input type="checkbox" defaultChecked={state.showBorder} onChange={e => dispatch({ type: 'SET_BOOL', field: 'showBorder', value: e.target.checked })}/>
       </label>
       <label>
+        Two sided (facing in):
+        <input type="checkbox" defaultChecked={state.twoSided} onChange={e => dispatch({ type: 'SET_BOOL', field: 'twoSided', value: e.target.checked })}/>
+      </label>
+      <label>
+        Show Match Numbers:
+        <input type="checkbox" defaultChecked={state.showMatchNumbers} onChange={e => dispatch({ type: 'SET_BOOL', field: 'showMatchNumbers', value: e.target.checked })}/>
+      </label>
+      <label>
         Refresh Every Minute:
         <input type="checkbox" defaultChecked={state.autoRefresh} onChange={e => dispatch({ type: 'SET_BOOL', field: 'autoRefresh', value: e.target.checked })}/>
       </label>

@@ -55,6 +55,8 @@ BRACKET_OPTIONS = {
     "depth",
     "root",
     "showBorder",
+    "twoSided",
+    "showMatchNumbers",
     "autoRefresh",
     "embed",
 }

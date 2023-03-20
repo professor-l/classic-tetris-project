@@ -17,7 +17,7 @@ const findMatch = (matches, root) => {
 };
 
 const TournamentBracket = (props) => {
-  const { matches, scaled, fitToWindow, width, height, depth, root, showBorder, customBracketColor } = props;
+  const { matches, scaled, fitToWindow, width, height, depth, root, showBorder, twoSided, showMatchNumbers, customBracketColor } = props;
 
   const containerRef = useRef(null);
   const bracketRef = useRef(null);
@@ -58,15 +58,21 @@ const TournamentBracket = (props) => {
     return () => { window.removeEventListener('resize', resize); };
   }, [scaled, fitToWindow, height]);
 
+  const classes = 'bracket-container'
+    + (showBorder ? ' bracket-container--border' : '')
+    + (scaled ? ' bracket-container--scaled' : '')
+    + (twoSided ? ' two-sided' : '')
+    + (showMatchNumbers ? ' show-match-numbers' : '')
+
   return (
-    <div className={'bracket-container' + (showBorder ? ' bracket-container--border' : '') + (scaled ? ' bracket-container--scaled' : '')}
+    <div className={classes}
       ref={containerRef}
       style={{
         width: (fitToWindow ? '100%' : (width ? `${width}px` : null)),
         height: (fitToWindow ? '100vh' : (height ? `${height}px` : null)),
       }}>
       <div className="bracket" ref={bracketRef}>
-        {rootNode && <BracketNode {...rootNode} depth={depth} customBracketColor={customBracketColor} />}
+        {rootNode && <BracketNode {...rootNode} depth={depth} customBracketColor={customBracketColor} twoSided={twoSided} />}
       </div>
     </div>
   );
@@ -79,6 +85,8 @@ TournamentBracket.propTypes = {
   depth: PropTypes.number,
   root: PropTypes.number,
   showBorder: PropTypes.bool,
+  twoSided: PropTypes.bool,
+  showMatchNumbers: PropTypes.bool,
   autoRefresh: PropTypes.bool,
   customBracketColor: PropTypes.string,
 };
@@ -89,6 +97,8 @@ TournamentBracket.defaultProps = {
   depth: null,
   root: null,
   showBorder: false,
+  twoSided: false,
+  showMatchNumbers: true,
   autoRefresh: true,
   customBracketColor: null,
 };

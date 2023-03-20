@@ -123,7 +123,59 @@ $match-width: 240px;
       background: colors.$bracket-4;
     }
 
-    &.color-5.winner {
+    &.color-5 {
+      background: colors.$bracket-5;
+    }
+
+    &.color-6 {
+      background: colors.$bracket-6;
+    }
+
+    &.color-7 {
+      background: colors.$bracket-7;
+    }
+
+    &.color-8 {
+      background: colors.$bracket-8;
+    }
+
+    &.color-9 {
+      background: colors.$bracket-9;
+    }
+
+    &.color-10 {
+      background: colors.$bracket-10;
+    }
+
+    &.color-11 {
+      background: colors.$bracket-11;
+    }
+
+    &.color-12 {
+      background: colors.$bracket-12;
+    }
+
+    &.color-13 {
+      background: colors.$bracket-13;
+    }
+
+    &.color-14 {
+      background: colors.$bracket-14;
+    }
+
+    &.color-15 {
+      background: colors.$bracket-15;
+    }
+
+    &.color-16 {
+      background: colors.$bracket-16;
+    }
+
+    &.color-98 {
+      background: colors.$bracket-quarter;
+    }
+
+    &.color-99.winner {
       background: colors.$bracket-winner;
     }
 
@@ -158,6 +210,37 @@ $match-width: 240px;
   padding: 10px;
 
   label {
+    display: block;
+  }
+}
+
+.bracket-match-number {
+  display: none;
+}
+
+.two-sided {
+  .bracket > .bracket-match-container:first-child {
+    display: grid;
+    grid-template-columns: auto 1fr 240px 1fr auto;
+    grid-template-rows: unset;
+    grid-template-areas: "left path-left node path-right right";
+
+    > .bracket-match-right {
+      transform: scaleX(-1);
+
+      .bracket-match {
+        transform: scaleX(-1);
+      }
+    }
+
+    > .bracket-path-left {
+      height: auto;
+    }
+  }
+}
+
+.show-match-numbers {
+  .bracket-match-number {
     display: block;
   }
 }
