@@ -2,6 +2,8 @@
 
 This repository is a new and improved bot for Classic Tetris Monthly that is designed to be accessible to the whole community, both in and out of CTM contexts.  It is currently being run on a cloud computing instance rather than a home PC, and as such its uptime is drastically improved from the strikingly mediocre [former bot](https://github.com/professor-l/lsq-bot).
 
+*See also: our newest Classic Tetris project, [ctdb](https://github.com/professor-l/ctdb)*
+
 ### Major Features
 
 Here are some of the greater features the bot supports:
@@ -12,9 +14,9 @@ Here are some of the greater features the bot supports:
 * Other personal information storage (preferred name, country, etc.)
 * A match queueing interface
 * Miscellaneous commands (see [info.py](https://github.com/professor-l/classic-tetris-project/blob/master/classic_tetris_project/commands/info.py))
-* More to come - including a web interface, the development of which is just beginning
+* A web interface at [go.ctm.gg](https://go.ctm.gg), providing web-based tournament orchestration tooling for CTM
 
-A full list of commands can be found in the [COMMANDS.md](https://github.com/professor-l/classic-tetris-project/blob/master/docs/COMMANDS.md) file.
+A semi-full list of commands can be found in the [COMMANDS.md](https://github.com/professor-l/classic-tetris-project/blob/master/docs/COMMANDS.md) file.
 
 ### Community Input
 
@@ -33,7 +35,8 @@ Additionally, there exists a more comprehensive setup guide for those who intend
 
 ## The team
 
-Currently, the team consists of two people:
+Currently, the team consists of three people:
 
 * **Professor L (Elle Nolan) - Co-head developer**: The bot's mother. I begun development of ClassicTetrisBot just a few weeks before my first NEStris maxout, in early January of 2019. It was originally written in a hurry, in Node.js. A dangerous combination. The code from that dark era is still public, if exclusively to provide a learning experience and encourage humility. _([Her GitHub](https://github.com/professor-l))_
 * **dexfore (Michael Lin) - Co-head developer**: The bot's cool uncle who made it what it is today. He joined the team in May 2019, when I finally decided I needed to turn the bot's spaghetti code into something more reasonable. I brought him on because of his familiarity with a variety of technologies and techniques with which I was, at the time, relatively unfamiliar: relational databases, code infrastructure design, and Django, among many others. Without him, this bot would be nothing. _([His GitHub](https://github.com/michaelelin))_
+* **Fireworks (Justin Hundley) - Contributor**: A new developer on the team as of 2022, who joined the community and immediately and eagerly began helping us out with all sorts of little hiccups and QoL things. He's been instrumental in this software suite's continued success over the last year. _([His GitHub](https://github.com/fireworks))_
