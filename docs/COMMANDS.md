@@ -33,6 +33,13 @@ Sets the given pb (of type NTSC, 19/NTSC19, or PAL) to yours in the database.
 Sets your playstyle to DAS, Hypertap, or Hybrid.
 
 ---
+#### `!setpronouns <he|she|they>`
+**Platforms**: Twitch, Discord<br/>
+**Aliases**: `!setpronoun`
+
+Sets your Pronouns to he/him/his, she/her/her, or they/them/theirs.
+
+---
 #### `!country [username]`
 **Platforms**: Twitch, Discord<br/>
 **Aliases**: `!getcountry`
