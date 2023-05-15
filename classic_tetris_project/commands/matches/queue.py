@@ -97,7 +97,7 @@ class OpenQueueCommand(QueueCommand):
         else:
             if self.queue:
                 self.queue.open()
-                self.send_message("The queue has been repoened!")
+                self.send_message("The queue has been reopened!")
             else:
                 Queue(self.context.channel.name).open()
                 self.send_message("The queue is now open!")
@@ -240,7 +240,7 @@ class DeclareWinnerCommand(QueueCommand):
                 losing_score = int(losing_score)
             except ValueError:
                 raise CommandException("Invalid losing score.")
-            if losing_score < 0 or losing_score > 1400000:
+            if losing_score < 0 or losing_score > 1500000:
                 raise CommandException("Invalid losing score.")
 
         twitch_user = self.twitch_user_from_username(player_name)
