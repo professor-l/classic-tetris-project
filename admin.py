@@ -187,7 +187,8 @@ class TournamentMatchInline(admin.TabularInline):
 
 
 from django.urls import path
-from classic_tetris_project.util import bracket_generator, google_sheets
+from classic_tetris_project.util.bracket_generator import BracketGenerator
+from classic_tetris_project.util import google_sheets
 
 @admin.register(Tournament)
 class TournamentAdmin(DjangoObjectActions, admin.ModelAdmin):
@@ -196,12 +197,11 @@ class TournamentAdmin(DjangoObjectActions, admin.ModelAdmin):
     change_actions = ("generate_matches", "update_bracket")
 
     def generate_matches(self, request, obj):
-        # TODO intermediate page to select bracket type
-        generator = bracket_generator.SingleElimination(obj)
+        generator = BracketGenerator.choose(obj)
         try:
             generator.generate()
             messages.success(request, "Matches added")
-        except bracket_generator.BracketGenerationError as e:
+        except BracketGenerator.BracketGenerationError as e:
             messages.error(request, str(e))
 
     def update_bracket(self, request, obj):

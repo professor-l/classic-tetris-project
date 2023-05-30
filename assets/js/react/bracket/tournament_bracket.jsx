@@ -72,7 +72,7 @@ const TournamentBracket = (props) => {
         height: (fitToWindow ? '100vh' : (height ? `${height}px` : null)),
       }}>
       <div className="bracket" ref={bracketRef}>
-        {rootNode && <BracketNode {...rootNode} depth={depth} customBracketColor={customBracketColor} twoSided={twoSided} />}
+        {rootNode && <BracketNode {...rootNode} depth={depth} parentColor={customBracketColor} twoSided={twoSided} isRoot={rootNode === matches} />}
       </div>
     </div>
   );
