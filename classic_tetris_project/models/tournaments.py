@@ -16,6 +16,10 @@ from .qualifiers import Qualifier
 
 
 class Tournament(models.Model):
+    class BracketType(models.TextChoices):
+        SINGLE_ELIMINATION = "SINGLE", "Single Elimination"
+        DOUBLE_ELIMINATION = "DOUBLE", "Double Elimination"
+
     name = models.CharField(
         max_length=64,
         blank=True,
@@ -36,6 +40,8 @@ class Tournament(models.Model):
     )
     color = ColorField(default='#000000')
     bracket_color = ColorField(default=None, null=True, blank=True)
+    bracket_type = models.CharField(max_length=64, choices=BracketType.choices,
+                                    default=BracketType.SINGLE_ELIMINATION)
     public = models.BooleanField(
         default=False,
         help_text="Controls whether the tournament page is available to view"
@@ -161,6 +167,7 @@ class TournamentMatch(models.Model):
     match_number = models.IntegerField()
     round_number = models.IntegerField(null=True, blank=True)
     restreamed = models.BooleanField(default=False)
+    color = ColorField(null=True, blank=True)
 
     source1_type = models.IntegerField(choices=PlayerSource.choices)
     source1_data = models.IntegerField(null=True, blank=True)
