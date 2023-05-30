@@ -230,5 +230,8 @@ import rollbar
 rollbar.init(**ROLLBAR)
 
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 2000
+
+
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379/1',
 WIKI_CHECK_SLUG_URL_AVAILABLE = False
