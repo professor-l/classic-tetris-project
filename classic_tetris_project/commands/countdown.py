@@ -25,7 +25,7 @@ class Countdown(Command):
             self.send_message(str(i))
             time.sleep(1)
 
-        self.send_message("Texas!" if randint(1,100) == 42 else "Tetris!")
+        self.send_message("Texas!" if randint(1,100) == 42 else "Teris!" if randint(1,495) == 42 else "Tetris!")
 
     def check_validity(self, n):
         channel = self.context.channel.name
