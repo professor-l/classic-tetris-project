@@ -165,8 +165,10 @@ class QualifierAdmin(admin.ModelAdmin):
                             "reviewed again.")
         }),
     )
-    readonly_fields = ("user", "event", "qualifying_type", "created_at", "submitted_at",
+    readonly_fields = ("qualifying_type", "created_at", "submitted_at",
                        "reviewed_at", "reviewed_by", "review_data")
+
+    autocomplete_fields = ["user"]
 
 class TournamentPlayerInline(admin.TabularInline):
     model = TournamentPlayer
