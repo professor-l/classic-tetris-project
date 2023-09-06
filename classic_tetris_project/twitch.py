@@ -1,4 +1,5 @@
 import irc.client
+import irc.events
 import logging
 import re
 import requests
@@ -124,6 +125,8 @@ class Client:
         self.default_channels = default_channels
         self.reactor = irc.client.Reactor()
         self.connection = self.reactor.server()
+        for event in irc.events.all:
+            self.connection.add_global_handler(event, lambda c, e : logger.info(f"received {e.type}!"))
 
         self.on_welcome(self.handle_welcome)
 
