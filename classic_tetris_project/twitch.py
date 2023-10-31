@@ -1,5 +1,6 @@
 import irc.client
 import irc.events
+import irc.connection
 import logging
 import re
 import requests
@@ -129,6 +130,7 @@ class Client:
             self.connection.add_global_handler(event, lambda c, e : logger.info(f"received {e.type}!"))
 
         self.on_welcome(self.handle_welcome)
+        self.on_reconnect(self.handle_reconnect)
 
     def handle_welcome(self):
         self.connection.cap("REQ", ":twitch.tv/tags")
@@ -141,6 +143,19 @@ class Client:
         self.user_id = self.user_obj.id
         self.connection.connect(TWITCH_SERVER, TWITCH_PORT, self.username, self.token)
         self.reactor.process_forever()
+
+    def on_reconnect(self, handler):
+        self.connection.add_global_handler("reconnect", lambda c, e: handler())
+
+    def handle_reconnect(self):
+        timeout = 1
+        while True:
+            try:
+                self.connection.reconnect()
+                return
+            except irc.client.ServerConnectionError:
+                time.sleep(timeout)
+                timeout = min(64, timeout * 2)
 
     def on_welcome(self, handler):
         self.connection.add_global_handler("welcome", lambda c, e: handler())
