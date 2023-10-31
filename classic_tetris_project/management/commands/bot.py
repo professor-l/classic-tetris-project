@@ -1,4 +1,4 @@
-from asgiref.sync import sync_to_async
+from asgiref.sync import sync_to_async, async_to_sync
 from django.core.management.base import BaseCommand, CommandError
 from threading import Thread
 import logging.config
@@ -68,6 +68,11 @@ class Command(BaseCommand):
             if TwitchCommandContext.is_command(message.content):
                 context = TwitchCommandContext(message)
                 context.dispatch()
+
+        # @twitch.client.on_reconnect
+        # def on_reconnect():
+        #     chan = discord.get_guild().get_channel(CHAN_ID)
+        #     async_to_sync(chan.send)('Twitch bot was disconnected, attempting to reconnect...')
 
         twitch.client.start()
 
