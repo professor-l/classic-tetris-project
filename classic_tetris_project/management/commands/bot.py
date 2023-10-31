@@ -1,4 +1,6 @@
+import time
 from asgiref.sync import sync_to_async
+import asyncio
 from django.core.management.base import BaseCommand, CommandError
 from threading import Thread
 import logging.config
@@ -68,6 +70,23 @@ class Command(BaseCommand):
             if TwitchCommandContext.is_command(message.content):
                 context = TwitchCommandContext(message)
                 context.dispatch()
+
+        @twitch.client.on_reconnect
+        def on_reconnect():
+            guild = discord.get_guild()
+            # tries to fetch guild for 5 seconds, and returns if it fails
+            timeout = 5
+            while guild is None:
+                if timeout == 0:
+                    return
+                timeout -= 1
+                time.sleep(1)
+                guild = discord.get_guild()
+            chan = guild.get_channel(discord.MAINTENANCE_CHAN_ID)
+            # not using async_to_sync because this function needs to be run in
+            # the discord event loop
+            # source: https://stackoverflow.com/questions/52232177/runtimeerror-timeout-context-manager-should-be-used-inside-a-task
+            asyncio.run_coroutine_threadsafe(chan.send("Twitch bot was disconnected, attempting to reconnect..."), discord.client.loop)
 
         twitch.client.start()
 
