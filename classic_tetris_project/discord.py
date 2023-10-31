@@ -7,6 +7,7 @@ from .env import env
 
 DISCORD_API = "https://discord.com/api/"
 GUILD_ID = int(env("DISCORD_GUILD_ID", default=0))
+MAINTENANCE_CHAN_ID = int(env("DISCORD_MAINTENANCE_CHAN_ID", default=0))
 MODERATOR_ROLE_ID = int(env("DISCORD_MODERATOR_ROLE_ID", default=0))
 
 intents = discord.Intents(
