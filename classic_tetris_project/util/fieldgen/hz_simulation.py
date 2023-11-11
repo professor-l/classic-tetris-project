@@ -11,7 +11,7 @@ from ..cache import FileCache
 class HzSimulation:
     # VERSION is used for caching images.
     # Increment this every time image generation visibly changes.
-    VERSION = 1
+    VERSION = 2
     IMAGE_CACHE = FileCache("hz")
 
     def __init__(self, level, height, taps=None, sequence=None):
@@ -81,6 +81,11 @@ class HzSimulation:
         if not self.IMAGE_CACHE.has(self.filename):
             image = FieldImageGenerator.image(self)
             self.IMAGE_CACHE.put(self.filename, image.read())
+
+    # This should only be used for testing. Please use image_url normally
+    def get_image(self):
+        self.cache_image()
+        return self.IMAGE_CACHE.get(self.filename)
 
     @property
     def filename(self):
