@@ -14,6 +14,7 @@ class Event(models.Model):
     slug = models.SlugField(db_index=True)
     qualifying_type = models.IntegerField(choices=qualifying_types.CHOICES)
     vod_required = models.BooleanField(default=True)
+    use_custom_font = models.BooleanField(default=False)
     qualifying_open = models.BooleanField(default=False)
     withdrawals_allowed = models.BooleanField(
         default=True,
