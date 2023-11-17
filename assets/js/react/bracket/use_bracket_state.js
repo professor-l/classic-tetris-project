@@ -49,6 +49,7 @@ const initialState = (props) => {
     autoRefresh: _parseBool(props.autoRefresh, 'autoRefresh'),
     embed: _parseBool(props.embed, 'embed'),
     customBracketColor: props.customBracketColor,
+    useCustomFont: _parseBool(props.useCustomFont, 'useCustomFont'),
   }
 };
 

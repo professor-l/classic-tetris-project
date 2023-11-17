@@ -17,7 +17,7 @@ const findMatch = (matches, root) => {
 };
 
 const TournamentBracket = (props) => {
-  const { matches, scaled, fitToWindow, width, height, depth, root, showBorder, twoSided, showMatchNumbers, customBracketColor } = props;
+  const { matches, scaled, fitToWindow, width, height, depth, root, showBorder, twoSided, showMatchNumbers, customBracketColor, useCustomFont } = props;
 
   const containerRef = useRef(null);
   const bracketRef = useRef(null);
@@ -63,6 +63,7 @@ const TournamentBracket = (props) => {
     + (scaled ? ' bracket-container--scaled' : '')
     + (twoSided ? ' two-sided' : '')
     + (showMatchNumbers ? ' show-match-numbers' : '')
+    + (useCustomFont ? ' custom-font' : '')
 
   return (
     <div className={classes}
@@ -89,6 +90,7 @@ TournamentBracket.propTypes = {
   showMatchNumbers: PropTypes.bool,
   autoRefresh: PropTypes.bool,
   customBracketColor: PropTypes.string,
+  useCustomFont: PropTypes.bool,
 };
 TournamentBracket.defaultProps = {
   scaled: true,
@@ -101,6 +103,7 @@ TournamentBracket.defaultProps = {
   showMatchNumbers: true,
   autoRefresh: true,
   customBracketColor: null,
+  useCustomFont: false,
 };
 
 

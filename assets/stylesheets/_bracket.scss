@@ -4,6 +4,11 @@
 
 $match-width: 240px;
 
+@font-face {
+  font-family: "Gotham";
+  src: url("../fonts/gotham.ttf") format("truetype");
+}
+
 .bracket-container {
   overflow: hidden;
 
@@ -16,6 +21,12 @@ $match-width: 240px;
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  &.custom-font {
+    .bracket-match-player {
+      font-family: 'Gotham';
+    }
   }
 }
 
