@@ -238,6 +238,36 @@ class LowestTime(QualifyingType):
     def qualifying_data(self):
         return [self.time]
 
+class Clipped7GameAvg(QualifyingType):
+    NAME = "Clipped Seven Game Average"
+    EXTRA_FIELDS = [(f"score{i}", f"Score {i}") for i in range(1, 8)]
+
+    class Form(QualifyingType.Form):
+        score1 = forms.IntegerField(min_value=0, label="Score 1")
+        score2 = forms.IntegerField(min_value=0, label="Score 2")
+        score3 = forms.IntegerField(min_value=0, label="Score 3")
+        score4 = forms.IntegerField(min_value=0, label="Score 4")
+        score5 = forms.IntegerField(min_value=0, label="Score 5")
+        score6 = forms.IntegerField(min_value=0, label="Score 6")
+        score7 = forms.IntegerField(min_value=0, label="Score 7")
+
+    def load_data(self, data):
+        pass
+        self.score1 = data[0] if data else None
+        self.score2 = data[1] if data else None
+        self.score3 = data[2] if data else None
+        self.score4 = data[3] if data else None
+        self.score5 = data[4] if data else None
+        self.score6 = data[5] if data else None
+        self.score7 = data[6] if data else None
+
+    def qualifying_score(self):
+        scores = list(reversed(sorted([self.score1, self.score2, self.score3, self.score4, self.score5, self.score6, self.score7])))
+        scores = scores[1:-1]
+        return sum(scores) // 5
+
+    def qualifying_data(self):
+        return list(reversed(sorted([self.score1, self.score2, self.score3, self.score4, self.score5, self.score6, self.score7])))
 
 QUALIFYING_TYPES = {
     1: HighestScore,
@@ -245,5 +275,6 @@ QUALIFYING_TYPES = {
     3: Highest3Scores,
     4: MostMaxouts,
     5: LowestTime,
+    6: Clipped7GameAvg,
 }
 CHOICES = [(n, qualifying_type.NAME) for n, qualifying_type in QUALIFYING_TYPES.items()]
