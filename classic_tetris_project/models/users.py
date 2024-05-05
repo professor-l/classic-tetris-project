@@ -22,6 +22,8 @@ class User(models.Model):
         "he": "He/him/his",
         "she": "She/her/hers",
         "they": "They/them/theirs",
+        "it": "It/its",
+        "xe": "Xe/xem/xir",
     }
 
     PLAYSTYLE_CHOICES = {
@@ -64,6 +66,10 @@ class User(models.Model):
         pronoun = pronoun.lower()
         if pronoun in self.PRONOUN_CHOICES:
             self.pronouns = pronoun
+            self.save()
+            return True
+        elif pronoun == "none":
+            self.pronouns = None
             self.save()
             return True
         else:
