@@ -65,8 +65,32 @@ class APIClient:
             return self.wrap_user_dict(user_obj, client)
 
     def usernames_in_channel(self, channel):
-        response = self._request(f"group/user/{channel}/chatters", api=TWITCH_MESSAGING_API)
-        return sum((group for group in response["chatters"].values()), [])
+        channel_user = self.user_from_username(username=channel)
+        channel_id = channel_user.id
+        bot_user = self.user_from_username(username=env("TWITCH_USERNAME", default=""))
+        bot_id = bot_user.id
+
+        # TODO: Add user_access_token
+        params = {
+            "broadcaster_id": channel_id,
+            "moderator_id": bot_id,
+            "first": 1000
+        }
+
+        chatters = []
+        while True:
+            response = self._request("chat/chatters", params=params)
+            if "error" in response:
+                return None
+
+            logins = [entry["user_login"] for entry in response["data"]]
+            chatters.extend(logins)
+            if not response["pagination"]:
+                break
+
+            params.after = response["pagination"]["cursor"]
+
+        return chatters
 
     def wrap_user_dict(self, user_dict, client=None):
         return User(
