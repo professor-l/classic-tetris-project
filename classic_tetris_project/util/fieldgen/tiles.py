@@ -1,6 +1,9 @@
+import os
+
 from PIL import Image
 from enum import IntEnum
-import os
+
+from .colors import level_palette
 
 
 class InputTile(IntEnum):
@@ -107,13 +110,38 @@ class TileManager(ImageLoader):
         file_path = os.path.join(self.asset_path, name)
         return Image.open(file_path)
 
+    # applies a palette to the image, modifying it in place.
+    # assumes the only colors in the img are 0x000000, 0x555555, 0xAAAAAA, and
+    # 0xFFFFFF.
+    def set_palette(self, img, palette):
+        pixels = img.load()
+        # this is only called on tiny images so naive should be fine
+        for x in range(img.size[0]):
+            for y in range(img.size[1]):
+                try:
+                    if pixels[x, y] == (0xFF, 0xFF, 0xFF, 255):
+                        pixels[x, y] = (*palette[0], 255)
+                    elif pixels[x, y] == (0xAA, 0xAA, 0xAA, 255):
+                        pixels[x, y] = (*palette[1], 255)
+                    elif pixels[x, y] == (0x55, 0x55, 0x55, 255):
+                        pixels[x, y] = (*palette[2], 255)
+                except:
+                    pass
+
+
     def get_active_piece_tile(self, level):
-        return self.block_tiles.crop(TileMath.get_block_rect([0, level % 10]))
+        palette = level_palette(level)
+        mino = self.block_tiles.crop(TileMath.get_block_rect([0, 0]))
+        self.set_palette(mino, palette)
+        return mino
 
     def get_block_tiles(self, level):
         # return non-i piece tiles for a given level
-        block1 = self.block_tiles.crop(TileMath.get_block_rect([1, level % 10]))
-        block2 = self.block_tiles.crop(TileMath.get_block_rect([2, level % 10]))
+        palette = level_palette(level)
+        block1 = self.block_tiles.crop(TileMath.get_block_rect([1, 0]))
+        self.set_palette(block1, palette)
+        block2 = self.block_tiles.crop(TileMath.get_block_rect([2, 0]))
+        self.set_palette(block2, palette)
         return (block1, block2)
 
     def get_number_tile(self, number):

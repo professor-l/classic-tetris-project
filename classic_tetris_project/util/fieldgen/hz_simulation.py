@@ -11,7 +11,7 @@ from ..cache import FileCache
 class HzSimulation:
     # VERSION is used for caching images.
     # Increment this every time image generation visibly changes.
-    VERSION = 1
+    VERSION = 2
     IMAGE_CACHE = FileCache("hz")
 
     def __init__(self, level, height, taps=None, sequence=None):

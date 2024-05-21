@@ -1,4 +1,4 @@
-﻿from .basecanvas import BaseCanvas
+from .basecanvas import BaseCanvas
 from .tiles import TileManager, TemplateManager
 from .assetpath import AssetPath
 from .garbage import GarbageGenerator
