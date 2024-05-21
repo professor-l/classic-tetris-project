@@ -70,16 +70,19 @@ class APIClient:
         bot_user = self.user_from_username(username=env("TWITCH_USERNAME", default=""))
         bot_id = bot_user.id
 
-        # TODO: Add user_access_token
         params = {
             "broadcaster_id": channel_id,
             "moderator_id": bot_id,
             "first": 1000
         }
+        headers = {
+            "Client-ID": self.client_id,
+            "Authorization": f'Bearer {env("TWITCH_TOKEN")}'
+        }
 
         users = []
         while True:
-            response = self._request("chat/chatters", params=params)
+            response = self._request("chat/chatters", params=params, headers=headers)
             if "error" in response:
                 return None
 
