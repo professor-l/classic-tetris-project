@@ -173,6 +173,8 @@ class Client:
             channel = PublicChannel(self, event.target[1:])
         elif event.type == "whisper":
             channel = Whisper(self, author)
+        else:
+            raise ValueError(f"Unexpected message type {event.type}")
         message = Message(event.arguments[0], author, channel)
         handler(message)
 

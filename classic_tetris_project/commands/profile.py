@@ -5,9 +5,10 @@ from ..discord import *
 from .command import Command, CommandException
 from ..countries import Country
 
+from ..util import Platform
 from ..util.json_template import match_template
 
-TEMPLATE = ("""
+DISCORD_TEMPLATE = ("""
 {{
     "color": {color},
     "author": {{
@@ -18,7 +19,7 @@ TEMPLATE = ("""
     "fields": [
       {{
         "name": "Personal Bests",
-        "value": "```NTSC: {ntsc_pb} \\nNTSC(19): {ntsc_pb_19}\\nPAL: {pal_pb}```\\n"
+        "value": "```NTSC: {ntsc_pb} \\nNTSC(19): {ntsc_pb_19}\\nNTSC(29): {ntsc_pb_29}\\nPAL: {pal_pb}```\\n"
       }},
       {{
         "name": "Pronouns",
@@ -36,7 +37,7 @@ TEMPLATE = ("""
         "inline": "True"
       }},
       {{
-        "name": "Same Piece sets",
+        "name": "Same piece sets",
         "value": "{same_pieces}",
         "inline": "True"
       }},
@@ -46,6 +47,8 @@ TEMPLATE = ("""
       }}]
 }}
 """)
+
+TWITCH_TEMPLATE = "{username}'s profile. NTSC PBs: {ntsc_pb} overall, {ntsc_pb_19} on 19, {ntsc_pb_29} on 29. PAL PB: {pal_pb}. Pronouns: {pronouns}. Playstyle: {playstyle}. Country: {country}. SPS: {sps}."
 
 PLAYSTYLE_EMOJI = {
                    "das": "lovedas",
@@ -59,8 +62,7 @@ TETRIS_CHECK = "tetrischeck"
 
 PLAYER_ICON = "https://cdn.discordapp.com/avatars/{id}/{avatar}.jpg"
 
-@Command.register_discord("profile",
-                  usage="profile [username] (default username you)")
+@Command.register("profile", usage="profile [username] (default username you)")
 class ProfileCommand(Command):
 
     def execute(self, *username):
@@ -74,6 +76,12 @@ class ProfileCommand(Command):
         if not platform_user:
             raise CommandException("Invalid specified user.")
 
+        if self.context.platform == Platform.DISCORD:
+            self.execute_discord(platform_user)
+        elif self.context.platform == Platform.TWITCH:
+            self.execute_twitch(platform_user)
+
+    def execute_discord(self, platform_user):
         user = platform_user.user
         guild_id = self.context.guild.id if self.context.guild else None
         try:
@@ -88,6 +96,7 @@ class ProfileCommand(Command):
 
         ntsc_pb = self.format_pb(user.get_pb("ntsc")).rjust(13)
         ntsc_pb_19 = self.format_pb(user.get_pb("ntsc", 19)).rjust(9)
+        ntsc_pb_29 = self.format_pb(user.get_pb("ntsc", 29)).rjust(9)
         pal_pb = self.format_pb(user.get_pb("pal")).rjust(14)
 
         pronouns = user.get_pronouns_display() or "Not set"
@@ -97,13 +106,14 @@ class ProfileCommand(Command):
         same_pieces = self.get_same_pieces(user)
         twitch_channel = self.get_twitch(user)
 
-        json_message = match_template(TEMPLATE,
+        json_message = match_template(DISCORD_TEMPLATE,
                                       name=name,
                                       url=url,
                                       color=color,
                                       player_icon=player_icon,
                                       ntsc_pb=ntsc_pb,
                                       ntsc_pb_19=ntsc_pb_19,
+                                      ntsc_pb_29=ntsc_pb_29,
                                       pal_pb=pal_pb,
                                       pronouns=pronouns,
                                       playstyle=playstyle,
@@ -113,6 +123,34 @@ class ProfileCommand(Command):
 
         e = Embed.from_dict(json_message)
         self.send_message_full(self.context.channel.id, embed=e)
+
+    def execute_twitch(self, platform_user):
+        user = platform_user.user
+
+        username = self.context.display_name(platform_user)
+        ntsc_pb = self.format_pb(user.get_pb("ntsc"))
+        ntsc_pb_19 = self.format_pb(user.get_pb("ntsc", 19))
+        ntsc_pb_29 = self.format_pb(user.get_pb("ntsc", 29))
+        pal_pb = self.format_pb(user.get_pb("pal"))
+        pronouns = user.get_pronouns_display() or "Not set"
+        playstyle = user.get_playstyle_display() or "Not set"
+        country = "Not set"
+        if user.country is not None:
+            country = Country.get_country(user.country).full_name
+        sps = "Yes" if user.same_piece_sets else "No"
+
+        profile_message = TWITCH_TEMPLATE.format(
+            username=username,
+            ntsc_pb=ntsc_pb,
+            ntsc_pb_19=ntsc_pb_19,
+            ntsc_pb_29=ntsc_pb_29,
+            pal_pb=pal_pb,
+            pronouns=pronouns,
+            playstyle=playstyle,
+            country=country,
+            sps=sps,
+        )
+        self.send_message(profile_message)
 
     def format_pb(self, value):
         if value:

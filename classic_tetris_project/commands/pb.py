@@ -19,14 +19,21 @@ class GetPBCommand(Command):
         name = self.context.display_name(platform_user)
 
         ntsc_pb = user.get_pb("ntsc")
-        ntsc_pb_19 = user.get_pb("ntsc", 19)
         pal_pb = user.get_pb("pal")
 
+        lvl_pbs = []
+        for lvl in (19, 29):
+            pb = user.get_pb("ntsc", lvl)
+            if pb:
+                lvl_pbs.append((lvl, pb))
+        # TODO: this logic is weird but it's not worth fixing until pbs are
+        # refactored correctly
         if ntsc_pb:
-            if ntsc_pb_19:
-                ntsc_pb_text = "{pb:,} ({pb19:,} 19 start)".format(pb=ntsc_pb, pb19=ntsc_pb_19)
-            else:
-                ntsc_pb_text = "{pb:,}".format(pb=ntsc_pb)
+            ntsc_pb_text = "{pb:,}".format(pb=ntsc_pb)
+            pb_strings = [f"{score:,} {lvl} start" for (lvl, score) in lvl_pbs]
+            if len(pb_strings) > 0:
+                extra_pb_string = ", ".join(pb_strings)
+                ntsc_pb_text += f" ({extra_pb_string})"
 
         if pal_pb:
             pal_pb_text = "{pb:,}".format(pb=pal_pb)

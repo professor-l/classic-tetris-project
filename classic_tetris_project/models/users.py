@@ -18,12 +18,18 @@ from ..facades.user_permissions import UserPermissions
 class User(models.Model):
     RE_PREFERRED_NAME = re.compile(r"^[A-Za-z0-9\-_. ]+$")
 
+    # needs to have the same keys as the dict in commands/pronouns.py
     PRONOUN_CHOICES = {
         "he": "He/him/his",
         "she": "She/her/hers",
         "they": "They/them/theirs",
+        "he/they": "He/they",
+        "they/he": "They/he",
+        "she/they": "She/they",
+        "they/she": "They/she",
         "it": "It/its",
         "xe": "Xe/xem/xir",
+        "any": "Any/all",
     }
 
     PLAYSTYLE_CHOICES = {

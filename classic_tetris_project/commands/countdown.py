@@ -5,7 +5,7 @@ from random import randint
 from .command import Command, CommandException
 
 MIN_COUNTDOWN = 3
-MAX_COUNTDOWN = 5
+MAX_COUNTDOWN = 10
 
 @Command.register_twitch(*map(str, range(MIN_COUNTDOWN, MAX_COUNTDOWN + 1)),
                          usage=None)
