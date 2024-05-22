@@ -69,8 +69,8 @@ class SetPBCommand(Command):
         # Even that upper bound, I implement knowing it may someday be broken.
         # I cannot predict the future of this game, nor do I wish to try.
         # Kudos to those who push the limits of what is possible.
-        if score > 9999999:
-            raise CommandException("You wish, kid >.>")
+        if score > 10 ** 8 - 1:
+            raise CommandException("Not yet...")
 
         if level is not None and (level < 0 or level > 29):
             raise CommandException("Invalid level.")
@@ -78,6 +78,10 @@ class SetPBCommand(Command):
         console_type = console_type.lower()
         if console_type != "ntsc" and console_type != "pal":
             raise CommandException("Invalid PB type - must be NTSC or PAL (default NTSC)")
+
+        # TODO: remove if people abuse
+        if score > 10 ** 7 - 1:
+            self.send_message("You wish, kid >.>... just kidding!")
 
         level_text = ""
         if level is not None:
