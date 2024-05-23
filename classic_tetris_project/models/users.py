@@ -30,6 +30,7 @@ class User(models.Model):
         "it": "It/its",
         "xe": "Xe/xem/xir",
         "any": "Any/all",
+        "ask": "Ask",
     }
 
     PLAYSTYLE_CHOICES = {

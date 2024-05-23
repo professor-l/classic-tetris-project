@@ -17,6 +17,7 @@ class SetPronounCommand(Command):
             ("it", ["its", "it/its"]),
             ("xe", ["xem", "xir", "xe/xem", "xe/xem/xir"]),
             ("any", ["any/all"]),
+            ("ask", []),
             ("none", []),
         ])
 
@@ -24,7 +25,7 @@ class SetPronounCommand(Command):
             if pronoun == key or pronoun in aliases:
                 if self.context.user.set_pronouns(key):
                     self.send_message("Your pronouns have been set to {np}!".format(
-                        np=self.context.user.get_pronouns_display().lower() or "none"
+                        np=(self.context.user.get_pronouns_display() or "none").lower()
                     ))
                 else:
                     raise CommandException("Error setting pronouns :(")
@@ -42,5 +43,6 @@ class GetPronounCommand(Command):
         user = platform_user.user if platform_user else None
 
         username = self.context.display_name(user)
-        pronouns = user.get_pronouns_display().lower() or "not set"
+        pronouns = user.get_pronouns_display() or "not set"
+        pronouns = pronouns.lower()
         self.send_message(f"{username}'s pronouns are {pronouns}")

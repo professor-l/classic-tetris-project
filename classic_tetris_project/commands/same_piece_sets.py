@@ -1,7 +1,7 @@
 from .command import Command, CommandException
 from ..util import Platform
 
-@Command.register("samepieces", "samepiecesets", 
+@Command.register("samepieces", "samepiecesets", "sps",
                   usage="samepieces [username] (default username you)")
 class GetSamePiecesCommand(Command):
     def execute(self, *username):
@@ -24,7 +24,7 @@ class GetSamePiecesCommand(Command):
         ))
 
 
-@Command.register("setsamepieces", "setsamepiecesets", 
+@Command.register("setsamepieces", "setsamepiecesets", "setsps",
                   usage="setsamepieces [y/n]")
 class SetSamePiecesCommand(Command):
     def execute(self, value):
