@@ -113,7 +113,11 @@ class UTCCommand(Command):
 @Command.register_discord("stats", usage="stats")
 class StatsCommand(Command):
     def execute(self, *args):
-        self.check_moderator()
+        try:
+            self.check_moderator()
+        except AttributeError:
+            self.send_message("Incorrect permissions")
+            return
 
         guilds = len(discord_client.guilds)
         channels = TwitchChannel.objects.filter(connected=True).count()
