@@ -87,14 +87,18 @@ First, create a **new Twitch account** that will act as your bot for testing. My
 
 Next, in the same browser window (logged in to new account), head to `https://dev.twitch.tv`. Click "Log in with Twitch" in the top right, and then "Authorize" on the subsequent page. When you're redirected back to the dev homepage, click on the "Your Console" button in the top right (right where the login button used to be). On the right, in the Applications panel, click "Register Your Application". The *Name* field can be whatever you want, but you should add `http://localhost` as an *OAuth Redirect URL*, and the *Category* should be "Chat Bot". Complete the captcha and click "Create". Then, click "Manage", and **copy and store the contents of the Client ID field and label it as such.** 
 
-Finally for our Twitch setup, we need an OAuth token to be used for API calls and for chat functionality.  To do this, we can follow the steps outlined here: https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#oauth-implicit-code-flow.  Note that this is the preferred way to generate a token as opposed to third party token generation apps as we must ensure our oauth token matches our client ID for the Twitch Helix API.
+Finally for our Twitch setup, we need an OAuth token to be used for API calls and for chat functionality.  To do this, we can follow the steps outlined here: https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#oauth-implicit-code-flow.  Note that this is the preferred way to generate a token as opposed to third party token generation apps as we must ensure our oauth token matches our client ID for the Twitch Helix API. The following get request will suffice (replace client_id with your client ID):
 
-Here is an example GET request that we can use (replace with your client ID):
 ```
-https://id.twitch.tv/oauth2/authorize?client_id={client_id}&redirect_uri=http://localhost&response_type=token&scope=user:read:email chat:read chat:edit
+https://id.twitch.tv/oauth2/authorize?client_id={client_id}&redirect_uri=http://localhost&response_type=token&scope=chat:read chat:edit moderator:read:chatters
 ```
 
 That will return a URL with an access token on it. **copy it into a text document or otherwise save it for later**.
+
+Aside: you'll notice a number of *scopes* that are part of the url. These are permissions that the bot needs from Twitch. Here's what they all mean:
+- `chat:read` - view chat messages, so it can receive commands.
+- `chat:edit` - send chat messages, to respond to commands.
+- `moderator:read:chatters` - view the list of users currently viewing a channel that the bot is a moderator of. Used for commands like `!match`.
 
 #### Discord
 
