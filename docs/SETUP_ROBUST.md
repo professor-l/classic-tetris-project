@@ -17,7 +17,7 @@ Once you have access to sudo priviliges in a bash command line with which you ar
 Begin, if you haven't already, by installing the necessary packages with your package manager:
 
 ```bash
-sudo apt install python3.7 python3.7-dev python3-pip sqlite3 libsqlite3-dev
+sudo apt install python3.8 python3.8-dev python3-pip sqlite3 libsqlite3-dev
 ```
 
 For a robust development environment, next, using Python's package manager [pip](https://pip.pypa.io/en/stable), we install [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest), which is "a set of extensions" of another Python tool called virtualenv. Its benefits are numerous, but most notably it elegantly (and quietly) deals with versioning of all dependencies, as well as of Python itself, within our development and production environments. Install it like so:
@@ -46,10 +46,10 @@ git clone https://github.com/YOUR-USERNAME/classic-tetris-project.git
 cd classic-tetris-project
 ```
 
-Now, we can make a virtual environment with the previously installed tool. I called mine `ctp`, short for Classic Tetris Project. Because this bot runs on Python 3.7, we direct the virtual environment to use that version (Which should now be installed) with the `--python` flag:
+Now, we can make a virtual environment with the previously installed tool. I called mine `ctp`, short for Classic Tetris Project. Because this bot runs on Python 3.8, we direct the virtual environment to use that version (Which should now be installed) with the `--python` flag:
 
 ```bash
-mkvirtualenv ctp --python=/usr/bin/python3.7
+mkvirtualenv ctp --python=/usr/bin/python3.8
 ```
 
 After running that, there should be a `(ctp)` preceeding the bash prompt on your screen. Mine looks like this:
