@@ -1,4 +1,4 @@
-﻿from .tiles import TileMath, InputTile
+from .tiles import TileMath, InputTile
 from .ai import Aesthetics
 
 
