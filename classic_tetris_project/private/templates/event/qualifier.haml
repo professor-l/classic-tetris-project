@@ -1,0 +1,33 @@
+- extends "base.html"
+
+- block title
+  Qualify for {{ event.name }}
+
+- block content
+  %h1
+    Qualify for {{ event.name }}
+
+  - if event.qualify_instructions
+    - markdown event.qualifying_instructions
+
+  .auth-word.alert.alert--light-info
+    Your auth word is:
+    .auth-word__word
+      = qualifier.auth_word|upper
+    When you complete your first game with a score of over 10000, <strong>enter this word on the leaderboard</strong>. This helps us verify that you're recording your qualifier in real time.
+
+  %form.form{method: "post"}
+    - csrf_token
+    = form.non_field_errors
+
+    .field-list
+      - for field in form.submit_fields
+        - field_list_input_row field.label_tag
+          = field
+          = field.errors
+          - if field.help_text
+            .field-list__hint
+              = field.help_text|safe
+
+      - field_list_row ""
+        %input.btn.btn--primary{type: "submit", value: "Submit"}

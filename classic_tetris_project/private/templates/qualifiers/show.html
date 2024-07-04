@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+
+{% block title %}{{ qualifier.user.display_name }}{% endblock %}
+
+{% block content %}
+<a href="{{ qualifier.event.get_absolute_url }}">
+  Back to {{ qualifier.event.name }}
+</a>
+
+<div class="section">
+  <div class="section__header">
+    <h2 class="section__title">
+      {{ qualifier.user.display_name }}'s Qualifier
+    </h2>
+
+    {% if can_withdraw %}
+    <form action="" method="post" data-confirm="Are you sure you want to withdraw your qualifier? If you change your mind later, you'll need to ask a mod to restore your qualifier.">
+      {% csrf_token %}
+      {{ withdraw_form }}
+      <input type="submit" value="Withdraw" class="btn btn--red">
+    </div>
+    {% endif %}
+  </div>
+  <div class="section__body">
+    <div class="field-list">
+      <div class="field-list__row">
+        <div class="field-list__label">
+          Player:
+        </div>
+        <div class="field-list__value">
+          <a href="{{ qualifier.user.get_absolute_url }}">
+            {{ qualifier.user.display_name }}
+          </a>
+        </div>
+      </div>
+      <div class="field-list__row">
+        <div class="field-list__label">
+          Event:
+        </div>
+        <div class="field-list__value">
+          <a href="{{ qualifier.event.get_absolute_url }}">
+            {{ qualifier.event.name }}
+          </a>
+        </div>
+      </div>
+      {% if qualifier.tournament %}
+      <div class="field-list__row">
+        <div class="field-list__label">
+          Tournament:
+        </div>
+        <div class="field-list__value">
+          <a href="{{ qualifier.tournament.get_absolute_url }}">
+            {{ qualifier.tournament.name }}
+          </a>
+        </div>
+      </div>
+      {% endif %}
+      <div class="field-list__row">
+        <div class="field-list__label">
+          Status:
+        </div>
+        <div class="field-list__value">
+          {{ qualifier.status_tag }}
+        </div>
+      </div>
+      {% for label, value in qualifier.type.display_values %}
+      <div class="field-list__row">
+        <div class="field-list__label">
+          {{ label }}:
+        </div>
+        <div class="field-list__value">
+          {{ value|intcomma }}
+        </div>
+      </div>
+      {% endfor %}
+      <div class="field-list__row">
+        <div class="field-list__label">
+          VOD:
+        </div>
+        <div class="field-list__value">
+          <a href="{{ qualifier.vod }}">
+            {{ qualifier.vod }}
+          </a>
+        </div>
+      </div>
+      {% if qualifier.details %}
+      <div class="field-list__row">
+        <div class="field-list__label">
+          Details:
+        </div>
+        <div class="field-list__value">
+          {{ qualifier.details }}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,94 @@
+- extends "base.html"
+
+- block title
+  = tournament.name
+
+- block content
+  %a{href: "{{ tournament.event.get_absolute_url }}"} Back to {{ tournament.event.name }}
+
+  %h1= tournament.name
+
+  - if bracket.root
+    .module
+      .module__header
+        .module__header-title
+          Bracket
+        .module__header-button
+          %a{href: "{{ tournament.get_bracket_url }}", class: "btn btn--secondary"} View in Page
+      .module__body
+        - react_component "TournamentBracketController" bracket.embed_props
+
+  - module "Players"
+    %table.data-table
+      %tr.data-table__headers
+        %th Seed
+        %th Player
+        %th Score
+      - for player in tournament_players
+        %tr.data-table__row{class: '{% cycle "data-table__row--even" "data-table__row--odd" %}'}
+          %td= player.seed
+          %td
+            - if player.user
+              %a{href: "{{ player.user.get_absolute_url }}"}= player.user.display_name
+            - else
+              = player.name_override
+          %td
+            - if player.qualifier
+              %a{href: '{% url "qualifier" player.qualifier.id %}'}= player.qualifier.type.format_score
+
+  - if tournament_matches
+    - module "All Matches"
+      %table.data-table
+        %tr.data-table__headers
+          %th #
+          %th Player 1
+          %th Player 2
+          %th Score
+
+        - for match_display in tournament_matches
+          %tr.data-table__row{class: '{% cycle "data-table__row--even" "data-table__row--odd" %}'}
+            %td
+              %a{href: "{{ match_display.tournament_match.get_absolute_url }}"}= match_display.tournament_match.match_number
+            %td
+              - if match_display.tournament_match.player1.user
+                %a{href: "{{ match_display.tournament_match.player1.user.get_absolute_url }}"}= match_display.tournament_match.player1.display_name
+              - else
+                = match_display.player1_display_name
+            %td
+              - if match_display.tournament_match.player2.user
+                %a{href: "{{ match_display.tournament_match.player2.user.get_absolute_url }}"}= match_display.tournament_match.player2.display_name
+              - else
+                = match_display.player2_display_name
+            %td
+              - if match_display.tournament_match.winner and match_display.tournament_match.match
+                {{ match_display.tournament_match.match.wins1 }}&ndash;{{ match_display.tournament_match.match.wins2 }}
+
+  - if playable_matches
+    - module "Playable Matches"
+      %table.data-table
+        %tr.data-table__headers
+          %th #
+          %th Player 1
+          %th Player 2
+          %th Match time (UTC)
+
+        - for match_display in playable_matches
+          %tr.data-table__row{class: '{% cycle "data-table__row--even" "data-table__row--odd" %}'}
+            %td
+              %a{href: "{{ match_display.tournament_match.get_absolute_url }}"}= match_display.tournament_match.match_number
+            %td
+              - if match_display.tournament_match.player1.user
+                %a{href: "{{ match_display.tournament_match.player1.user.get_absolute_url }}"}= match_display.tournament_match.player1.display_name
+              - else
+                = match_display.player1_display_name
+            %td
+              - if match_display.tournament_match.player2.user
+                %a{href: "{{ match_display.tournament_match.player2.user.get_absolute_url }}"}= match_display.tournament_match.player2.display_name
+              - else
+                = match_display.player2_display_name
+            %td
+              - if match_display.tournament_match.match.start_date
+                = match_display.tournament_match.match.start_date
+                - if match_display.tournament_match.match.channel
+                  @
+                  %a{href: "{{ match_display.tournament_match.match.channel.twitch_url }}", target: "_blank"}= match_display.tournament_match.match.channel.name

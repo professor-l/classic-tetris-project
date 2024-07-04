@@ -1,0 +1,40 @@
+- extends "base.html"
+
+- block title
+  Edit Profile
+
+- block content
+  .profile
+    .section
+      .section__header
+        %h2.section__title
+          Edit Profile
+      %form.form{method: "post"}
+        - csrf_token
+
+        .section__body
+          = form.non_field_errors
+          .field-list
+            - field_list_input_row "Preferred name:" form.preferred_name
+            - field_list_input_row "Pronouns:" form.pronouns
+            - field_list_input_row "Country:" form.country
+            - field_list_row "Discord:"
+              - if user.discord_user
+                = user.discord_user.username_with_discriminator
+              - else
+                %a{href: '{% url "oauth:login" provider="discord" %}?merge_accounts=true&next={% url "profile:edit" %}'}
+                  Link your Discord account
+
+            - field_list_row "Twitch:"
+              - if user.twitch_user
+                %a{href: "{{ user.twitch_user.twitch_url }}"}= user.twitch_user.display_name
+              - else
+                %a{href: '{% url "oauth:login" provider="twitch"%}?merge_accounts=true&next={% url "profile:edit" %}'}
+                  Link your Twitch account
+
+            - field_list_input_row "Playstyle:" form.playstyle
+            
+            .field-list__row
+              .field-list__label
+              .field-list__value
+                %input.btn.btn--primary{type: "submit", value: "Update"}
