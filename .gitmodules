@@ -1,6 +1,3 @@
 [submodule "classic_tetris_project/reportmatchmodule"]
 	path = classic_tetris_project/reportmatchmodule
 	url = https://github.com/alex-ong/CTMEditor.git
-[submodule "classic_tetris_project/private"]
-	path = classic_tetris_project/private
-	url = https://github.com/professor-l/ctp-private.git
