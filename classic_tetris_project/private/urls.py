@@ -13,7 +13,7 @@ from .views import qualifiers
 from .views import review_qualifiers
 from .views import tournaments
 from .views import tournament_matches
-from .views import live_notifications
+# from .views import live_notifications
 
 
 autocomplete_patterns = ([
@@ -66,9 +66,9 @@ review_qualifiers_patterns = ([
     path("<int:qualifier_id>/", review_qualifiers.ReviewView.as_view(), name="review"),
 ], "review_qualifiers")
 
-live_notification_patterns = ([
-    path("submit", live_notifications.SubmitView.as_view(), name="submit"),
-], "live_notifications")
+# live_notification_patterns = ([
+#     path("submit", live_notifications.SubmitView.as_view(), name="submit"),
+# ], "live_notifications")
 
 urlpatterns = [
     path("", index, name="index"),
@@ -82,7 +82,7 @@ urlpatterns = [
     path("event/<slug:event_slug>/", include(event_patterns)),
     path("qualifier/<int:id>/", qualifiers.QualifierView.as_view(), name="qualifier"),
     path("review_qualifiers/", include(review_qualifiers_patterns)),
-    path("broadcast/", include(live_notification_patterns)),
+    # path("broadcast/", include(live_notification_patterns)),
     path("notifications/", include("django_nyt.urls")),
     re_path(r"^wiki/", include("wiki.urls")),
     path("markdownx/", include("markdownx.urls")),
