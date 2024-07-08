@@ -23,14 +23,6 @@ script/restore_dump.sh path/to/file.dump
 ```
 to set everything up.
 
-### Running tests
-
-The project has a modest testing suite, which you can invoke simply with
-```bash
-pytest
-```
-Make sure most of the tests pass (preferably they all do, but things will \*probably* work well enough even if they don't). You should see tests being run in both `classic_tetris_project/tests/` and `classic_tetris_project/private/tests/`.
-
 ### Superuser account
 
 To access the admin panel, you'll naturally need an admin account, which you can create through this command:
@@ -61,6 +53,14 @@ Finally, to run the *actual* webserver you invoke
 python manage.py runserver
 ```
 and once that's running you can view it at http://localhost:8000.
+
+### Bonus: running tests
+
+The project has a modest testing suite, which you can invoke simply with
+```bash
+pytest
+```
+You should see tests being run in both `classic_tetris_project/tests/` and `classic_tetris_project/private/tests/`. Make sure most of the tests pass (preferably they all do, but things will \*probably* work well enough even if they don't). You'll probably need to follow all previous steps to make this work.
 
 ### (optional) Host mapping
 
