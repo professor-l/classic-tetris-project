@@ -1,6 +1,6 @@
 # The Classic Tetris Bot
 
-The Classic Tetris Bot is the de-facto utility for the Classic Tetris community.Originally created for Classic Tetris Monthly, it has substantially evolved beyond its [humble beginnings](https://github.com/professor-l/lsq-bot), belonging to 100 Discord severs, over 500 Twitch channels, and is used in both online and in-person tournaments.
+The Classic Tetris Bot is the de facto utility for the Classic Tetris community.Originally created for Classic Tetris Monthly, it has substantially evolved beyond its [humble beginnings](https://github.com/professor-l/lsq-bot), belonging to 100 Discord severs, over 500 Twitch channels, and is used in both online and in-person tournaments.
 
 Here are some of the greater features the bot supports:
 
@@ -24,7 +24,7 @@ The most reliable way to leave feedback is through the project's [issue's page](
 
 If you have familiarity with Python and Django (or want to learn) and are looking to give more than suggestions, consider contributing to the bot's ever-growing codebase! You'll find useful references in the `docs/` directory:
 
-* [CONTRIBUTING.md](docs/CONTRIBUTING.md): A guideline for those who wish to be either one-time, sporatic, or consistent contributors to our bot. We are _always_ looking for new team members.
+* [CONTRIBUTING.md](docs/CONTRIBUTING.md): A guideline for those who wish to be either one-time, sporadic, or consistent contributors to our bot. We are _always_ looking for new team members.
 * [ARCHITECTURE.md](docs/ARCHITECTURE.md): A somewhat comprehensive outline of the layout of our codebase, our thoughts behind its design, and the basics of adding to it in a way that preserves scalability and growth.
 * [SETUP_QUICK.md](docs/SETUP_QUICK.md): An outline of what it takes to set up a development and testing environment, a necessary step if you want to submit pull requests and/or become a regular contributor.
 
