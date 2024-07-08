@@ -21,11 +21,11 @@ from django.conf.urls.static import static
 try:
     urlpatterns = [
         path("admin/", admin.site.urls),
-        path("", include("classic_tetris_project.private.urls")),
+        path("", include("classic_tetris_project.web.urls")),
     ]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 except ModuleNotFoundError as e:
     print("Private urls could not be loaded")
     print(e)
-    # private not loaded, ignore all urls
+    # web not loaded, ignore all urls
     urlpatterns = []
