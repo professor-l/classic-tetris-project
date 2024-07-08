@@ -34,7 +34,7 @@ python manage.py createsuperuser
 
 NOTE: this step is highly undesirable and will hopefully become unnecessary in the future.
 
-Background: one of the site's features is providing an alternate font face for use in brackets. The [Gotham typeface](https://typography.com/fonts/gotham/overview) was chosen, but unfortunately [our license](/LICENSE) doesn't let us include it in the repo. Furthermore, things break without the file, so all you need to do is find a `ttf` file somewhere (it doesn't even have to be Gotham), and then save it to `./classic_tetris_project/private/assets/fonts/gotham.ttf`.
+Background: one of the site's features is providing an alternate font face for use in brackets. The [Gotham typeface](https://typography.com/fonts/gotham/overview) was chosen, but unfortunately [our license](/LICENSE) doesn't let us include it in the repo. Furthermore, things break without the file, so all you need to do is find a `ttf` file somewhere (it doesn't even have to be Gotham), and then save it to `./classic_tetris_project/web/assets/fonts/gotham.ttf`.
 
 ### Running the webserver
 
@@ -60,7 +60,7 @@ The project has a modest testing suite, which you can invoke simply with
 ```bash
 pytest
 ```
-You should see tests being run in both `classic_tetris_project/tests/` and `classic_tetris_project/private/tests/`. Make sure most of the tests pass (preferably they all do, but things will \*probably* work well enough even if they don't). You'll probably need to follow all previous steps to make this work.
+You should see tests being run in both `classic_tetris_project/tests/` and `classic_tetris_project/web/tests/`. Make sure most of the tests pass (preferably they all do, but things will \*probably* work well enough even if they don't). You'll probably need to follow all previous steps to make this work.
 
 ### (optional) Host mapping
 
