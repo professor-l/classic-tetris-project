@@ -1,0 +1,38 @@
+- extends "base.html"
+
+- block title
+  = user.preferred_display_name
+
+- block content
+  .profile
+    .profile-header
+      %h1.profile-header__title
+        = user.preferred_display_name
+      - if user.pronouns
+        .profile-header__subtitle
+          = user.get_pronouns_display
+
+    .section
+      .section__header
+        %h2.section__title
+          Profile
+        - if user == current_user
+          %a.btn.btn--link{href: '{% url "profile:edit" %}'}
+            Edit
+      .section__body
+        .field-list
+          - if user.country
+            - field_list_row "Country:"
+              = user.get_country_display
+
+          - if discord_user
+            - field_list_row "Discord:"
+              = discord_user.username_with_discriminator
+
+          - if twitch_user
+            - field_list_row "Twitch:"
+              %a{href: "{{ twitch_user.twitch_url }}"}= twitch_user.display_name
+
+          - if user.playstyle
+            - field_list_row "Playstyle:"
+              = user.get_playstyle_display

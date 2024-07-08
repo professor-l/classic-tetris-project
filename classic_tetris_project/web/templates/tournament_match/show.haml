@@ -1,0 +1,68 @@
+- extends "base.html"
+
+- block title
+  = match
+
+- block content
+  %a{href: "{{tournament.get_absolute_url}}"}
+    Back to {{ tournament.name }}
+
+  .section
+    .section__header
+      %h2.section__title
+        = match
+
+      - if match_display.can_restream
+        .section__header-buttons
+          %a.btn.btn--primary{href: '{% url "event:tournament:match:schedule" match.tournament.event.slug match.tournament.slug match.match_number %}'}
+            - if match_display.tournament_match.is_scheduled
+              Reschedule
+            - else
+              Schedule
+          %a.btn.btn--primary{href: '{% url "event:tournament:match:report" match.tournament.event.slug match.tournament.slug match.match_number %}'}
+            Report
+          - if match_display.tournament_match.is_scheduled
+            %a.btn.btn--red{href: '{% url "event:tournament:match:schedule" match.tournament.event.slug match.tournament.slug match.match_number %}', data-method: "delete", data-confirm: "Are you sure you want to unschedule this match?"}
+              Unschedule
+
+    - if current_user.permissions.report_all
+      %a{href: '{% url "admin:classic_tetris_project_tournamentmatch_change" match.id %}'}
+
+    .section__body
+      .field-list
+        - field_list_row "Tournament:"
+          %a{href: "{{ match.tournament.get_absolute_url }}"}= match.tournament.name
+
+        - field_list_row "Player 1:"
+          - if match.player1.user
+            %a{href: "{{ match.player1.user.get_absolute_url }}"}= match.player1.display_name
+          - else
+            {{ match_display.player1_display_name }}
+
+        - field_list_row "Player 2:"
+          - if match.player2.user
+            %a{href: "{{ match.player2.user.get_absolute_url }}"}= match.player2.display_name
+          - else
+            {{ match_display.player2_display_name }}
+
+        - field_list_row "Status:"
+          - if match_display.status_tag
+            = match_display.status_tag
+
+        - if match.winner and match.winner.user
+          - field_list_row "Winner:"
+            %a{href: "{{ match.winner.user.get_absolute_url }}"}= match.winner.display_name
+            - if match.match
+              ({{ match.match.winner_wins }}-{{ match.match.loser_wins }})
+
+        - if match.match.channel
+          - field_list_row "Streamed at:"
+            %a{href: "{{ match.match.channel.twitch_url }}"}= match.match.channel.twitch_url
+
+        - if match.match.vod
+          - field_list_row "VOD:"
+            %a{href: "{{ match.match.vod }}"}= match.match.vod
+
+        - if match.match.start_date
+          - field_list_row "Scheduled for:"
+            {{ match.match.start_date }} UTC

@@ -1,0 +1,31 @@
+@use 'colors';
+
+.markdown {
+  color: var(--text-primary);
+  
+  a {
+    color: var(--link-primary);
+  }
+
+  table {
+    border-collapse: collapse;
+
+    th {
+      border: 1px solid colors.$border-gray;
+      background-color: colors.$bg-light-gray;
+      padding: 8px;
+
+      &:not(:first-child) {
+        border-left: 0;
+      }
+      &:not(:last-child) {
+        border-right: 0;
+      }
+    }
+
+    td {
+      border: 1px solid colors.$border-gray;
+      padding: 8px;
+    }
+  }
+}

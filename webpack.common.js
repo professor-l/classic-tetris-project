@@ -9,8 +9,8 @@ module.exports = {
   context: __dirname,
 
   entry: {
-    main: './classic_tetris_project/private/assets/app',
-    admin: './classic_tetris_project/private/assets/admin',
+    main: './classic_tetris_project/web/assets/app',
+    admin: './classic_tetris_project/web/assets/admin',
   },
 
   output: {

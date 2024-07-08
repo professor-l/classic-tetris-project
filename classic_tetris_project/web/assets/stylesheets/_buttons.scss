@@ -1,0 +1,93 @@
+@use 'colors';
+
+.btn {
+  display: inline-flex;
+  box-sizing: border-box;
+  height: 40px;
+  padding: 10px 20px;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 20px;
+  border: none;
+  outline: none;
+  text-decoration: none;
+  cursor: pointer;
+
+  a {
+    color: colors.$button-primary-text;
+  }
+
+  &:hover {
+    border: none;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.4);
+  }
+
+  &:active {
+    border: none;
+    box-shadow: none;
+  }
+
+  &--primary {
+    background-color: colors.$button-primary-bg;
+    color: colors.$button-primary-text;
+    &:hover {
+      background-color: lighten(colors.$button-primary-bg, 5%);
+    }
+  }
+
+  &--secondary {
+    background-color: colors.$button-secondary-bg;
+    color: colors.$button-secondary-text;
+    &:hover {
+      background-color: lighten(colors.$button-secondary-bg, 5%);
+    }
+  }
+
+  &--red {
+    background-color: colors.$button-red-bg;
+    color: colors.$button-red-text;
+    &:hover {
+      background-color: lighten(colors.$button-red-bg, 5%);
+    }
+  }
+
+  &--link {
+    &:hover {
+      box-shadow: none;
+    }
+  }
+
+  &--full {
+    display: flex;
+    width: 100%;
+  }
+
+  &--discord {
+    background-color: colors.$button-discord-bg;
+    color: colors.$button-discord-text;
+    &:hover {
+      background-color: lighten(colors.$button-discord-bg, 5%);
+    }
+  }
+
+  &--twitch {
+    background-color: colors.$button-twitch-bg;
+    color: colors.$button-twitch-text;
+    &:hover {
+      background-color: lighten(colors.$button-twitch-bg, 5%);
+    }
+  }
+
+  &__icon {
+    width: 30px;
+    height: 30px;
+    margin-top: -5px;
+    margin-right: 10px;
+  }
+}
+
+
+.login-buttons {
+  max-width: 400px;
+  margin: auto;
+}

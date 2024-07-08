@@ -1,0 +1,29 @@
+@use 'colors';
+
+.status-tag {
+  display: inline-block;
+  padding: 0 0.5em;
+  line-height: 1.5;
+  color: colors.$status-tag-text;
+
+  &--green {
+    background-color: colors.$status-tag-green-bg;
+  }
+
+  &--yellow {
+    background-color: colors.$status-tag-yellow-bg;
+  }
+
+  &--red {
+    background-color: colors.$status-tag-red-bg;
+  }
+
+  &--gray {
+    background-color: colors.$status-tag-gray-bg;
+  }
+
+
+  &--small {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<p class="center">
+By logging in, you agree to our <a href="{% url "policy:cookies" %}">cookie policy</a>.
+</p>
+
+<div class="login-buttons">
+  <a href="{{ discord_path }}" class="btn btn--full btn--discord">
+    <span class="btn__icon">
+      {% include "icons/discord_inverted.html" %}
+    </span>
+    Login with Discord
+  </a>
+  <div class="spacer"></div>
+  <a href="{{ twitch_path }}" class="btn btn--full btn--twitch">
+    <span class="btn__icon">
+      {% include "icons/twitch_inverted.html" %}
+    </span>
+    Login with Twitch
+  </a>
+</div>
+{% endblock %}
