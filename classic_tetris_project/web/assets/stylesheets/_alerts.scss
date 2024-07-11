@@ -1,0 +1,21 @@
+@use "colors";
+
+.alert {
+  font-size: 16px;
+  padding: 13px 25px;
+
+  &--info {
+    background-color: colors.$alert-info-bg;
+    color: colors.$alert-info-text;
+  }
+
+  &--light-info {
+    border: 1px colors.$alert-light-info-border solid;
+    background-color: colors.$alert-light-info-bg;
+    color: colors.$alert-light-info-text;
+  }
+
+  a {
+    color: inherit;
+  }
+}

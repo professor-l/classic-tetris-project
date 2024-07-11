@@ -1,0 +1,52 @@
+@use "colors";
+
+$toggle-width: 75px;
+$toggle-height: 30px;
+$toggle-offset: 6px;
+$toggle-inner: calc($toggle-height - $toggle-offset);
+
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: $toggle-width;
+  height: $toggle-height;
+
+  input {
+    opacity: 0;
+    height: 0;
+    width: 0;
+
+    &:checked {
+      + .slide {
+        background-color: gray;
+
+        &:before {
+          transform: translateX(calc($toggle-width - $toggle-offset * 2 - $toggle-inner));
+        }
+      }
+    }
+  }
+
+  .slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    cursor: pointer;
+    background-color: colors.$bg-light-gray;
+    transition: 0.3s;
+    border-radius: $toggle-height;
+
+    &:before {
+      position: absolute;
+      content: "";
+      height: $toggle-inner;
+      width: $toggle-inner;
+      left: $toggle-offset;
+      bottom: calc($toggle-offset / 2);
+      background-color: white;
+      border-radius: 100%;
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Review Qualifiers{% endblock %}
+
+{% block content %}
+<h1>Review Qualifiers</h1>
+{% if qualifiers %}
+<table class="data-table">
+  <tr class="data-table__headers">
+    <th>Event</th>
+    <th>User</th>
+    <th>Score</th>
+    <th>Submitted at</th>
+    <th></th>
+  </tr>
+  {% for qualifier in qualifiers %}
+  <tr class="data-table__row {% cycle "data-table__row--even" "data-table__row--odd" %}">
+    <td><a href="{{ qualifier.event.get_absolute_url }}">{{ qualifier.event.name }}</a></td>
+    <td><a href="{{ qualifier.user.get_absolute_url }}">{{ qualifier.user.display_name }}</a></td>
+    <td>{{ qualifier.type.format_score }}</td>
+    <td>{{ qualifier.submitted_at }}</td>
+    <td><a href="{% url "review_qualifiers:review" qualifier.id %}" class="btn btn--primary">Review</div></td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>No qualifiers to review!</p>
+{% endif %}
+{% endblock %}

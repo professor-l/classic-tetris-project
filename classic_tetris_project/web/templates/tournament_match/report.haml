@@ -1,0 +1,49 @@
+- extends "base.html"
+
+- block title
+  Report Match
+
+- block content
+  %a{href: "{{ match.get_absolute_url }}"} Back to Match
+
+  .section
+    .section__header
+      %h2.section__title
+        Report Match Results
+
+    .section__body
+      %form.form{method: "post"}
+        - csrf_token
+        = form.non_field_errors
+
+        .field-list
+          - field_list_row "Tournament:"
+            %a{href: "{{ match.tournament.get_absolute_url }}"}= match.tournament.name
+
+          - field_list_row "Player 1:"
+            - if match.player1.user
+              %a{href: "{{ match.player1.user.get_absolute_url }}"}= match.player1.display_name
+            - else
+              = match_display.player1_display_name
+          - field_list_input_row "Games won:" form.wins1
+
+          - field_list_row "Player 2:"
+            - if match.player2.user
+              %a{href: "{{ match.player2.user.get_absolute_url }}"}= match.player2.display_name
+            - else
+              = match_display.player2_display_name
+          - field_list_input_row "Games won:" form.wins2
+
+          - field_list_input_row "Twitch channel:" form.channel
+          - field_list_input_row "VOD:" form.vod
+          - field_list_input_row "End time:"
+              = form.ended_at
+              = form.ended_at.errors
+              .field-list__hint
+                Leave blank to set to now
+
+          - field_list_row ""
+            %input.btn.btn--primary{type: "submit", value: "Submit", data-confirm: "Are you sure this is correct? Once this match is reported, only a moderator will be able to change the results."}
+
+- block footer
+  = form.media

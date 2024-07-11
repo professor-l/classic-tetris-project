@@ -1,0 +1,7 @@
+- clone repo
+- setup virtualenv
+- install postgres 10 and `postgresql-server-dev-10`
+- `pip install -r requirements.txt`
+- `pip install -r requirements_prod.txt`
+- set up .env file
+- `npm install`

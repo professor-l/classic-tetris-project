@@ -1,0 +1,72 @@
+$text-black: #000000;
+$text-white: #FFFFFF;
+
+$navbar-text: $text-white;
+
+$alert-info-bg: #2D9CDB;
+$alert-info-text: $text-white;
+$alert-light-info-border: #2D9CD8;
+$alert-light-info-bg: #BDEFFF;
+$alert-light-info-text: #2D9CD8;
+
+$bg-light-gray: #DDDDDD;
+
+$border-gray: #BDBDBD;
+$border-blue: #2D9CDB;
+
+$icon-white: #FFFFFF;
+
+$error-text: #B40000;
+
+$button-primary-bg: #27AE60;
+$button-primary-text: $text-white;
+$button-secondary-bg: #2D9CDB;
+$button-secondary-text: $text-white;
+$button-discord-bg: #7289DA;
+$button-discord-text: $text-white;
+$button-twitch-bg: #9147FF;
+$button-twitch-text: $text-white;
+$button-red-bg: #EB5757;
+$button-red-text: $text-white;
+
+$module-bg: #FFFFFF;
+$module-header-text: $text-white;
+
+$qualifier-table-text: $text-white;
+
+$status-tag-text: $text-white;
+$status-tag-green-bg: #00C314;
+$status-tag-yellow-bg: #F2C94C;
+$status-tag-red-bg: #C30000;
+$status-tag-gray-bg: #828282;
+
+$bracket-default: #b7b7b7;
+
+
+[data-theme='light'], :root {
+  --bg-primary: #FFFFFF;
+  --bg-nav: #424242;
+  --bg-nav-drawer: #333333;
+  --bg-table-data-even: #F2F2F2;
+  --bg-table-data-odd: #FFFFFF;
+  --bg-module-header: #9B51E0;
+
+  --drop-shadow: 0, 0, 0;
+
+  --text-primary: #{$text-black};
+  --link-primary: #2e8500;
+}
+
+[data-theme='dark'] {
+  --bg-primary: #0d1117;
+  --bg-nav: #0e0e0e;
+  --bg-nav-drawer: #161616;
+  --bg-table-data-even: #363636;
+  --bg-table-data-odd: #444444;
+  --bg-module-header: #3f007a;
+
+  --drop-shadow: 255, 255, 255;
+
+  --text-primary: #{$alert-info-text};
+  --link-primary: #4bce06;
+}

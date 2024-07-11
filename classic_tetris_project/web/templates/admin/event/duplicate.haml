@@ -1,0 +1,19 @@
+- extends "admin/base_site.html"
+
+- block title
+  Duplicate Event
+
+- block content
+  %h1 Duplicate Event: {{ event.name }}
+  #content-main
+    %form{method: "post"}
+      - csrf_token
+      = form.non_field_errors
+      %fieldset.module.aligned
+        .form-row.field-name
+          %div
+            = form.name.errors
+            %label.required{for: "{{ form.subject.id_for_label }}"}
+              Name:
+            = form.name
+      %input{type: "submit", value: "Submit"}

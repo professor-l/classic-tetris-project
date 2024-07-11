@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+
+{% block title %}{{ event.name }}{% endblock %}
+
+{% block content %}
+<h1>{{ event.name }}</h1>
+
+{% if event.event_info %}
+{% markdown event.event_info %}
+{% endif %}
+
+{% if user_ineligible_reason %}
+<div class="alert alert--light-info">
+  {% include "event/ineligible_reasons/"|add:user_ineligible_reason|add:".html" %}
+</div>
+{% else %}
+<a href="{% url "event:qualify" event.slug %}" class="btn btn--primary">Qualify</a>
+{% endif %}
+
+<div class="spacer"></div>
+
+{% if qualifier_groups %}
+<div class="module">
+  <div class="module__header">
+    <div class="module__header-title">
+      Qualifiers
+    </div>
+
+    {% if current_user.permissions.review_qualifiers %}
+    <div class="module__header-button">
+      <a href="{% url "review_qualifiers:index" %}" class="btn btn--primary">Review Qualifiers</a>
+    </div>
+    {% endif %}
+  </div>
+  <div class="module__body">
+    {% include "event/qualifier_table.html" with qualifier_groups=qualifier_groups %}
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

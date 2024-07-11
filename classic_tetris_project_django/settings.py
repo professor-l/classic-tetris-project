@@ -109,9 +109,13 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, "classic_tetris_project", "templates"),
-            os.path.join(django.__path__[0], "forms", "templates"),
+            os.path.join(next(iter((django.__path__))), "forms", "templates"),
+            os.path.join(BASE_DIR, "classic_tetris_project", "web", "templates")
         ],
         'OPTIONS': {
+            'builtins': [
+                'classic_tetris_project.web.templatetags',
+            ],
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.contrib.auth.context_processors.auth',
@@ -121,7 +125,8 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
-                "sekizai.context_processors.sekizai",
+                'sekizai.context_processors.sekizai',
+                'classic_tetris_project.web.context_processors.session_processor',
             ],
             'loaders': [
                 'hamlpy.template.loaders.HamlPyFilesystemLoader',
@@ -131,20 +136,6 @@ TEMPLATES = [
         },
     },
 ]
-
-# hack to check if private module exists
-private_init = os.path.join(
-        BASE_DIR, "classic_tetris_project", "private", "__init__.py")
-if os.path.isfile(private_init):
-    TEMPLATES[0]['DIRS'].append(
-        os.path.join(BASE_DIR, "classic_tetris_project", "private", "templates")
-    )
-    TEMPLATES[0]['OPTIONS']['builtins'] = [
-        'classic_tetris_project.private.templatetags',
-    ]
-    TEMPLATES[0]['OPTIONS']['context_processors'].append(
-        'classic_tetris_project.private.context_processors.session_processor',
-    )
 
 WSGI_APPLICATION = 'classic_tetris_project_django.wsgi.application'
 

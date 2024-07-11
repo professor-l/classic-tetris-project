@@ -25,7 +25,17 @@ class Countdown(Command):
             self.send_message(str(i))
             time.sleep(1)
 
-        self.send_message("Texas!" if randint(1,100) == 42 else "Tetris!")
+        s = "Tetris!"
+        i = randint(1, 1000)
+        if i == 42:
+            s = "Tortoise!"
+        elif i == 43:
+            s = "Texas!"
+        elif i == 44:
+            s = "Tetris™!"
+        elif i == 45:
+            s = "I'm contacting you regarding your car's extended warranty."
+        self.send_message(s)
 
     def check_validity(self, n):
         channel = self.context.channel.name

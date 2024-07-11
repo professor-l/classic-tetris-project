@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Qualify for {{ event.name }}{% endblock %}
+
+{% block content %}
+<h1>Qualify for {{ event.name }}</h1>
+
+{% if event.pre_qualifying_instructions %}
+{% markdown event.pre_qualifying_instructions %}
+{% endif %}
+
+<a href="{% url "event:qualify" event.slug %}" class="btn btn--primary" data-method="post" data-confirm="Are you sure you want to start your qualifier now? Do not continue unless you're ready to start your qualifier.">Start Qualifier</a>
+{% endblock %}

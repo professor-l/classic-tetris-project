@@ -1,11 +1,11 @@
 # Setting up a development environment
 
-It is recommended that you feel comfortable in whichever operating system you use for development. The bot runs on Ubuntu in production; I develop on Ubuntu as well, but dexfore does so on MacOS, and Xael on Windows with [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10). Whichever you choose to use, it is expected that you know how to work with the command line at a basic level.
+It is recommended that you feel comfortable in whichever operating system you use for development. For example, bot runs on Ubuntu in production; Professor L develops on Ubuntu as well, but dexfore does so on MacOS, and Xael on Windows with [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10). Whichever you choose to use, it is expected that you know how to work with the command line at a basic level.
 
-The first step is installing the necessary dependencies. For a quick setup, the only dependencies you need are python 3, pip3, and sqlite. On Ubuntu, the installation looks like this:
+The first step is installing the necessary dependencies. For a quick setup, the only dependencies you need are python 3.8, pip3, sqlite, and redis. On Ubuntu, the installation looks like this:
 
 ```bash
-sudo apt install python3 python3-dev python3-pip sqlite3 libsqlite3-dev
+sudo apt install python3.8 python3-dev python3-pip sqlite3 libsqlite3-dev redis-server
 ```
 
 On other \*nix distributions, replace `apt` with your package manager (`dnf`, `yum`, `pacman`, `brew`, or something else).
@@ -49,3 +49,5 @@ python3 manage.py bot
 ```
 
 To see if everything's working, the `!test` command should result in the bot enthusiastically responding with "Test!". (NOTE: on Twitch, do **not** attempt to invoke commands from the bot's account. Log into your normal Twitch account to test the bot.)  If you're getting errors, review the steps above.
+
+From here, most commands should work, but some (like !profile) require the web portion of the bot to be set up, which you can do by following [SETUP_WEB.md](SETUP_WEB.md).

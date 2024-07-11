@@ -1,0 +1,58 @@
+<div class="data-table">
+  <div class="qualifier-row qualifier-row--headers data-table__headers">
+    <div class="qualifier-row__cell qualifier-row__cell--seed">#</div>
+    <div class="qualifier-row__cell qualifier-row__cell--user">Player</div>
+    <div class="qualifier-row__cell qualifier-row__cell--score">Score</div>
+  </div>
+  {% for group in qualifier_groups %}
+  <div class="qualifier-group" style="{% if group.tournament %}background-color: {{ group.tournament.color }};{% endif %}">
+    <div class="qualifier-group__sidebar">
+      {% if group.tournament %}
+      {% if group.tournament.public %}
+      <a href="{{ group.tournament.get_absolute_url }}" class="qualifier-group__name">{{ group.tournament.short_name }}</a>
+      {% else %}
+      <div class="qualifier-group__name">{{ group.tournament.short_name }}</div>
+      {% endif %}
+      {% endif %}
+    </div>
+    <div class="qualifier-group__rows">
+      {% for qualifier_row in group.qualifier_rows %}
+      {% cycle 'data-table__row--even' 'data-table__row--odd' as row_class silent %}
+      {% if qualifier_row.qualifier %}
+      <div class="qualifier-row data-table__row {{ row_class }}">
+        <div class="qualifier-row__cell qualifier-row__cell--seed">
+          {{ qualifier_row.seed }}
+        </div>
+        <div class="qualifier-row__cell qualifier-row__cell--user">
+          <a href="{{ qualifier_row.qualifier.user.get_absolute_url }}">{{ qualifier_row.qualifier.user.display_name }}</a>
+        </div>
+        <div class="qualifier-row__cell qualifier-row__cell--score">
+          <a href="{% url "qualifier" qualifier_row.qualifier.id %}">{{ qualifier_row.qualifier.type.format_score }}</a>
+          {% if not qualifier_row.qualifier.approved %}
+          <span class="status-tag status-tag--gray status-tag--small qualifier-row__status">
+            Pending
+          </span>
+          {% endif %}
+        </div>
+      </div>
+      {% elif qualifier_row.placeholder %}
+      <div class="qualifier-row data-table__row {{ row_class }}">
+        <div class="qualifier-row__cell qualifier-row__cell--seed">
+          {{ qualifier_row.seed }}
+        </div>
+        <div class="qualifier-row__cell qualifier-row__cell--user">
+          {{ qualifier_row.placeholder }}
+        </div>
+      </div>
+      {% else %}
+      <div class="qualifier-row data-table__row {{ row_class }}">
+        <div class="qualifier-row__cell qualifier-row__cell--seed">
+          {{ forloop.counter }}
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
