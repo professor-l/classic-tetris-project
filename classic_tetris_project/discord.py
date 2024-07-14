@@ -1,6 +1,8 @@
-import discord
 import logging
 import requests
+from typing import Union
+
+import discord
 
 from asgiref.sync import async_to_sync
 from .env import env
@@ -40,7 +42,7 @@ class APIClient:
 API = APIClient(env("DISCORD_TOKEN", default=""))
 
 
-def get_guild():
+def get_guild() -> Union[discord.Guild,None]:
     return client.get_guild(GUILD_ID)
 
 # Returns the guild member of the Discord user for the given guild id.
@@ -54,10 +56,14 @@ def get_guild_member(user_id, guild_id=None):
     return _get_member(guild_id) or _get_member(GUILD_ID) or None
 
 def get_channel(id):
-    return client.get_channel(id)
+    channel = client.get_channel(id)
+    assert isinstance(channel, discord.abc.Messageable)
+    return channel
 
 def get_emote(name):
-    r = discord.utils.get(get_guild().emojis, name=name)
+    guild = get_guild()
+    assert guild is not None
+    r = discord.utils.get(guild.emojis, name=name)
     return str(r) if r else None
 def get_emoji(name):
     return get_emote(name)

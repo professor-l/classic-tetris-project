@@ -1,8 +1,7 @@
 import discord as discordpy
 import logging
 import re
-import time
-from asgiref.sync import async_to_sync, sync_to_async
+from asgiref.sync import async_to_sync
 from discord import ChannelType
 
 from .command import COMMAND_MAP
@@ -14,6 +13,8 @@ from .. import discord
 from .. import twitch
 
 class CommandContext:
+    platform: Platform
+    prefix: str
     def __init__(self, content):
         self.content = content
 
@@ -59,8 +60,6 @@ class CommandContext:
             "args": self.args_string,
             "platform": self.platform.name,
         }
-
-
 
 class DiscordCommandContext(CommandContext):
     platform = Platform.DISCORD
@@ -147,6 +146,7 @@ class DiscordCommandContext(CommandContext):
         return data
 
 class ReportCommandContext(DiscordCommandContext):
+    platform = Platform.DISCORD
     prefix = "<:redheart:545715946325540893>"
     def __init__(self, message):
         super().__init__(message)
@@ -158,6 +158,7 @@ class ReportCommandContext(DiscordCommandContext):
             command.check_support_and_execute()
 
 class ScheduleCommandContext(DiscordCommandContext):
+    platform = Platform.DISCORD
     prefix = "🔥" #jesus christ.
     def __init__(self, message):
         super().__init__(message)

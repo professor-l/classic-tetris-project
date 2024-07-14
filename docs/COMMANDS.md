@@ -9,17 +9,16 @@ Commands are listed with `<required parameters>` and `[optional parameters]`, wh
 #### `!profile [username]`
 **Platforms**: Discord<br/>
 
-Prints most standard information stored in the bot belonging to the specified user, or you.
- Also makes it pretty.
+Prints most standard information stored in the bot belonging to the specified user, or yourself if no argument is provided. Also makes it pretty.
 
 #### `!pb [username]`
 **Platforms**: Twitch, Discord<br/>
 **Aliases**: `!getpb`
 
-Outputs the pb of the specified user, or you.
+Outputs the pb of the specified user, or yourself if no argument is provided.
 
 ---
-#### `!setpb <pb> [type=NTSC]`
+#### `!setpb <pb> [type=NTSC] [level=18]`
 **Platforms**: Twitch, Discord<br/>
 **Aliases**: `!newpb`
 
