@@ -1,11 +1,17 @@
 from .command import Command, CommandException
-from .. import discord
-from ..util import Platform
-from ..models import DiscordUser
+from ..util import Platform, DocSection
 
-@Command.register("pb", "getpb",
-                  usage="pb [username] (default username you)")
+@Command.register()
 class GetPBCommand(Command):
+    """
+    Prints a list of pbs for the specified user, or yourself if no argument is
+    provided.
+    """
+    aliases = ("pb", "getpb")
+    supported_platforms = (Platform.DISCORD, Platform.TWITCH)
+    usage = "pb [username] (default username you)"
+    section = DocSection.USER
+
     def execute(self, *username):
         username = username[0] if len(username) == 1 else self.context.args_string
 
@@ -58,9 +64,17 @@ class GetPBCommand(Command):
             self.send_message("User has not set a PB.")
 
 
-@Command.register("newpb", "setpb",
-                  usage="setpb <score> [type=NTSC] [level]")
+@Command.register()
 class SetPBCommand(Command):
+    """
+    Sets your personal best in either NTSC or PAL with the indicated starting
+    level (defaults to 18).
+    """
+    aliases = ("newpb", "setpb")
+    supported_platforms = (Platform.DISCORD, Platform.TWITCH)
+    usage = "setpb <score> [type=NTSC] [level=18]"
+    section = DocSection.USER
+
     def execute(self, score, console_type="ntsc", level=None):
         try:
             score = int(score.replace(",", ""))

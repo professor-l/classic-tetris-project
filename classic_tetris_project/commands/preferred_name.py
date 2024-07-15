@@ -1,8 +1,17 @@
 from .command import Command, CommandException
+from ..util import Platform, DocSection
 
-@Command.register("name", "getname",
-                  usage="name [username] (default username you)")
+@Command.register()
 class GetPreferredNameCommand(Command):
+    """
+    Prints the specified user's preferred name, or yours if no argument is
+    provided.
+    """
+    aliases = ("name", "getname")
+    supported_platforms = (Platform.DISCORD, Platform.TWITCH)
+    usage = "name [username] (default username you)"
+    section = DocSection.USER
+
     def execute(self, *username):
         username = username[0] if len(username) == 1 else self.context.args_string
         platform_user = (self.platform_user_from_username(username) if username
@@ -17,9 +26,17 @@ class GetPreferredNameCommand(Command):
             self.send_message("User has not set a preferred name.")
 
 
-@Command.register("setname",
-                  usage="setname <name>")
+@Command.register()
 class SetPreferredNameCommand(Command):
+    """
+    Sets your preferred name. Can contain letters, numbers, spaces, hyphens,
+    underscores, and periods.
+    """
+    aliases = ("setname",)
+    supported_platforms = (Platform.DISCORD, Platform.TWITCH)
+    usage = "setname <name>"
+    section = DocSection.USER
+
     def execute(self, *name):
         name = " ".join(name)
         if self.context.user.set_preferred_name(name):

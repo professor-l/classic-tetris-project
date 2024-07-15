@@ -1,6 +1,8 @@
 from .command import Command, CommandException
 from .. import discord
 from ..models.users import User
+from ..util import Platform, DocSection
+
 try:
     from ..reportmatchmodule.processrequest import (
         processRequest,
@@ -13,8 +15,18 @@ except ModuleNotFoundError:
     REPORT_MATCH_LOADED = False
 import time
 
-@Command.register_discord("reportmatch", usage="reportmatch, yadda yadda")
+# not registering this since it probably shouldn't be used anymore
+# @Command.register()
 class ReportMatch(Command):
+    """
+    reports a match i guess (this command should not be used)
+    """
+    aliases = ("reportmatch",)
+    supported_platforms = (Platform.DISCORD,)
+    usage = "reportmatch [insert args here]"
+    notes = ("Will be either deprecated or refactored",)
+    section = DocSection.OTHER
+
     def execute(self, *args):
         if not REPORT_MATCH_LOADED:
             return

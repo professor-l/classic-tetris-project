@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from ..command import Command, CommandException
 from ...queue import Queue
-from ...util import memoize
+from ...util import memoize, Platform, DocSection
 
 """
 queue.py:
@@ -85,9 +85,18 @@ class QueueCommand(Command):
         return index
 
 
-@Command.register_twitch("open", "openqueue",
-                         usage="open")
+@Command.register()
 class OpenQueueCommand(QueueCommand):
+    """
+    Opens the queue. This both allows players to challenge one another and
+    allows moderators to add matches manually.
+    """
+    aliases = ("open", "openqueue")
+    supported_platforms = (Platform.TWITCH,)
+    usage = "open"
+    notes = ("Must be run in a public channel", "Moderator-only",)
+    section = DocSection.QUEUE
+
     def execute(self):
         self.check_public()
         self.check_moderator()
@@ -103,9 +112,18 @@ class OpenQueueCommand(QueueCommand):
                 self.send_message("The queue is now open!")
 
 
-@Command.register_twitch("close", "closequeue",
-                         usage="close")
+@Command.register()
 class CloseQueueCommand(QueueCommand):
+    """
+    Closes the queue. This prevents challenges from being issued or accepted.
+    Moderators may no longer add matches to the queue unless they reopen it.
+    """
+    aliases = ("close", "closequeue")
+    supported_platforms = (Platform.TWITCH,)
+    usage = "close"
+    notes = ("Must be run in a public channel", "Moderator-only",)
+    section = DocSection.QUEUE
+
     def execute(self):
         self.check_public()
         self.check_moderator()
@@ -117,17 +135,32 @@ class CloseQueueCommand(QueueCommand):
             self.send_message("The queue has been closed.")
 
 
-@Command.register_twitch("queue", "q", "matches",
-                         usage="queue")
+@Command.register()
 class ShowQueueCommand(QueueCommand):
+    """
+    Prints the entire queue into chat.
+    """
+    aliases = ("queue", "q", "matches")
+    supported_platforms = (Platform.TWITCH,)
+    usage = "queue"
+    section = DocSection.QUEUE
+
     def execute(self):
         self.check_public()
         self.send_message(self.format_queue(self.queue))
 
 
-@Command.register_twitch("addmatch",
-                         usage="addmatch <player 1> <player 2>")
+@Command.register()
 class AddMatchCommand(QueueCommand):
+    """
+    Adds a match between the two specified players to the queue.
+    """
+    aliases = ("add", "addmatch",)
+    supported_platforms = (Platform.TWITCH,)
+    usage = "add <player 1> <player 2>"
+    notes = ("Must be run in a public channel", "Moderator-only",)
+    section = DocSection.QUEUE
+
     def execute(self, player1, player2):
         self.check_public()
         self.check_moderator()
@@ -145,9 +178,19 @@ class AddMatchCommand(QueueCommand):
         self.send_message(f"A match has been added between {twitch_user1.user_tag} and {twitch_user2.user_tag}!")
 
 
-@Command.register_twitch("insertmatch",
-                         usage="insertmatch <player 1> <player 2> <index>")
+@Command.register()
 class InsertMatchCommand(QueueCommand):
+    """
+    Adds a match between the two specified players to the queue at the
+    specified index, or at the end if the index is greater than the size of the
+    queue.
+    """
+    aliases = ("insert", "insertmatch",)
+    supported_platforms = (Platform.TWITCH,)
+    usage = "insert <player 1> <player 2> <index>"
+    notes = ("Must be run in a public channel", "Moderator-only",)
+    section = DocSection.QUEUE
+
     def execute(self, player1, player2, index):
         self.check_public()
         self.check_moderator()
@@ -172,9 +215,17 @@ class InsertMatchCommand(QueueCommand):
                           f"{twitch_user2.user_tag} at index {i}!")
 
 
-@Command.register_twitch("movematch", "move",
-                         usage="move <current index> <new index>")
+@Command.register()
 class MoveMatchCommand(QueueCommand):
+    """
+    Moves the match at the specified `start index` to the `end index`.
+    """
+    aliases = ("move", "movematch")
+    supported_platforms = (Platform.TWITCH,)
+    usage = "move <current index> <new index>"
+    notes = ("Must be run in a public channel", "Moderator-only",)
+    section = DocSection.QUEUE
+
     def execute(self, old_index, new_index):
         self.check_public()
         self.check_moderator()
@@ -195,9 +246,17 @@ class MoveMatchCommand(QueueCommand):
         ))
 
 
-@Command.register_twitch("removematch",
-                         usage="removematch <index>")
+@Command.register()
 class RemoveMatchCommand(QueueCommand):
+    """
+    Removes the match at the specified index from the queue.
+    """
+    aliases = ("remove", "removematch")
+    supported_platforms = (Platform.TWITCH,)
+    usage = "remove <index>"
+    notes = ("Must be run in a public channel", "Moderator-only",)
+    section = DocSection.QUEUE
+
     def execute(self, index):
         self.check_public()
         self.check_moderator()
@@ -210,9 +269,20 @@ class RemoveMatchCommand(QueueCommand):
         ))
 
 
-@Command.register_twitch("clear", "clearqueue",
-                         usage="clear yesimsure")
+@Command.register()
 class ClearQueueCommand(QueueCommand):
+    """
+    Clears the entire queue.
+
+    **NOTE**: This command must be run as `!clear yesimsure` (Yes, I'm sure) to
+    be certain that you didn't type this command by accident.
+    """
+    aliases = ("clear", "clearqueue")
+    supported_platforms = (Platform.TWITCH,)
+    usage = "clear yesimsure"
+    notes = ("Must be run in a public channel", "Moderator-only",)
+    section = DocSection.QUEUE
+
     def execute(self, confirm):
         self.check_public()
         self.check_moderator()
@@ -226,9 +296,19 @@ class ClearQueueCommand(QueueCommand):
             self.send_usage()
 
 
-@Command.register_twitch("winner", "declarewinner",
-                         usage="winner <player> [losing score]")
+@Command.register()
 class DeclareWinnerCommand(QueueCommand):
+    """
+    Declares the specified player the winner of a game, and stores that result
+    (as well as the optionally provided losing score) in the current match
+    data.
+    """
+    aliases = ("winner", "declarewinner")
+    supported_platforms = (Platform.TWITCH,)
+    usage = "winner <player> [losing score]"
+    notes = ("Must be run in a public channel", "Moderator-only",)
+    section = DocSection.QUEUE
+
     def execute(self, player_name, losing_score=None):
         self.check_public()
         self.check_moderator()
@@ -270,9 +350,18 @@ class DeclareWinnerCommand(QueueCommand):
         self.send_message(" ".join(strings))
 
 
-@Command.register_twitch("endmatch",
-                         usage="endmatch")
+@Command.register()
 class EndMatchCommand(QueueCommand):
+    """
+    Ends the current match, automatically determining the winner based on the
+    match data stored each time `!winner` was called.
+    """
+    aliases = ("end", "endmatch")
+    supported_platforms = (Platform.TWITCH,)
+    usage = "end"
+    notes = ("Must be run in a public channel", "Moderator-only",)
+    section = DocSection.QUEUE
+
     def execute(self):
         self.check_public()
         self.check_moderator()
@@ -290,9 +379,18 @@ class EndMatchCommand(QueueCommand):
         self.send_message(f"Next match: {self.format_match(self.current_match)}")
 
 
-@Command.register_twitch("forfeit",
-                         usage="forfeit <index>")
+@Command.register()
 class ForfeitMatchCommand(QueueCommand):
+    """
+    Forfeits the match at the specified index, provided you are one of the
+    players in that match.
+    """
+    aliases = ("forfeit",)
+    supported_platforms = (Platform.TWITCH,)
+    usage = "forfeit <index>"
+    notes = ("Must be run in a public channel",)
+    section = DocSection.QUEUE
+
     def execute(self, index):
         self.check_public()
         self.check_queue_exists()

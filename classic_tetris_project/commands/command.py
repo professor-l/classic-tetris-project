@@ -5,17 +5,14 @@ from inspect import signature
 import re
 import rollbar
 import traceback
-from typing import Callable, TYPE_CHECKING
+from typing import Type
 
 from discord import ChannelType
 from django.conf import settings
 
 from .. import discord, twitch
-from ..util import Platform
+from ..util import Platform, DocSection
 from ..models.users import DiscordUser, TwitchUser
-
-if TYPE_CHECKING:
-    from .command_context import CommandContext
 
 RE_DISCORD_MENTION = re.compile(r"^<@!?(\d+)>$")
 RE_DISCORD_TAG = re.compile(r"^@?((?P<username>[^@#:]+)#(?P<discriminator>\d+))$")
@@ -27,6 +24,12 @@ class CommandException(Exception):
         self.send_usage = send_usage
 
 class Command(ABC):
+    aliases: tuple[str, ...] # the first entry is considered the default
+    supported_platforms: tuple[Platform, ...]
+    usage: str
+    notes: tuple[str, ...] = () # for things like "moderator-only"
+    section: DocSection
+
     def __init__(self, context):
         self.context = context
         self.args = context.args
@@ -119,10 +122,6 @@ class Command(ABC):
                 raise CommandException(
                     "This command only works in a public channel."
                 )
-
-    @property
-    def usage(self):
-        return self._usage_string
 
     @property
     def arity(self):
@@ -226,24 +225,26 @@ class Command(ABC):
                 return None
 
     @staticmethod
-    def register(*aliases, usage, platforms=(Platform.DISCORD, Platform.TWITCH)):
-        def _register_command(command):
-            # type check
-            assert hasattr(command, 'execute')
-            command.supported_platforms = platforms
-            command._usage_string = usage
-            for alias in aliases:
+    def register():
+        def _register_command(command: Type[Command]):
+            Command.check_attributes(command)
+            COMMAND_OBJECTS.add(command)
+            for alias in command.aliases:
+                if alias in COMMAND_MAP:
+                    raise ValueError(f"{alias} used for multiple commands!")
                 COMMAND_MAP[alias] = command
             return command
         return _register_command
 
     @staticmethod
-    def register_twitch(*args, **kwargs):
-        return Command.register(*args, **kwargs, platforms=(Platform.TWITCH,))
-
-    @staticmethod
-    def register_discord(*args, **kwargs):
-        return Command.register(*args, **kwargs, platforms=(Platform.DISCORD,))
+    def check_attributes(command: Type[Command]):
+        assert command.execute
+        assert hasattr(command, "aliases")
+        assert hasattr(command, "supported_platforms")
+        assert hasattr(command, "usage")
+        assert hasattr(command, "section")
+        assert isinstance(command.section, DocSection)
+        assert command.__doc__
 
     @abstractmethod
     def execute(self, *args, **kwargs):
@@ -252,11 +253,12 @@ class Command(ABC):
 class CustomTwitchCommand(Command):
     def __init__(self, context, command_object):
         super().__init__(context)
-        self.supported_platforms = [Platform.TWITCH]
+        self.supported_platforms = (Platform.TWITCH,)
 
         self.output = command_object.output or command_object.alias_for.output
 
     def execute(self):
         self.send_message(self.output)
 
-COMMAND_MAP: dict[str, Callable[[CommandContext], Command]] = {}
+COMMAND_MAP: dict[str, Type[Command]] = {}
+COMMAND_OBJECTS: set[Type[Command]] = set()

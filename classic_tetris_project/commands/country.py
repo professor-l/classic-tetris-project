@@ -1,9 +1,18 @@
 from .command import Command, CommandException
 from ..countries import Country
+from ..util import Platform, DocSection
 
-@Command.register("country", "getcountry",
-                  usage="country [username] (default username you)")
+@Command.register()
 class GetCountryCommand(Command):
+    """
+    Outputs the country of the specified user, or yourself if no argument is
+    provided.
+    """
+    aliases = ("country", "getcountry")
+    supported_platforms = (Platform.DISCORD, Platform.TWITCH)
+    usage = "country [username] (default username you)"
+    section = DocSection.USER
+
     def execute(self, *username):
         username = username[0] if len(username) == 1 else self.context.args_string
         platform_user = (self.platform_user_from_username(username) if username
@@ -18,9 +27,18 @@ class GetCountryCommand(Command):
         else:
             self.send_message("User has not set a country.")
 
-@Command.register("setcountry",
-                  usage="setcountry <three-letter country code>")
+@Command.register()
 class SetCountryCommand(Command):
+    """
+    Sets your country in the database. You can find a list of the three-letter
+    codes [here](https://www.iban.com/country-codes) under the "Alpha-3 codes"
+    column.
+    """
+    aliases = ("setcountry",)
+    supported_platforms = (Platform.DISCORD, Platform.TWITCH)
+    usage = "setcountry <three-letter country code>"
+    section = DocSection.USER
+
     def execute(self, country):
         if not self.context.user.set_country(country):
             raise CommandException("Invalid country.")

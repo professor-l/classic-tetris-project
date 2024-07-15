@@ -1,9 +1,17 @@
 from .command import Command, CommandException
-from ..util import Platform
+from ..util import Platform, DocSection
 
-@Command.register("samepieces", "samepiecesets", "sps",
-                  usage="samepieces [username] (default username you)")
+@Command.register()
 class GetSamePiecesCommand(Command):
+    """
+    Outputs whether the specified user (or yourself) can use a version of Tetris
+    with same piece sets.
+    """
+    aliases = ("sps", "samepieces", "samepiecesets")
+    supported_platforms = (Platform.DISCORD, Platform.TWITCH)
+    usage = "sps [username] (default username you)"
+    section = DocSection.USER
+
     def execute(self, *username):
         username = username[0] if len(username) == 1 else self.context.args_string
         platform_user = (self.platform_user_from_username(username) if username
@@ -24,9 +32,17 @@ class GetSamePiecesCommand(Command):
         ))
 
 
-@Command.register("setsamepieces", "setsamepiecesets", "setsps",
-                  usage="setsamepieces [y/n]")
+@Command.register()
 class SetSamePiecesCommand(Command):
+    """
+    Sets your ability to use same piece sets in gameplay. Options are
+    y/yes/t/true and n/no/f/false.
+    """
+    aliases = ("setsps", "setsamepieces", "setsamepiecesets")
+    supported_platforms = (Platform.DISCORD, Platform.TWITCH)
+    usage = "setsps <y/n>"
+    section = DocSection.USER
+
     def execute(self, value):
         print("EXECUTING")
         if self.context.user.set_same_piece_sets(value):

@@ -1,13 +1,11 @@
-import time
 import uuid
-from threading import Thread
 from django.core.cache import cache
 
 from .queue import QueueCommand
-from ...models import TwitchUser
 from ..command import Command, CommandException
 from ...queue import Queue
 from ... import twitch
+from ...util import Platform, DocSection
 
 """
 !challenge <user>
@@ -51,9 +49,18 @@ class Challenge:
         return isinstance(challenge, Challenge) and self.uuid == challenge.uuid
 
 
-@Command.register_twitch("challenge",
-                         usage="challenge <user>")
+@Command.register()
 class ChallengeCommand(QueueCommand):
+    """
+    Challenges the specified user to a match. Only one challenge can be pending
+    to a user at a time, and each user may only issue one challenge at a time.
+    """
+    aliases = ("challenge",)
+    supported_platforms = (Platform.TWITCH,)
+    usage = "challenge <user>"
+    notes = ("Must be run in a public channel",)
+    section = DocSection.QUEUE
+
     def execute(self, username):
         self.check_public()
 
@@ -88,9 +95,18 @@ class ChallengeCommand(QueueCommand):
         self.send_message(f"{recipient.user_tag} : {sender.username} has challenged you to a match on twitch.tv/{channel_name}! You have 60 seconds to !accept or !decline.")
 
 
-@Command.register_twitch("accept",
-                         usage="accept")
+@Command.register()
 class AcceptChallengeCommand(Command):
+    """
+    Accepts the pending challenge to you, if there is one, and adds that match
+    to the queue.
+    """
+    aliases = ("accept",)
+    supported_platforms = (Platform.TWITCH,)
+    usage = "accept"
+    notes = ("Must be run in a private message",)
+    section = DocSection.QUEUE
+
     def execute(self):
         # Check that the challenge exists
         challenge = Challenge.pending_challenge(self.context.platform_user)
@@ -116,9 +132,17 @@ class AcceptChallengeCommand(Command):
         ))
 
 
-@Command.register_twitch("decline",
-                         usage="decline")
+@Command.register()
 class DeclineChallengeCommand(Command):
+    """
+    Declines the pending challenge to you, if there is one.
+    """
+    aliases = ("decline",)
+    supported_platforms = (Platform.TWITCH,)
+    usage = "decline"
+    notes = ("Must be run in a private message",)
+    section = DocSection.QUEUE
+
     def execute(self):
         challenge = Challenge.pending_challenge(self.context.platform_user)
         if not challenge:
@@ -127,9 +151,17 @@ class DeclineChallengeCommand(Command):
         challenge.remove()
         self.send_message(f"{challenge.recipient.username} has declined {challenge.sender.username} 's challenge.")
 
-@Command.register_twitch("cancel",
-                         usage="cancel")
+@Command.register()
 class CancelChallengeCommand(Command):
+    """
+    Cancels your pending challenge to someone else, if you have issued one.
+    """
+    aliases = ("cancel",)
+    supported_platforms = (Platform.TWITCH,)
+    usage = "cancel"
+    notes = ("Must be run in a public channel",)
+    section = DocSection.QUEUE
+
     def execute(self):
         self.check_public()
 

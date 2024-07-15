@@ -3,16 +3,32 @@ from django.core.cache import cache
 from random import randint
 
 from .command import Command, CommandException
+from ..util import Platform, DocSection
 
 MIN_COUNTDOWN = 3
 MAX_COUNTDOWN = 10
 
-@Command.register_twitch(*map(str, range(MIN_COUNTDOWN, MAX_COUNTDOWN + 1)),
-                         usage=None)
+@Command.register()
 class Countdown(Command):
-    @property
-    def usage(self):
-        return self.context.command_name
+    """
+    Counts down from 3 before saying "Tetris!" in the chat. Works for any
+    number from 3-10.
+
+    **Note:** If the bot is not a moderator in your Twitch channel, it will not
+    be able to say more than one message per second, and this restriction
+    (which is built into Twitch) will interfere with countdowns. You can make
+    the bot a moderator by typing `/mod @ClassicTetrisBot` after you have
+    `!summon`ed it.
+    """
+    aliases = tuple(str(i) for i in range(MIN_COUNTDOWN, MAX_COUNTDOWN+1))
+    supported_platforms = (Platform.TWITCH,)
+    usage = "n (3 <= n <= 10)"
+    notes = ("Moderator-only",)
+    section = DocSection.OTHER
+
+    def __init__(self, context):
+        super().__init__(context)
+        self.usage = self.context.command_name
 
     def execute(self):
         self.check_public()

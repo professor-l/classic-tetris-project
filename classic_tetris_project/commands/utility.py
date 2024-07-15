@@ -6,7 +6,7 @@ from datetime import datetime
 
 from .command import Command, CommandException
 from ..models import Side, TwitchChannel
-from ..util import Platform
+from ..util import Platform, DocSection
 from ..discord import GUILD_ID, client as discord_client
 from..util.fieldgen.hz_simulation import HzSimulation
 from ..words import Words
@@ -23,8 +23,16 @@ COIN_MESSAGES = {
     SIDE: "Side o.O"
 }
 
-@Command.register_discord("hz", "hydrant", usage="hz <level> <height> <taps>")
+@Command.register()
 class HzCommand(Command):
+    """
+    For the given level, provides the approximate tapping speed(s) required to
+    clear a given height with the number of taps required.
+    """
+    aliases = ("hz", "hydrant")
+    supported_platforms = (Platform.DISCORD,) # TODO: twitch support
+    usage = "hz <level> <height> <taps>"
+    section = DocSection.UTIL
 
     def execute(self, level, height, taps):
         try:
@@ -62,8 +70,18 @@ class HzCommand(Command):
         embed = Embed().set_image(url=hz.image_url)
         self.send_message_full(self.context.channel.id, msg, embed=embed)
 
-@Command.register("seed", "hex", usage="seed")
+@Command.register()
 class SeedGenerationCommand(Command):
+    """
+    Prints a random 6-digit hex code, used for same piece set matches. Seeds
+    which are known to generate bad (i.e. repetitive) piece sequences are
+    excluded.
+    """
+    aliases = ("seed", "hex")
+    supported_platforms = (Platform.DISCORD, Platform.TWITCH)
+    usage = "seed"
+    section = DocSection.UTIL
+
     def execute(self, *args):
         if self.context.platform == Platform.TWITCH:
             self.check_moderator()
@@ -76,8 +94,16 @@ class SeedGenerationCommand(Command):
         self.send_message(f"RANDOM SEED: [{spaced_string}]")
 
 
-@Command.register("coin", "flip", "coinflip", usage="flip")
+@Command.register()
 class CoinFlipCommand(Command):
+    """
+    Prints "Heads!" or "Tails!" randomly. Note: this command has a 10 second
+    timeout to avoid spamming.
+    """
+    aliases = ("flip", "coin", "coinflip")
+    supported_platforms = (Platform.DISCORD, Platform.TWITCH)
+    usage = "flip"
+    section = DocSection.UTIL
 
     def execute(self, *args):
         if self.context.platform == Platform.TWITCH:
@@ -101,8 +127,17 @@ class CoinFlipCommand(Command):
             Side.log(self.context.user)
 
 
-@Command.register_discord("utc", "time", usage="utc")
+@Command.register()
 class UTCCommand(Command):
+    """
+    Prints the current date and time in UTC. Used for scheduling matches with
+    restreaamers and other players.
+    """
+    aliases = ("utc", "time")
+    supported_platforms = (Platform.DISCORD, Platform.TWITCH)
+    usage = "utc"
+    section = DocSection.UTIL
+
     def execute(self, *args):
         t = datetime.utcnow()
         l1 = t.strftime("%A, %b %d")
@@ -110,8 +145,17 @@ class UTCCommand(Command):
         self.send_message(f"Current date/time in UTC:\n**{l1}**\n**{l2}**")
 
 
-@Command.register_discord("stats", usage="stats")
+@Command.register()
 class StatsCommand(Command):
+    """
+    Prints basic usage statistics for the bot.
+    """
+    aliases = ("stats",)
+    supported_platforms = (Platform.DISCORD,)
+    usage = "stats"
+    notes = ("Moderator-only",)
+    section = DocSection.UTIL
+
     def execute(self, *args):
         self.check_moderator()
 
@@ -120,8 +164,16 @@ class StatsCommand(Command):
 
         self.send_message(f"I'm in {guilds} Discord servers and {channels} Twitch channels.")
 
-@Command.register_twitch("authword", usage="authword")
+@Command.register()
 class AuthWordCommand(Command):
+    """
+    Prints a randomly-selected word, to prove a game is happening in real-time.
+    """
+    aliases = ("authword",)
+    supported_platforms = (Platform.DISCORD, Platform.TWITCH)
+    usage = "authword"
+    section = DocSection.UTIL
+
 
     def execute(self, *args):
         self.check_moderator()

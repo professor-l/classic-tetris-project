@@ -3,11 +3,22 @@ from django.core.cache import cache
 
 from .command import Command, CommandException
 from ..models import User
+from ..util import Platform, DocSection
 
 
-@Command.register_discord("export", usage="export")
+@Command.register()
 class ExportDatabaseCommand(Command):
-    def execute(self, *args):
+    """
+    Exports a basic summary of all bot users as a `.csv` file. Is updated once
+    a day.
+    """
+    aliases = ("export",)
+    supported_platforms = (Platform.DISCORD,)
+    usage = "export"
+    notes = ("Must be sent in a DM",)
+    section = DocSection.OTHER
+
+    def execute(self):
         self.check_private()
 
         if cache.get("pbcsv"):

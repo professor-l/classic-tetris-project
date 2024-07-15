@@ -2,6 +2,8 @@ from .command import Command, CommandException
 from .. import discord
 import time
 from ..models.users import User
+from ..util import Platform, DocSection
+
 try:
     from ..reportmatchmodule.processrequest import (
         processRequest,
@@ -13,11 +15,21 @@ try:
 except ModuleNotFoundError:
     SCHEDULE_MATCH_LOADED = False
 
-@Command.register_discord("schedulematch", usage="schedulematch, yadda yadda")
+# not registering this since it probably shouldn't be used anymore
+# @Command.register()
 class ScheduleMatch(Command):
+    """
+    schedules a match i guess (this command should not be used)
+    """
+    aliases = ("schedulematch",)
+    supported_platforms = (Platform.DISCORD,)
+    usage = "schedulematch [insert args here]"
+    notes = ("Will be either deprecated or refactored",)
+    section = DocSection.OTHER
+
     def execute(self, *args):
         if not SCHEDULE_MATCH_LOADED:
-            return  
+            return
         self.execute_peon(args)
 
     def execute_peon(self, *args):

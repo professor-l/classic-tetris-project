@@ -5,7 +5,7 @@ from ..discord import *
 from .command import Command, CommandException
 from ..countries import Country
 
-from ..util import Platform
+from ..util import Platform, DocSection
 from ..util.json_template import match_template
 
 DISCORD_TEMPLATE = ("""
@@ -62,8 +62,17 @@ TETRIS_CHECK = "tetrischeck"
 
 PLAYER_ICON = "https://cdn.discordapp.com/avatars/{id}/{avatar}.jpg"
 
-@Command.register("profile", usage="profile [username] (default username you)")
+@Command.register()
 class ProfileCommand(Command):
+    """
+    Prints most standard information stored in the bot belonging to the
+    specified user, or yourself if no argument is provided. Also makes it
+    pretty.
+    """
+    aliases = ("profile",)
+    supported_platforms = (Platform.DISCORD, Platform.TWITCH)
+    usage = "profile [username] (default username you)"
+    section = DocSection.USER
 
     def execute(self, *username):
         username = username[0] if len(username) == 1 else self.context.args_string

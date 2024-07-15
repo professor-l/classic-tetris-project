@@ -1,10 +1,19 @@
 from io import BytesIO
 import zipfile
-from .command import Command, CommandException
+from .command import Command
 from ..models.users import TwitchUser
+from ..util import Platform, DocSection
 
-@Command.register_discord("obsfiles", usage="obsfiles [type=ntsc]")
+@Command.register()
 class ZipFileCommand(Command):
+    """
+    Sends a zipped list of pbs for each Twitch user.
+    """
+    aliases = ("obsfiles",)
+    supported_platforms = (Platform.DISCORD,)
+    usage = "obsfiles [type=ntsc]"
+    notes = ("Moderator-only",)
+    section = DocSection.OTHER
 
     def execute(self, pb_type="ntsc"):
 

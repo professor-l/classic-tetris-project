@@ -1,9 +1,18 @@
 from collections import OrderedDict
 
 from .command import Command, CommandException
+from ..util import Platform, DocSection
 
-@Command.register("setpronouns", "setpronoun", usage="setpronoun <pronoun>")
+@Command.register()
 class SetPronounCommand(Command):
+    """
+    Sets your pronouns to one of the valid options.
+    """
+    aliases = ("setpronouns", "setpronoun")
+    supported_platforms = (Platform.DISCORD, Platform.TWITCH)
+    usage = "setpronouns <pronouns>"
+    section = DocSection.USER
+
     def execute(self, pronoun):
         # needs the same keys as PRONOUN_CHOICES in models/users.py
         pronoun_map = OrderedDict([
@@ -34,8 +43,17 @@ class SetPronounCommand(Command):
         pronoun_list = ", ".join(pronoun_map.keys())
         raise CommandException(f"Invalid pronoun option. Choose one of: {pronoun_list}")
 
-@Command.register("pronouns", "pronoun", "getpronouns", "getpronoun", usage="pronouns <username>")
+@Command.register()
 class GetPronounCommand(Command):
+    """
+    Outputs the specified user's pronouns, or your own if no argument is
+    provided.
+    """
+    aliases = ("pronouns", "pronoun", "getpronouns", "getpronoun")
+    supported_platforms = (Platform.DISCORD, Platform.TWITCH)
+    usage = "setpronouns <pronouns>"
+    section = DocSection.USER
+
     def execute(self, *username):
         username = username[0] if len(username) == 1 else self.context.args_string
         platform_user = (self.platform_user_from_username(username) if username

@@ -4,10 +4,20 @@ from django.db.models.functions import Abs
 from ..command import Command, CommandException
 from ...models import User
 from ... import twitch
+from ...util import Platform, DocSection
 
-@Command.register_twitch("match",
-                         usage="match [user] [results=3]")
+@Command.register()
 class MatchCommand(Command):
+    """
+    Retrieves the users in chat with personal bests closest to that of the
+    specified user (or you). Displays specified number of results.
+    """
+    aliases = ("match",)
+    supported_platforms = (Platform.TWITCH,)
+    usage = "match [user] [results=3]"
+    notes = ("Must be run in a public channel",)
+    section = DocSection.QUEUE
+
     MIN_RESULTS = 3
     DEFAULT_RESULTS = 3
     MAX_RESULTS = 6

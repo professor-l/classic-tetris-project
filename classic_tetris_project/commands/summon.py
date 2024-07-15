@@ -1,15 +1,28 @@
 from django.core.exceptions import ObjectDoesNotExist
 
-from ..util import Platform
+from ..util import Platform, DocSection
 from .command import Command, CommandException
 from .. import twitch
 
 
 SUMMON_LINK = "https://discord.com/api/oauth2/authorize?client_id=544534930114347023&permissions=378944&redirect_uri=https%3A%2F%2Fmonthlytetris.info%2Foauth%2Fauthorize%2Fdiscord%2F&scope=bot"
 
-@Command.register("summon",
-                         usage="summon")
+@Command.register()
 class SummonCommand(Command):
+    """
+    Say this in a channel the bot is in to add the bot to your Twitch channel.
+    If you've `!link`ed your Twitch and Discord accounts through the bot, you
+    can even summon the bot to your Twitch channel by messaging it on Discord.
+
+    **Note**: If you plan on using the countdown command (Or if you think the
+    bot will be chatting often), make sure you make the bot a moderator to
+    allow it to send more than one message per second.
+    """
+    aliases = ("summon",)
+    supported_platforms = (Platform.TWITCH,)
+    usage = "summon"
+    section = DocSection.OTHER
+
     def execute(self):
         if self.context.platform == Platform.TWITCH:
 
@@ -30,11 +43,19 @@ class SummonCommand(Command):
                                                 "make me leave.")
         channel.send_message(f"Hi, I'm {twitch.client.username}!")
 
-@Command.register("pleaseleavemychannel",
-                         usage="pleaseleavemychannel")
+@Command.register()
 class LeaveCommand(Command):
-    def execute(self):
+    """
+    Call this command in a whisper to the bot to remove the bot from your
+    channel.
+    """
+    aliases = ("pleaseleavemychannel",)
+    supported_platforms = (Platform.TWITCH,)
+    usage = "pleaseleavemychannel"
+    notes = ("Must be run in a private message",)
+    section = DocSection.OTHER
 
+    def execute(self):
         try:
             twitch_user = self.context.user.twitch_user
             channel = twitch_user.channel
