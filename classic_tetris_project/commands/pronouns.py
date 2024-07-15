@@ -51,7 +51,7 @@ class GetPronounCommand(Command):
     """
     aliases = ("pronouns", "pronoun", "getpronouns", "getpronoun")
     supported_platforms = (Platform.DISCORD, Platform.TWITCH)
-    usage = "setpronouns <pronouns>"
+    usage = "pronouns [username] (default username you)"
     section = DocSection.USER
 
     def execute(self, *username):

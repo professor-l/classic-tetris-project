@@ -70,7 +70,7 @@ class SetPBCommand(Command):
     Sets your personal best in either NTSC or PAL with the indicated starting
     level (defaults to 18).
     """
-    aliases = ("newpb", "setpb")
+    aliases = ("setpb", "newpb")
     supported_platforms = (Platform.DISCORD, Platform.TWITCH)
     usage = "setpb <score> [type=NTSC] [level=18]"
     section = DocSection.USER

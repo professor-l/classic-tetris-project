@@ -8,7 +8,7 @@ class GetPlaystyleCommand(Command):
     """
     aliases = ("playstyle", "getplaystyle")
     supported_platforms = (Platform.DISCORD, Platform.TWITCH)
-    usage = "playstyle [username]"
+    usage = "playstyle [username] (default username you)"
     section = DocSection.USER
 
     def execute(self, *username):

@@ -228,7 +228,7 @@ class Command(ABC):
     def register():
         def _register_command(command: Type[Command]):
             Command.check_attributes(command)
-            COMMAND_OBJECTS.add(command)
+            COMMAND_CLASSES.add(command)
             for alias in command.aliases:
                 if alias in COMMAND_MAP:
                     raise ValueError(f"{alias} used for multiple commands!")
@@ -261,4 +261,4 @@ class CustomTwitchCommand(Command):
         self.send_message(self.output)
 
 COMMAND_MAP: dict[str, Type[Command]] = {}
-COMMAND_OBJECTS: set[Type[Command]] = set()
+COMMAND_CLASSES: set[Type[Command]] = set()

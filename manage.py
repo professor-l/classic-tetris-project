@@ -3,7 +3,8 @@
 import os
 import sys
 
-
+# Provided commands: https://docs.djangoproject.com/en/3.2/ref/django-admin/
+# Custom commands can be found in classic_tetris_project/management/commands
 def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'classic_tetris_project_django.settings')
     try:

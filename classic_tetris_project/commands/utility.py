@@ -131,7 +131,7 @@ class CoinFlipCommand(Command):
 class UTCCommand(Command):
     """
     Prints the current date and time in UTC. Used for scheduling matches with
-    restreaamers and other players.
+    restreamers and other players.
     """
     aliases = ("utc", "time")
     supported_platforms = (Platform.DISCORD, Platform.TWITCH)
