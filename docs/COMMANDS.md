@@ -8,8 +8,8 @@ Commands are listed with `<required parameters>` and `[optional parameters]`, wh
 
 ## User commands
 
-### !country [username] (default username you)
-[Source](classic_tetris_project/commands/country.py#L6)<br/>
+#### `!country [username] (default username you)`
+[Source](../classic_tetris_project/commands/country.py#L6)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!getcountry`
 
@@ -18,8 +18,8 @@ provided.
 
 ---
 
-### !name [username] (default username you)
-[Source](classic_tetris_project/commands/preferred_name.py#L5)<br/>
+#### `!name [username] (default username you)`
+[Source](../classic_tetris_project/commands/preferred_name.py#L5)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!getname`
 
@@ -28,8 +28,8 @@ provided.
 
 ---
 
-### !pb [username] (default username you)
-[Source](classic_tetris_project/commands/pb.py#L5)<br/>
+#### `!pb [username] (default username you)`
+[Source](../classic_tetris_project/commands/pb.py#L5)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!getpb`
 
@@ -38,8 +38,8 @@ provided.
 
 ---
 
-### !playstyle [username] (default username you)
-[Source](classic_tetris_project/commands/playstyle.py#L5)<br/>
+#### `!playstyle [username] (default username you)`
+[Source](../classic_tetris_project/commands/playstyle.py#L5)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!getplaystyle`
 
@@ -47,8 +47,8 @@ Prints the user's playstyle, or yours if no argument is provided.
 
 ---
 
-### !profile [username] (default username you)
-[Source](classic_tetris_project/commands/profile.py#L66)<br/>
+#### `!profile [username] (default username you)`
+[Source](../classic_tetris_project/commands/profile.py#L66)<br/>
 **Platforms**: Discord, Twitch
 
 Prints most standard information stored in the bot belonging to the
@@ -57,8 +57,8 @@ pretty.
 
 ---
 
-### !pronouns [username] (default username you)
-[Source](classic_tetris_project/commands/pronouns.py#L47)<br/>
+#### `!pronouns [username] (default username you)`
+[Source](../classic_tetris_project/commands/pronouns.py#L47)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!pronoun`, `!getpronouns`, `!getpronoun`
 
@@ -67,8 +67,8 @@ provided.
 
 ---
 
-### !setcountry <three-letter country code>
-[Source](classic_tetris_project/commands/country.py#L31)<br/>
+#### `!setcountry <three-letter country code>`
+[Source](../classic_tetris_project/commands/country.py#L31)<br/>
 **Platforms**: Discord, Twitch
 
 Sets your country in the database. You can find a list of the three-letter
@@ -77,8 +77,8 @@ column.
 
 ---
 
-### !setname <name>
-[Source](classic_tetris_project/commands/preferred_name.py#L30)<br/>
+#### `!setname <name>`
+[Source](../classic_tetris_project/commands/preferred_name.py#L30)<br/>
 **Platforms**: Discord, Twitch
 
 Sets your preferred name. Can contain letters, numbers, spaces, hyphens,
@@ -86,8 +86,8 @@ underscores, and periods.
 
 ---
 
-### !setpb <score> [type=NTSC] [level=18]
-[Source](classic_tetris_project/commands/pb.py#L68)<br/>
+#### `!setpb <score> [type=NTSC] [level=18]`
+[Source](../classic_tetris_project/commands/pb.py#L68)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!newpb`
 
@@ -96,8 +96,8 @@ level (defaults to 18).
 
 ---
 
-### !setplaystyle <DAS|Hypertap|Hybrid|Roll>
-[Source](classic_tetris_project/commands/playstyle.py#L29)<br/>
+#### `!setplaystyle <DAS|Hypertap|Hybrid|Roll>`
+[Source](../classic_tetris_project/commands/playstyle.py#L29)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!setstyle`
 
@@ -105,8 +105,8 @@ Sets your playstyle to any of the valid options.
 
 ---
 
-### !setpronouns <pronouns>
-[Source](classic_tetris_project/commands/pronouns.py#L7)<br/>
+#### `!setpronouns <pronouns>`
+[Source](../classic_tetris_project/commands/pronouns.py#L7)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!setpronoun`
 
@@ -114,8 +114,8 @@ Sets your pronouns to one of the valid options.
 
 ---
 
-### !setsps <y/n>
-[Source](classic_tetris_project/commands/same_piece_sets.py#L36)<br/>
+#### `!setsps <y/n>`
+[Source](../classic_tetris_project/commands/same_piece_sets.py#L36)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!setsamepieces`, `!setsamepiecesets`
 
@@ -124,8 +124,8 @@ y/yes/t/true and n/no/f/false.
 
 ---
 
-### !sps [username] (default username you)
-[Source](classic_tetris_project/commands/same_piece_sets.py#L5)<br/>
+#### `!sps [username] (default username you)`
+[Source](../classic_tetris_project/commands/same_piece_sets.py#L5)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!samepieces`, `!samepiecesets`
 
@@ -134,8 +134,8 @@ with same piece sets.
 
 ## Account linking commands
 
-### !link
-[Source](classic_tetris_project/commands/link.py#L5)<br/>
+#### `!link`
+[Source](../classic_tetris_project/commands/link.py#L5)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!linkaccount`
 
@@ -143,8 +143,8 @@ Prints instructions for linking accounts from multiple platforms.
 
 ## Queueing commands
 
-### !accept
-[Source](classic_tetris_project/commands/matches/challenge.py#L99)<br/>
+#### `!accept`
+[Source](../classic_tetris_project/commands/matches/challenge.py#L99)<br/>
 **Platforms**: Twitch<br/>
 **Must be run in a private message**
 
@@ -153,8 +153,8 @@ to the queue.
 
 ---
 
-### !add <player 1> <player 2>
-[Source](classic_tetris_project/commands/matches/queue.py#L154)<br/>
+#### `!add <player 1> <player 2>`
+[Source](../classic_tetris_project/commands/matches/queue.py#L154)<br/>
 **Platforms**: Twitch<br/>
 **Aliases**: `!addmatch`<br/>
 **Must be run in a public channel**<br/>
@@ -164,8 +164,8 @@ Adds a match between the two specified players to the queue.
 
 ---
 
-### !cancel
-[Source](classic_tetris_project/commands/matches/challenge.py#L155)<br/>
+#### `!cancel`
+[Source](../classic_tetris_project/commands/matches/challenge.py#L155)<br/>
 **Platforms**: Twitch<br/>
 **Must be run in a public channel**
 
@@ -173,8 +173,8 @@ Cancels your pending challenge to someone else, if you have issued one.
 
 ---
 
-### !challenge <user>
-[Source](classic_tetris_project/commands/matches/challenge.py#L53)<br/>
+#### `!challenge <user>`
+[Source](../classic_tetris_project/commands/matches/challenge.py#L53)<br/>
 **Platforms**: Twitch<br/>
 **Must be run in a public channel**
 
@@ -183,8 +183,8 @@ to a user at a time, and each user may only issue one challenge at a time.
 
 ---
 
-### !clear yesimsure
-[Source](classic_tetris_project/commands/matches/queue.py#L273)<br/>
+#### `!clear yesimsure`
+[Source](../classic_tetris_project/commands/matches/queue.py#L273)<br/>
 **Platforms**: Twitch<br/>
 **Aliases**: `!clearqueue`<br/>
 **Must be run in a public channel**<br/>
@@ -197,8 +197,8 @@ be certain that you didn't type this command by accident.
 
 ---
 
-### !close
-[Source](classic_tetris_project/commands/matches/queue.py#L116)<br/>
+#### `!close`
+[Source](../classic_tetris_project/commands/matches/queue.py#L116)<br/>
 **Platforms**: Twitch<br/>
 **Aliases**: `!closequeue`<br/>
 **Must be run in a public channel**<br/>
@@ -209,8 +209,8 @@ Moderators may no longer add matches to the queue unless they reopen it.
 
 ---
 
-### !decline
-[Source](classic_tetris_project/commands/matches/challenge.py#L136)<br/>
+#### `!decline`
+[Source](../classic_tetris_project/commands/matches/challenge.py#L136)<br/>
 **Platforms**: Twitch<br/>
 **Must be run in a private message**
 
@@ -218,8 +218,8 @@ Declines the pending challenge to you, if there is one.
 
 ---
 
-### !end
-[Source](classic_tetris_project/commands/matches/queue.py#L354)<br/>
+#### `!end`
+[Source](../classic_tetris_project/commands/matches/queue.py#L354)<br/>
 **Platforms**: Twitch<br/>
 **Aliases**: `!endmatch`<br/>
 **Must be run in a public channel**<br/>
@@ -230,8 +230,8 @@ match data stored each time `!winner` was called.
 
 ---
 
-### !forfeit <index>
-[Source](classic_tetris_project/commands/matches/queue.py#L383)<br/>
+#### `!forfeit <index>`
+[Source](../classic_tetris_project/commands/matches/queue.py#L383)<br/>
 **Platforms**: Twitch<br/>
 **Must be run in a public channel**
 
@@ -240,8 +240,8 @@ players in that match.
 
 ---
 
-### !insert <player 1> <player 2> <index>
-[Source](classic_tetris_project/commands/matches/queue.py#L182)<br/>
+#### `!insert <player 1> <player 2> <index>`
+[Source](../classic_tetris_project/commands/matches/queue.py#L182)<br/>
 **Platforms**: Twitch<br/>
 **Aliases**: `!insertmatch`<br/>
 **Must be run in a public channel**<br/>
@@ -253,8 +253,8 @@ queue.
 
 ---
 
-### !match [user] [results=3]
-[Source](classic_tetris_project/commands/matches/match.py#L10)<br/>
+#### `!match [user] [results=3]`
+[Source](../classic_tetris_project/commands/matches/match.py#L10)<br/>
 **Platforms**: Twitch<br/>
 **Must be run in a public channel**
 
@@ -263,8 +263,8 @@ specified user (or you). Displays specified number of results.
 
 ---
 
-### !move <current index> <new index>
-[Source](classic_tetris_project/commands/matches/queue.py#L219)<br/>
+#### `!move <current index> <new index>`
+[Source](../classic_tetris_project/commands/matches/queue.py#L219)<br/>
 **Platforms**: Twitch<br/>
 **Aliases**: `!movematch`<br/>
 **Must be run in a public channel**<br/>
@@ -274,8 +274,8 @@ Moves the match at the specified `start index` to the `end index`.
 
 ---
 
-### !open
-[Source](classic_tetris_project/commands/matches/queue.py#L89)<br/>
+#### `!open`
+[Source](../classic_tetris_project/commands/matches/queue.py#L89)<br/>
 **Platforms**: Twitch<br/>
 **Aliases**: `!openqueue`<br/>
 **Must be run in a public channel**<br/>
@@ -286,8 +286,8 @@ allows moderators to add matches manually.
 
 ---
 
-### !queue
-[Source](classic_tetris_project/commands/matches/queue.py#L139)<br/>
+#### `!queue`
+[Source](../classic_tetris_project/commands/matches/queue.py#L139)<br/>
 **Platforms**: Twitch<br/>
 **Aliases**: `!q`, `!matches`
 
@@ -295,8 +295,8 @@ Prints the entire queue into chat.
 
 ---
 
-### !remove <index>
-[Source](classic_tetris_project/commands/matches/queue.py#L250)<br/>
+#### `!remove <index>`
+[Source](../classic_tetris_project/commands/matches/queue.py#L250)<br/>
 **Platforms**: Twitch<br/>
 **Aliases**: `!removematch`<br/>
 **Must be run in a public channel**<br/>
@@ -306,8 +306,8 @@ Removes the match at the specified index from the queue.
 
 ---
 
-### !winner <player> [losing score]
-[Source](classic_tetris_project/commands/matches/queue.py#L300)<br/>
+#### `!winner <player> [losing score]`
+[Source](../classic_tetris_project/commands/matches/queue.py#L300)<br/>
 **Platforms**: Twitch<br/>
 **Aliases**: `!declarewinner`<br/>
 **Must be run in a public channel**<br/>
@@ -319,16 +319,16 @@ data.
 
 ## Utility commands
 
-### !authword
-[Source](classic_tetris_project/commands/utility.py#L168)<br/>
+#### `!authword`
+[Source](../classic_tetris_project/commands/utility.py#L168)<br/>
 **Platforms**: Discord, Twitch
 
 Prints a randomly-selected word, to prove a game is happening in real-time.
 
 ---
 
-### !flip
-[Source](classic_tetris_project/commands/utility.py#L98)<br/>
+#### `!flip`
+[Source](../classic_tetris_project/commands/utility.py#L98)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!coin`, `!coinflip`
 
@@ -337,8 +337,8 @@ timeout to avoid spamming.
 
 ---
 
-### !hz <level> <height> <taps>
-[Source](classic_tetris_project/commands/utility.py#L27)<br/>
+#### `!hz <level> <height> <taps>`
+[Source](../classic_tetris_project/commands/utility.py#L27)<br/>
 **Platforms**: Discord<br/>
 **Aliases**: `!hydrant`
 
@@ -347,8 +347,8 @@ clear a given height with the number of taps required.
 
 ---
 
-### !seed
-[Source](classic_tetris_project/commands/utility.py#L74)<br/>
+#### `!seed`
+[Source](../classic_tetris_project/commands/utility.py#L74)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!hex`
 
@@ -358,8 +358,8 @@ excluded.
 
 ---
 
-### !stats
-[Source](classic_tetris_project/commands/utility.py#L149)<br/>
+#### `!stats`
+[Source](../classic_tetris_project/commands/utility.py#L149)<br/>
 **Platforms**: Discord<br/>
 **Moderator-only**
 
@@ -367,8 +367,8 @@ Prints basic usage statistics for the bot.
 
 ---
 
-### !utc
-[Source](classic_tetris_project/commands/utility.py#L131)<br/>
+#### `!utc`
+[Source](../classic_tetris_project/commands/utility.py#L131)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!time`
 
@@ -377,8 +377,8 @@ restreamers and other players.
 
 ## Other commands
 
-### !n (3 <= n <= 10)
-[Source](classic_tetris_project/commands/countdown.py#L12)<br/>
+#### `!n (3 <= n <= 10)`
+[Source](../classic_tetris_project/commands/countdown.py#L12)<br/>
 **Platforms**: Twitch<br/>
 **Moderator-only**
 
@@ -393,8 +393,8 @@ the bot a moderator by typing `/mod @ClassicTetrisBot` after you have
 
 ---
 
-### !ctm
-[Source](classic_tetris_project/commands/info.py#L48)<br/>
+#### `!ctm`
+[Source](../classic_tetris_project/commands/info.py#L48)<br/>
 **Platforms**: Twitch
 
 Prints a link to the Classic Tetris Monthly discord server (i.e.
@@ -402,8 +402,8 @@ https://go.ctm.gg/discord).
 
 ---
 
-### !export
-[Source](classic_tetris_project/commands/export.py#L10)<br/>
+#### `!export`
+[Source](../classic_tetris_project/commands/export.py#L10)<br/>
 **Platforms**: Discord<br/>
 **Must be sent in a DM**
 
@@ -412,8 +412,8 @@ a day.
 
 ---
 
-### !help
-[Source](classic_tetris_project/commands/info.py#L8)<br/>
+#### `!help`
+[Source](../classic_tetris_project/commands/info.py#L8)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!commands`
 
@@ -421,8 +421,8 @@ Prints a link to the complete command reference.
 
 ---
 
-### !obsfiles [type=ntsc]
-[Source](classic_tetris_project/commands/pb_zip.py#L8)<br/>
+#### `!obsfiles [type=ntsc]`
+[Source](../classic_tetris_project/commands/pb_zip.py#L8)<br/>
 **Platforms**: Discord<br/>
 **Moderator-only**
 
@@ -430,8 +430,8 @@ Sends a zipped list of pbs for each Twitch user.
 
 ---
 
-### !pleaseleavemychannel
-[Source](classic_tetris_project/commands/summon.py#L47)<br/>
+#### `!pleaseleavemychannel`
+[Source](../classic_tetris_project/commands/summon.py#L47)<br/>
 **Platforms**: Twitch<br/>
 **Must be run in a private message**
 
@@ -440,8 +440,8 @@ channel.
 
 ---
 
-### !source
-[Source](classic_tetris_project/commands/info.py#L21)<br/>
+#### `!source`
+[Source](../classic_tetris_project/commands/info.py#L21)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!code`, `!sourcecode`
 
@@ -449,16 +449,16 @@ Prints a link to the bot's source code.
 
 ---
 
-### !stencil
-[Source](classic_tetris_project/commands/info.py#L34)<br/>
+#### `!stencil`
+[Source](../classic_tetris_project/commands/info.py#L34)<br/>
 **Platforms**: Discord, Twitch
 
 Prints out info on, and link to download, the (in)famous Stencil.
 
 ---
 
-### !summon
-[Source](classic_tetris_project/commands/summon.py#L11)<br/>
+#### `!summon`
+[Source](../classic_tetris_project/commands/summon.py#L11)<br/>
 **Platforms**: Twitch
 
 Say this in a channel the bot is in to add the bot to your Twitch channel.
@@ -471,8 +471,8 @@ allow it to send more than one message per second.
 
 ---
 
-### !test
-[Source](classic_tetris_project/commands/test.py#L5)<br/>
+#### `!test`
+[Source](../classic_tetris_project/commands/test.py#L5)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!devtest`
 

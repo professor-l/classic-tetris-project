@@ -52,7 +52,7 @@ class Command(BaseCommand):
 
     def write_cmd(self, cmd: Type[BotCommand], f: TextIOWrapper):
         # TODO: maybe the prefix isn't always `!`?
-        f.write(f"### !{cmd.usage}")
+        f.write(f"#### `!{cmd.usage}`")
         f.write("\n")
         f.write(f"[Source]({Command.get_source_url(cmd)})")
         f.write("<br/>\n")
@@ -87,7 +87,7 @@ class Command(BaseCommand):
         assert source_file is not None
         source_path = os.path.relpath(source_file, os.getcwd())
         line_num = inspect.getsourcelines(cmd)[1]
-        return f"{source_path}#L{line_num}"
+        return f"../{source_path}#L{line_num}"
 
     @staticmethod
     def parse_docstring(doc: str):
