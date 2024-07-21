@@ -31,7 +31,6 @@ class EventView(BaseView):
                       "please contact a moderator.")
         return redirect(reverse("event:index", args=[self.event.slug]))
 
-
 class IndexView(EventView):
     def get(self, request, event_slug):
         return render(request, "event/index.html", {
@@ -95,3 +94,13 @@ class QualifierView(LoginRequiredMixin, EventView):
                 "qualifier": self.qualifier,
                 "form": form,
             })
+
+# simple list of all events
+class EventListView(BaseView):
+    def get(self, request):
+        # TODO: filter by "visible" events when the field is added
+        # TODO: order by creation date when the field is added
+        events = Event.objects.order_by('creation_time').all()
+        return render(request, "event/all.html", {
+            "events": events,
+        })

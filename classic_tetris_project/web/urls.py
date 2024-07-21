@@ -80,6 +80,7 @@ urlpatterns = [
     path("policy/", include(policy_patterns)),
     path("page/<slug:page_slug>/", pages.page, name="page"),
     path("event/<slug:event_slug>/", include(event_patterns)),
+    path("events/", events.EventListView.as_view(), name="all-events"),
     path("qualifier/<int:id>/", qualifiers.QualifierView.as_view(), name="qualifier"),
     path("review_qualifiers/", include(review_qualifiers_patterns)),
     # path("broadcast/", include(live_notification_patterns)),
