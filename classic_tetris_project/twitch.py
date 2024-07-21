@@ -154,7 +154,9 @@ class Client:
         self.connection = self.reactor.server()
         for event in irc.events.all:
             if event != 'pubmsg':
-                self.connection.add_global_handler(event, lambda c, e : logger.info(f"received ircmsg {e.type.upper()}"))
+                self.connection.add_global_handler(event, lambda _, e : logger.info(f"received ircmsg {e.type.upper()}"))
+
+        self.connection.add_global_handler("privnotice", lambda _, e : print("PRIVNOTICE:", e.arguments))
 
         self.on_welcome(self.handle_welcome)
         self.on_reconnect(self.handle_reconnect)
