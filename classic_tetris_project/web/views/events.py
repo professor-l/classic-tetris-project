@@ -100,7 +100,7 @@ class EventListView(BaseView):
     def get(self, request):
         # TODO: filter by "visible" events when the field is added
         # TODO: order by creation date when the field is added
-        events = Event.objects.order_by('creation_time').all()
+        events = Event.objects.all()
         return render(request, "event/all.html", {
             "events": events,
         })
