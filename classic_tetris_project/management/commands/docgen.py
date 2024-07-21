@@ -1,7 +1,6 @@
 import inspect
 from io import TextIOWrapper
 import os
-import re
 from typing import Type
 
 from django.core.management.base import BaseCommand
@@ -11,7 +10,8 @@ from classic_tetris_project.commands.command import (
     COMMAND_CLASSES,
 )
 from classic_tetris_project.commands.countdown import Countdown
-from classic_tetris_project.util import Platform, DocSection
+from classic_tetris_project.util import DocSection
+from classic_tetris_project.util.docs import parse_docstring
 
 SECTION_MAP = [
     (DocSection.USER, "User commands"),
@@ -42,7 +42,6 @@ class Command(BaseCommand):
                 else:
                     f.write("\n\n")
                 f.write(f"## {section_title}\n\n")
-                # TODO: write actual commands
                 cmds = [c for c in COMMAND_CLASSES if c.section == section]
                 cmds.sort(key=lambda c: c.aliases[0])
                 for i, cmd in enumerate(cmds):
@@ -56,7 +55,7 @@ class Command(BaseCommand):
         f.write("\n")
         f.write(f"[Source]({Command.get_source_url(cmd)})")
         f.write("<br/>\n")
-        platform_string = ", ".join(Command.platform_name(p) for p in
+        platform_string = ", ".join(p.display_name() for p in
                                     cmd.supported_platforms)
         f.write(f"**Platforms**: {platform_string}")
         # don't alias countdown command
@@ -69,16 +68,7 @@ class Command(BaseCommand):
             f.write(f"**{note}**")
         f.write("\n\n")
         assert cmd.__doc__
-        f.write(Command.parse_docstring(cmd.__doc__))
-
-    @staticmethod
-    def platform_name(platform: Platform):
-        if platform == Platform.DISCORD:
-            return "Discord"
-        elif platform == Platform.TWITCH:
-            return "Twitch"
-        else:
-            raise ValueError("Unhandled platform", platform)
+        f.write(parse_docstring(cmd.__doc__))
 
     # gets a github-understood relative url to the function
     @staticmethod
@@ -88,9 +78,3 @@ class Command(BaseCommand):
         source_path = os.path.relpath(source_file, os.getcwd())
         line_num = inspect.getsourcelines(cmd)[1]
         return f"../{source_path}#L{line_num}"
-
-    @staticmethod
-    def parse_docstring(doc: str):
-        doc = re.sub(r"\n *", r"\n", doc)
-        doc = doc.strip()
-        return doc

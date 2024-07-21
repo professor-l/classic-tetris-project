@@ -3,6 +3,13 @@ from enum import Enum
 class Platform(Enum):
     DISCORD = 0
     TWITCH = 1
+    def display_name(self):
+        if self == Platform.DISCORD:
+            return "Discord"
+        elif self == Platform.TWITCH:
+            return "Twitch"
+        else:
+            raise ValueError("Unhandled platform", self)
 
 class DocSection(Enum):
     USER = 0

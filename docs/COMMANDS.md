@@ -13,8 +13,7 @@ Commands are listed with `<required parameters>` and `[optional parameters]`, wh
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!getcountry`
 
-Outputs the country of the specified user, or yourself if no argument is
-provided.
+Outputs the country of the specified user, or yourself if no argument is provided.
 
 ---
 
@@ -23,8 +22,7 @@ provided.
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!getname`
 
-Prints the specified user's preferred name, or yours if no argument is
-provided.
+Prints the specified user's preferred name, or yours if no argument is provided.
 
 ---
 
@@ -33,8 +31,7 @@ provided.
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!getpb`
 
-Prints a list of pbs for the specified user, or yourself if no argument is
-provided.
+Prints a list of pbs for the specified user, or yourself if no argument is provided.
 
 ---
 
@@ -51,9 +48,7 @@ Prints the user's playstyle, or yours if no argument is provided.
 [Source](../classic_tetris_project/commands/profile.py#L66)<br/>
 **Platforms**: Discord, Twitch
 
-Prints most standard information stored in the bot belonging to the
-specified user, or yourself if no argument is provided. Also makes it
-pretty.
+Prints most standard information stored in the bot belonging to the specified user, or yourself if no argument is provided. Also makes it pretty.
 
 ---
 
@@ -62,8 +57,7 @@ pretty.
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!pronoun`, `!getpronouns`, `!getpronoun`
 
-Outputs the specified user's pronouns, or your own if no argument is
-provided.
+Outputs the specified user's pronouns, or your own if no argument is provided.
 
 ---
 
@@ -71,9 +65,7 @@ provided.
 [Source](../classic_tetris_project/commands/country.py#L31)<br/>
 **Platforms**: Discord, Twitch
 
-Sets your country in the database. You can find a list of the three-letter
-codes [here](https://www.iban.com/country-codes) under the "Alpha-3 codes"
-column.
+Sets your country in the database. You can find a list of the three-letter codes [here](https://www.iban.com/country-codes) under the "Alpha-3 codes" column.
 
 ---
 
@@ -81,8 +73,7 @@ column.
 [Source](../classic_tetris_project/commands/preferred_name.py#L30)<br/>
 **Platforms**: Discord, Twitch
 
-Sets your preferred name. Can contain letters, numbers, spaces, hyphens,
-underscores, and periods.
+Sets your preferred name. Can contain letters, numbers, spaces, hyphens, underscores, and periods.
 
 ---
 
@@ -91,8 +82,7 @@ underscores, and periods.
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!newpb`
 
-Sets your personal best in either NTSC or PAL with the indicated starting
-level (defaults to 18).
+Sets your personal best in either NTSC or PAL with the indicated starting level (defaults to 18).
 
 ---
 
@@ -119,8 +109,7 @@ Sets your pronouns to one of the valid options.
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!setsamepieces`, `!setsamepiecesets`
 
-Sets your ability to use same piece sets in gameplay. Options are
-y/yes/t/true and n/no/f/false.
+Sets your ability to use same piece sets in gameplay. Options are y/yes/t/true and n/no/f/false.
 
 ---
 
@@ -129,8 +118,7 @@ y/yes/t/true and n/no/f/false.
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!samepieces`, `!samepiecesets`
 
-Outputs whether the specified user (or yourself) can use a version of Tetris
-with same piece sets.
+Outputs whether the specified user (or yourself) can use a version of Tetris with same piece sets.
 
 ## Account linking commands
 
@@ -148,8 +136,7 @@ Prints instructions for linking accounts from multiple platforms.
 **Platforms**: Twitch<br/>
 **Must be run in a private message**
 
-Accepts the pending challenge to you, if there is one, and adds that match
-to the queue.
+Accepts the pending challenge to you, if there is one, and adds that match to the queue.
 
 ---
 
@@ -178,8 +165,7 @@ Cancels your pending challenge to someone else, if you have issued one.
 **Platforms**: Twitch<br/>
 **Must be run in a public channel**
 
-Challenges the specified user to a match. Only one challenge can be pending
-to a user at a time, and each user may only issue one challenge at a time.
+Challenges the specified user to a match. Only one challenge can be pending to a user at a time, and each user may only issue one challenge at a time.
 
 ---
 
@@ -192,8 +178,7 @@ to a user at a time, and each user may only issue one challenge at a time.
 
 Clears the entire queue.
 
-**NOTE**: This command must be run as `!clear yesimsure` (Yes, I'm sure) to
-be certain that you didn't type this command by accident.
+**NOTE**: This command must be run as `!clear yesimsure` (Yes, I'm sure) to be certain that you didn't type this command by accident.
 
 ---
 
@@ -204,8 +189,7 @@ be certain that you didn't type this command by accident.
 **Must be run in a public channel**<br/>
 **Moderator-only**
 
-Closes the queue. This prevents challenges from being issued or accepted.
-Moderators may no longer add matches to the queue unless they reopen it.
+Closes the queue. This prevents challenges from being issued or accepted. Moderators may no longer add matches to the queue unless they reopen it.
 
 ---
 
@@ -225,8 +209,7 @@ Declines the pending challenge to you, if there is one.
 **Must be run in a public channel**<br/>
 **Moderator-only**
 
-Ends the current match, automatically determining the winner based on the
-match data stored each time `!winner` was called.
+Ends the current match, automatically determining the winner based on the match data stored each time `!winner` was called.
 
 ---
 
@@ -235,8 +218,7 @@ match data stored each time `!winner` was called.
 **Platforms**: Twitch<br/>
 **Must be run in a public channel**
 
-Forfeits the match at the specified index, provided you are one of the
-players in that match.
+Forfeits the match at the specified index, provided you are one of the players in that match.
 
 ---
 
@@ -247,9 +229,7 @@ players in that match.
 **Must be run in a public channel**<br/>
 **Moderator-only**
 
-Adds a match between the two specified players to the queue at the
-specified index, or at the end if the index is greater than the size of the
-queue.
+Adds a match between the two specified players to the queue at the specified index, or at the end if the index is greater than the size of the queue.
 
 ---
 
@@ -258,8 +238,7 @@ queue.
 **Platforms**: Twitch<br/>
 **Must be run in a public channel**
 
-Retrieves the users in chat with personal bests closest to that of the
-specified user (or you). Displays specified number of results.
+Retrieves the users in chat with personal bests closest to that of the specified user (or you). Displays specified number of results.
 
 ---
 
@@ -281,8 +260,7 @@ Moves the match at the specified `start index` to the `end index`.
 **Must be run in a public channel**<br/>
 **Moderator-only**
 
-Opens the queue. This both allows players to challenge one another and
-allows moderators to add matches manually.
+Opens the queue. This both allows players to challenge one another and allows moderators to add matches manually.
 
 ---
 
@@ -313,9 +291,7 @@ Removes the match at the specified index from the queue.
 **Must be run in a public channel**<br/>
 **Moderator-only**
 
-Declares the specified player the winner of a game, and stores that result
-(as well as the optionally provided losing score) in the current match
-data.
+Declares the specified player the winner of a game, and stores that result (as well as the optionally provided losing score) in the current match data.
 
 ## Utility commands
 
@@ -332,8 +308,7 @@ Prints a randomly-selected word, to prove a game is happening in real-time.
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!coin`, `!coinflip`
 
-Prints "Heads!" or "Tails!" randomly. Note: this command has a 10 second
-timeout to avoid spamming.
+Prints "Heads!" or "Tails!" randomly. Note: this command has a 10 second timeout to avoid spamming.
 
 ---
 
@@ -342,8 +317,7 @@ timeout to avoid spamming.
 **Platforms**: Discord<br/>
 **Aliases**: `!hydrant`
 
-For the given level, provides the approximate tapping speed(s) required to
-clear a given height with the number of taps required.
+For the given level, provides the approximate tapping speed(s) required to clear a given height with the number of taps required.
 
 ---
 
@@ -352,9 +326,7 @@ clear a given height with the number of taps required.
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!hex`
 
-Prints a random 6-digit hex code, used for same piece set matches. Seeds
-which are known to generate bad (i.e. repetitive) piece sequences are
-excluded.
+Prints a random 6-digit hex code, used for same piece set matches. Seeds which are known to generate bad (i.e. repetitive) piece sequences are excluded.
 
 ---
 
@@ -372,8 +344,7 @@ Prints basic usage statistics for the bot.
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!time`
 
-Prints the current date and time in UTC. Used for scheduling matches with
-restreamers and other players.
+Prints the current date and time in UTC. Used for scheduling matches with restreamers and other players.
 
 ## Other commands
 
@@ -382,23 +353,17 @@ restreamers and other players.
 **Platforms**: Twitch<br/>
 **Moderator-only**
 
-Counts down from 3 before saying "Tetris!" in the chat. Works for any
-number from 3-10.
+Counts down from 3 before saying "Tetris!" in the chat. Works for any number from 3-10.
 
-**Note:** If the bot is not a moderator in your Twitch channel, it will not
-be able to say more than one message per second, and this restriction
-(which is built into Twitch) will interfere with countdowns. You can make
-the bot a moderator by typing `/mod @ClassicTetrisBot` after you have
-`!summon`ed it.
+**Note:** If the bot is not a moderator in your Twitch channel, it will not be able to say more than one message per second, and this restriction (which is built into Twitch) will interfere with countdowns. You can make the bot a moderator by typing `/mod @ClassicTetrisBot` after you have `!summon`ed it.
 
 ---
 
 #### `!ctm`
-[Source](../classic_tetris_project/commands/info.py#L48)<br/>
+[Source](../classic_tetris_project/commands/info.py#L73)<br/>
 **Platforms**: Twitch
 
-Prints a link to the Classic Tetris Monthly discord server (i.e.
-https://go.ctm.gg/discord).
+Prints a link to the Classic Tetris Monthly discord server (i.e. https://go.ctm.gg/discord).
 
 ---
 
@@ -407,13 +372,12 @@ https://go.ctm.gg/discord).
 **Platforms**: Discord<br/>
 **Must be sent in a DM**
 
-Exports a basic summary of all bot users as a `.csv` file. Is updated once
-a day.
+Exports a basic summary of all bot users as a `.csv` file. Is updated once a day.
 
 ---
 
 #### `!help`
-[Source](../classic_tetris_project/commands/info.py#L8)<br/>
+[Source](../classic_tetris_project/commands/info.py#L9)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!commands`
 
@@ -435,13 +399,12 @@ Sends a zipped list of pbs for each Twitch user.
 **Platforms**: Twitch<br/>
 **Must be run in a private message**
 
-Call this command in a whisper to the bot to remove the bot from your
-channel.
+Call this command in a whisper to the bot to remove the bot from your channel.
 
 ---
 
 #### `!source`
-[Source](../classic_tetris_project/commands/info.py#L21)<br/>
+[Source](../classic_tetris_project/commands/info.py#L46)<br/>
 **Platforms**: Discord, Twitch<br/>
 **Aliases**: `!code`, `!sourcecode`
 
@@ -450,7 +413,7 @@ Prints a link to the bot's source code.
 ---
 
 #### `!stencil`
-[Source](../classic_tetris_project/commands/info.py#L34)<br/>
+[Source](../classic_tetris_project/commands/info.py#L59)<br/>
 **Platforms**: Discord, Twitch
 
 Prints out info on, and link to download, the (in)famous Stencil.
@@ -461,13 +424,9 @@ Prints out info on, and link to download, the (in)famous Stencil.
 [Source](../classic_tetris_project/commands/summon.py#L11)<br/>
 **Platforms**: Twitch
 
-Say this in a channel the bot is in to add the bot to your Twitch channel.
-If you've `!link`ed your Twitch and Discord accounts through the bot, you
-can even summon the bot to your Twitch channel by messaging it on Discord.
+Say this in a channel the bot is in to add the bot to your Twitch channel. If you've `!link`ed your Twitch and Discord accounts through the bot, you can even summon the bot to your Twitch channel by messaging it on Discord.
 
-**Note**: If you plan on using the countdown command (Or if you think the
-bot will be chatting often), make sure you make the bot a moderator to
-allow it to send more than one message per second.
+**Note**: If you plan on using the countdown command (Or if you think the bot will be chatting often), make sure you make the bot a moderator to allow it to send more than one message per second.
 
 ---
 
