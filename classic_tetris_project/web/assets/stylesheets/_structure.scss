@@ -12,9 +12,9 @@ body {
   a {
     color: var(--link-primary);
 
-    &.btn {
-      color: colors.$button-primary-text;
-    }
+    // &.btn {
+    //   color: colors.$button-primary-text;
+    // }
   }
 
   &.transparent {

@@ -13,9 +13,9 @@
   text-decoration: none;
   cursor: pointer;
 
-  a {
-    color: colors.$button-primary-text;
-  }
+  // a {
+  //   color: var(--link-primary);
+  // }
 
   &:hover {
     border: none;

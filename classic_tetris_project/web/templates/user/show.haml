@@ -17,7 +17,7 @@
         %h2.section__title
           Profile
         - if user == current_user
-          %a.btn.btn--link{href: '{% url "profile:edit" %}'}
+          %a{href: '{% url "profile:edit" %}'}
             Edit
       .section__body
         .field-list
