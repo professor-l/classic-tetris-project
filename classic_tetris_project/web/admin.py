@@ -149,7 +149,7 @@ class EventAdmin(DjangoObjectActions, MarkdownxModelAdmin):
 
 @admin.register(Qualifier)
 class QualifierAdmin(admin.ModelAdmin):
-    list_display = ("user", "event", "display_score", "status_tag", "reviewed_at")
+    list_display = ("user", "event", "display_score", "status_tag", "reviewed_at", "reviewed_by")
     list_filter = ("approved",)
 
     fieldsets = (
