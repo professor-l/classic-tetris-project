@@ -81,7 +81,7 @@ class GameInline(admin.TabularInline):
 @admin.register(Match)
 class MatchAdmin(admin.ModelAdmin):
     inlines = [GameInline]
-    list_display = ('__str__', 'player1', 'wins1', 'player2', 'wins2', 'channel', 'ended_at')
+    list_display = ('__str__', 'player1', 'wins1', 'player2', 'wins2', 'channel', 'ended_at', "reported_by")
     autocomplete_fields = ("player1", "player2", "channel")
     readonly_fields = ("reported_by",)
 
