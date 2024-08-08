@@ -17,6 +17,7 @@ class UserView(BaseView):
             "user": user,
             "discord_user": (user.discord_user if hasattr(user, "discord_user") else None),
             "twitch_user": (user.twitch_user if hasattr(user, "twitch_user") else None),
+            "pb": f"{user.get_pb():,}",
         })
 
     def get_user(self, id):

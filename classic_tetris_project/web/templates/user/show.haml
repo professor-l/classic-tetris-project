@@ -36,3 +36,7 @@
           - if user.playstyle
             - field_list_row "Playstyle:"
               = user.get_playstyle_display
+
+          - if pb
+            - field_list_row "Overall PB:"
+              = pb
