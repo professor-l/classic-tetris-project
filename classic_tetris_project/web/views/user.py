@@ -13,11 +13,17 @@ class UserView(BaseView):
         if hasattr(user, "twitch_user") and id != user.twitch_user.username:
             return redirect(reverse("user", args=[user.twitch_user.username]))
 
+        pb = user.get_pb()
+        if pb is None:
+            pb = "Not set"
+        else: 
+            pb = f"{pb:,}"
+
         return render(request, "user/show.haml", {
             "user": user,
             "discord_user": (user.discord_user if hasattr(user, "discord_user") else None),
             "twitch_user": (user.twitch_user if hasattr(user, "twitch_user") else None),
-            "pb": f"{user.get_pb():,}",
+            "pb": pb,
         })
 
     def get_user(self, id):
