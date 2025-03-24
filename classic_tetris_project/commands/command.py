@@ -251,6 +251,8 @@ class Command(ABC):
         pass
 
 class CustomTwitchCommand(Command):
+    usage = "custom command"
+
     def __init__(self, context, command_object):
         super().__init__(context)
         self.supported_platforms = (Platform.TWITCH,)
