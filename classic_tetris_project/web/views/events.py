@@ -39,6 +39,12 @@ class IndexView(EventView):
             "qualifier_groups": QualifierTable(self.event).groups(),
         })
 
+# Show qualifier rules
+class QualRulesView(EventView):
+    def get(self, request, event_slug):
+        return render(request, "event/qual_rules.html", {
+            "event": self.event,
+        })
 
 # Begin qualifier
 class QualifyView(LoginRequiredMixin, EventView):

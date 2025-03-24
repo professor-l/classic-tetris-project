@@ -58,6 +58,7 @@ event_patterns = ([
     path("", events.IndexView.as_view(), name="index"),
     path("qualify/", events.QualifyView.as_view(), name="qualify"),
     path("qualifier/", events.QualifierView.as_view(), name="qualifier"),
+    path("qual-rules/", events.QualRulesView.as_view(), name="qual-rules"),
     path("<slug:tournament_slug>/", include(tournament_patterns)),
 ], "event")
 

@@ -12,6 +12,7 @@ data/
 node_modules/
 htmlcov/
 .env
+*.dump
 
 /export.py
 pbs.csv
