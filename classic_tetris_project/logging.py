@@ -25,6 +25,7 @@ class LoggingManager:
         self.file_handler.namer = lambda name: datetime.now().strftime("logs/bot-%Y-%m-%d.log")
 
     def bind(self, logger):
+        logger.propagate = False
         logger.addHandler(self.console_handler)
         logger.addHandler(self.file_handler)
         logger.setLevel(logging.INFO)
