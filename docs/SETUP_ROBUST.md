@@ -107,18 +107,20 @@ Next, in the same browser window (logged in to new account), head to https://dev
 
 From here, click "Manage", which will bring up a settings menu. Copy the `Client ID` field into the `TWITCH_CLIENT_ID` field of your `.env` file. At the bottom of the settings menu, you'll find a button for generating a new client secret. Press it and copy the results into your `.env` file's `TWITCH_CLIENT_SECRET`. That's all we'll need from this page.
 
-Finally, we need an OAuth token to be used for API calls and for chat functionality.  To do this, we can follow the steps outlined here: https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#implicit-grant-flow. The following get request will suffice, which you can run in your web browser (replace `{CLIENT_ID}` with the value you put for `TWITCH_CLIENT_ID`):
+Finally, we need an OAuth token to be used for API calls and for chat functionality. The full process is outlined in the [twitch docs](https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#authorization-code-grant-flow), but we only need to do the first step (the bot itself takes care of the rest). Simply open this url in your browser (replace `{CLIENT_ID}` with your `TWITCH_CLIENT_ID`):
 
 ```
-https://id.twitch.tv/oauth2/authorize?client_id={CLIENT_ID}&redirect_uri=http://localhost&response_type=token&scope=chat:read chat:edit moderator:read:chatters
+https://id.twitch.tv/oauth2/authorize?client_id={CLIENT_ID}&redirect_uri=http://localhost&response_type=code&scope=chat:read chat:edit moderator:read:chatters
 ```
 
-You'll then receive a URL with an access token that looks like `oauth:{something}`. Copy the `{something}` into your `.env` file's `TWITCH_TOKEN` (meaning you *do not* include the `oauth:` prefix).
+You'll then receive a URL with an access token that looks like `code={something}`. Copy the `{something}` into your `.env` file's `TWITCH_AUTH_CODE` (meaning you *do not* include the `oauth:` prefix).
 
 Aside: you'll notice a number of *scopes* that are part of the url. These are permissions that the bot needs from Twitch. Here's what they all mean:
-- `chat:read` - view chat messages, so it can receive commands.
+- `chat:read` - view chat messages, to receive commands.
 - `chat:edit` - send chat messages, to respond to commands.
 - `moderator:read:chatters` - view the list of users currently viewing a channel that the bot is a moderator of. Used for commands like `!match`.
+
+After this, you're done! The docs have more steps, but this is handled by the bot
 
 #### Discord
 

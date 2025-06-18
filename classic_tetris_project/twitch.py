@@ -4,8 +4,10 @@ import logging
 import re
 import requests
 import time
+from urllib.parse import quote
 from django.core.cache import cache
 from threading import Thread
+from typing import Callable
 
 from .env import env
 
@@ -18,12 +20,12 @@ TWITCH_PORT = 6667
 logger = logging.getLogger("twitch-bot")
 
 class APIClient:
-    def __init__(self, client_id, client_secret):
+    def __init__(self, client_id, client_secret, client_auth_code, client_redirect_uri):
         self.client_id = client_id
-        self.token_manager = TokenManager(client_id, client_secret)
+        self.token_manager = TokenManager(client_id, client_secret, client_auth_code, client_redirect_uri)
 
     def default_headers(self):
-        token = self.token_manager.get()
+        token = self.token_manager.get_app_access_token()
         return {
             "Client-ID": self.client_id,
             "Authorization": f"Bearer {token}"
@@ -114,18 +116,20 @@ class TokenManager:
     # Get a new token 24 hours before the current one expires
     EXPIRATION_BUFFER = 24 * 60 * 60
 
-    def __init__(self, client_id, client_secret):
+    def __init__(self, client_id, client_secret, client_auth_code, client_redirect_uri):
         self.client_id = client_id
         self.client_secret = client_secret
+        self.client_auth_code = client_auth_code
+        self.client_redirect_uri = client_redirect_uri
 
-    def get(self):
+    def get_app_access_token(self):
         token = cache.get("twitch.oauth.app_access_token")
         if token:
             return token
         else:
-            return self.create_token()
+            return self.create_app_access_token()
 
-    def create_token(self):
+    def create_app_access_token(self):
         response = requests.post(f"{TWITCH_OAUTH_API}/token", params={
             "client_id": self.client_id,
             "client_secret": self.client_secret,
@@ -133,35 +137,92 @@ class TokenManager:
         })
         data = response.json()
         if "access_token" not in data:
-            raise Exception(str(data["message"]) or "oauth failed")
+            raise Exception(str(data["message"]) or "app access oauth failed")
 
         token = data["access_token"]
         expires_in = int(data["expires_in"])
-        self.store(token, expires_in)
+        self.store_app_access_token(token, expires_in)
         return token
 
-    def store(self, token, expires_in):
+    def store_app_access_token(self, token, expires_in):
         cache.set("twitch.oauth.app_access_token", token, timeout=expires_in - TokenManager.EXPIRATION_BUFFER)
 
+    def get_or_refresh_user_access_token(self):
+        access_token = cache.get("twitch.oauth.user_access_token")
+        if access_token:
+            return access_token
+        refresh_token = cache.get("twitch.oauth.user_refresh_token")
+        if refresh_token:
+            return self.refresh_user_access_token(refresh_token)
+        else:
+            return self.get_user_access_token()
+
+    def get_user_access_token(self):
+        response = requests.post(f"{TWITCH_OAUTH_API}/token", params={
+            "client_id": self.client_id,
+            "client_secret": self.client_secret,
+            "code": self.client_auth_code,
+            "grant_type": "authorization_code",
+            "redirect_uri": self.client_redirect_uri,
+        })
+        data = response.json()
+        if "access_token" not in data:
+            if "message" in data:
+                logger.error(data["message"])
+            self.raise_auth_code_exception()
+
+        access_token = data["access_token"]
+        expires_in = int(data["expires_in"])
+        refresh_token = data["refresh_token"]
+        self.store_user_access_token(access_token, expires_in, refresh_token)
+        return access_token
+
+    def raise_auth_code_exception(self):
+        auth_code_url = f"{TWITCH_OAUTH_API}/authorize?client_id={self.client_id}&redirect_uri={self.client_redirect_uri}&response_type=code&scope=chat:read%20chat:edit%20moderator:read:chatters"
+        raise Exception(f"User oauth failed. Go to {auth_code_url} for a new TWITCH_AUTH_CODE")
+
+    def refresh_user_access_token(self, refresh_token):
+        response = requests.post(f"{TWITCH_OAUTH_API}/token", params={
+            "client_id": self.client_id,
+            "client_secret": self.client_secret,
+            "grant_type": "refresh_token",
+            "refresh_token": quote(refresh_token),
+        })
+        data = response.json()
+        if "access_token" not in data:
+            if "message" in data:
+                logger.error(data["message"])
+            self.raise_auth_code_exception()
+
+        access_token = data["access_token"]
+        expires_in = int(data["expires_in"])
+        refresh_token = data["refresh_token"]
+        self.store_user_access_token(access_token, expires_in, refresh_token)
+        return access_token
+
+    def store_user_access_token(self, access_token, expires_in, refresh_token):
+        cache.set("twitch.oauth.user_access_token", access_token, timeout=expires_in)
+        cache.set("twitch.oauth.user_refresh_token", refresh_token, timeout=None)
 
 # IRC client wrapper for interacting with Twitch chat
-class Client:
-    def __init__(self, username, token, default_channels=[]):
+class IrcClient:
+    def __init__(self, username, token_manager, default_channels=[]):
+        # type: (str, TokenManager, list[str]) -> None
         self.username = username
-        self.token = token
+        self.token_manager = token_manager
         self.default_channels = default_channels
         self.reactor = irc.client.Reactor()
         self.connection = self.reactor.server()
         for event in irc.events.all:
             if event != 'pubmsg':
-                self.connection.add_global_handler(event, lambda _, e : logger.info(f"received ircmsg {e.type.upper()}"))
+                self.on_event(event, lambda c, e : logger.info(f"{e.type.upper()}: {e.arguments}"))
 
-        self.connection.add_global_handler("privnotice", lambda _, e : print("PRIVNOTICE:", e.arguments))
+        self.on_event("welcome", self.handle_welcome)
+        self.on_event("reconnect", self.handle_reconnect)
+        self.on_event("disconnect", self.handle_disconnect)
 
-        self.on_welcome(self.handle_welcome)
-        self.on_reconnect(self.handle_reconnect)
-
-    def handle_welcome(self):
+    def handle_welcome(self, c, e):
+        # type: (irc.client.ServerConnection, irc.client.Event) -> None
         self.connection.cap("REQ", ":twitch.tv/tags")
         self.connection.cap("REQ", ":twitch.tv/commands")
 
@@ -170,13 +231,34 @@ class Client:
     def start(self):
         self.user_obj = API.user_from_username(self.username, self)
         self.user_id = self.user_obj.id
-        self.connection.connect(TWITCH_SERVER, TWITCH_PORT, self.username, self.token)
+
+        token = f'oauth:{self.token_manager.get_or_refresh_user_access_token()}'
+        self.connection.connect(TWITCH_SERVER, TWITCH_PORT, self.username, token)
         self.reactor.process_forever()
 
-    def on_reconnect(self, handler):
-        self.connection.add_global_handler("reconnect", lambda c, e: handler())
+    def on_event(self, event, handler):
+        # type: (str, Callable[[irc.client.ServerConnection, irc.client.Event], None]) -> None
+        self.connection.add_global_handler(event, handler)
 
-    def handle_reconnect(self):
+    def on_event_decorator(self, event):
+        def _add_handler(handler):
+            # type: (Callable[[irc.client.ServerConnection, irc.client.Event], None]) -> None
+            self.connection.add_global_handler(event, handler)
+        return _add_handler
+
+    def handle_disconnect(self, c, e):
+        # type: (irc.client.ServerConnection, irc.client.Event) -> None
+        if e.arguments and e.arguments[0] == 'Connection reset by peer':
+            # assume invalid token
+            refresh_token = cache.get("twitch.oauth.user_refresh_token")
+            if refresh_token:
+                token = f'oauth:{self.token_manager.refresh_user_access_token(refresh_token)}'
+            else:
+                self.token_manager.raise_auth_code_exception()
+            self.connection.connect(TWITCH_SERVER, TWITCH_PORT, self.username, token)
+
+    def handle_reconnect(self, c, e):
+        # type: (irc.client.ServerConnection, irc.client.Event) -> None
         timeout = 1
         while True:
             try:
@@ -185,9 +267,6 @@ class Client:
             except irc.client.ServerConnectionError:
                 time.sleep(timeout)
                 timeout = min(64, timeout * 2)
-
-    def on_welcome(self, handler):
-        self.connection.add_global_handler("welcome", lambda c, e: handler())
 
     def on_message(self, handler):
         self.connection.add_global_handler("pubmsg", lambda c, e: self._handle_message(e, handler))
@@ -288,12 +367,14 @@ class Whisper(Channel):
 
 API = APIClient(
     env("TWITCH_CLIENT_ID", default=""),
-    env("TWITCH_CLIENT_SECRET", default="")
+    env("TWITCH_CLIENT_SECRET", default=""),
+    env("TWITCH_AUTH_CODE", default=""),
+    env("TWITCH_REDIRECT_URI", default=""),
 )
 
 if API.client_id != "":
-    client = Client(
+    client = IrcClient(
         env("TWITCH_USERNAME", default=""),
-        f'oauth:{env("TWITCH_TOKEN")}',
+        API.token_manager,
         default_channels=[env("TWITCH_USERNAME", default="")]
     )

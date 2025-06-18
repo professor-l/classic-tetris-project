@@ -62,8 +62,8 @@ class Command(BaseCommand):
         discord.client.run(env("DISCORD_TOKEN"))
 
     def run_twitch(self):
-        @twitch.client.on_welcome
-        def on_welcome():
+        @twitch.client.on_event_decorator("welcome")
+        def on_welcome(c, e):
             twitch.logger.info("Connected to twitch")
 
         @twitch.client.on_message
@@ -72,8 +72,8 @@ class Command(BaseCommand):
                 context = TwitchCommandContext(message)
                 context.dispatch()
 
-        @twitch.client.on_reconnect
-        def on_reconnect():
+        @twitch.client.on_event_decorator("reconnect")
+        def on_reconnect(c, e):
             guild = discord.get_guild()
             # tries to fetch guild for 5 seconds, and returns if it fails
             timeout = 5
@@ -92,7 +92,8 @@ class Command(BaseCommand):
             # start in async-land, then go to sync with dispatch, then back).
             # since we start in sync-land here, there's nowhere to go back.
             # source: https://stackoverflow.com/questions/52232177/runtimeerror-timeout-context-manager-should-be-used-inside-a-task
-            asyncio.run_coroutine_threadsafe(chan.send("Twitch bot was disconnected, attempting to reconnect..."), discord.client.loop)
+            if chan:
+                asyncio.run_coroutine_threadsafe(chan.send("Twitch bot was disconnected, attempting to reconnect..."), discord.client.loop)
 
         twitch.client.start()
 
