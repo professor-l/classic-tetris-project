@@ -273,11 +273,11 @@ class CtwFormat(QualifyingType):
     NAME = "CTW Format"
     EXTRA_FIELDS = [
         ("points", "Points"),
-        ("kicker", "Kicker"),
+        ("highest_score", "Highest Score"),
     ]
     ORDER_BY = [
         RawSQL("(qualifying_data::json->>'points')::integer", ()).desc(),
-        RawSQL("(qualifying_data::json->>'kicker')::integer", ()).desc()
+        RawSQL("(qualifying_data::json->>'highest_score')::integer", ()).desc()
     ]
 
     class Form(QualifyingType.Form):
@@ -286,25 +286,25 @@ class CtwFormat(QualifyingType):
             help_text=("Total number of points (2 points per 1.0M, 3 points "
                        "per 1.1M, 4 points per 1.2M, etc.).")
         )
-        kicker = forms.IntegerField(
-            min_value=0, label="Kicker",
+        highest_score = forms.IntegerField(
+            min_value=0, label="Highest Score",
             help_text="Highest overall score."
         )
 
     def load_data(self, data):
         self.points = data["points"] if data else 0
-        self.kicker = data["kicker"] if data else 0
+        self.highest_score = data["highest_score"] if data else 0
 
     def qualifying_score(self):
         return self.points
 
     def format_score(self):
-        return "{}; {:,}".format(self.points, self.kicker)
+        return "{}; {:,}".format(self.points, self.highest_score)
 
     def qualifying_data(self):
         return {
             "points": self.points,
-            "kicker": self.kicker,
+            "highest_score": self.highest_score,
         }
 
 QUALIFYING_TYPES = {
