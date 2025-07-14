@@ -121,8 +121,8 @@ class Highest2Scores(QualifyingType):
         score2 = forms.IntegerField(min_value=0, label="Score 2")
 
     def load_data(self, data):
-        self.score1 = data[0] if data else None
-        self.score2 = data[1] if data else None
+        self.score1 = data[0] if data else 0
+        self.score2 = data[1] if data else 0
 
     def qualifying_score(self):
         return (self.score1 + self.score2) // 2
@@ -145,9 +145,9 @@ class Highest3Scores(QualifyingType):
         score3 = forms.IntegerField(min_value=0, label="Score 3")
 
     def load_data(self, data):
-        self.score1 = data[0] if data else None
-        self.score2 = data[1] if data else None
-        self.score3 = data[2] if data else None
+        self.score1 = data[0] if data else 0
+        self.score2 = data[1] if data else 0
+        self.score3 = data[2] if data else 0
 
     def qualifying_score(self):
         return (self.score1 + self.score2 + self.score3) // 3
@@ -253,13 +253,13 @@ class Clipped7GameAvg(QualifyingType):
 
     def load_data(self, data):
         pass
-        self.score1 = data[0] if data else None
-        self.score2 = data[1] if data else None
-        self.score3 = data[2] if data else None
-        self.score4 = data[3] if data else None
-        self.score5 = data[4] if data else None
-        self.score6 = data[5] if data else None
-        self.score7 = data[6] if data else None
+        self.score1 = data[0] if data else 0
+        self.score2 = data[1] if data else 0
+        self.score3 = data[2] if data else 0
+        self.score4 = data[3] if data else 0
+        self.score5 = data[4] if data else 0
+        self.score6 = data[5] if data else 0
+        self.score7 = data[6] if data else 0
 
     def qualifying_score(self):
         scores = list(reversed(sorted([self.score1, self.score2, self.score3, self.score4, self.score5, self.score6, self.score7])))
@@ -269,6 +269,44 @@ class Clipped7GameAvg(QualifyingType):
     def qualifying_data(self):
         return list(reversed(sorted([self.score1, self.score2, self.score3, self.score4, self.score5, self.score6, self.score7])))
 
+class CtwFormat(QualifyingType):
+    NAME = "CTW Format"
+    EXTRA_FIELDS = [
+        ("points", "Points"),
+        ("kicker", "Kicker"),
+    ]
+    ORDER_BY = [
+        RawSQL("(qualifying_data::json->>'points')::integer", ()).desc(),
+        RawSQL("(qualifying_data::json->>'kicker')::integer", ()).desc()
+    ]
+
+    class Form(QualifyingType.Form):
+        maxouts = forms.IntegerField(
+            min_value=0, label="Points",
+            help_text=("Total number of points (2 points per 1.0M, 3 points "
+                       "per 1.1M, 4 points per 1.2M, etc.).")
+        )
+        kicker = forms.IntegerField(
+            min_value=0, label="Kicker",
+            help_text="Highest overall score."
+        )
+
+    def load_data(self, data):
+        self.points = data["points"] if data else 0
+        self.kicker = data["kicker"] if data else 0
+
+    def qualifying_score(self):
+        return self.points
+
+    def format_score(self):
+        return "{}; {:,}".format(self.points, self.kicker)
+
+    def qualifying_data(self):
+        return {
+            "points": self.points,
+            "kicker": self.kicker,
+        }
+
 QUALIFYING_TYPES = {
     1: HighestScore,
     2: Highest2Scores,
@@ -276,5 +314,6 @@ QUALIFYING_TYPES = {
     4: MostMaxouts,
     5: LowestTime,
     6: Clipped7GameAvg,
+    7: CtwFormat,
 }
 CHOICES = [(n, qualifying_type.NAME) for n, qualifying_type in QUALIFYING_TYPES.items()]
