@@ -281,7 +281,7 @@ class CtwFormat(QualifyingType):
     ]
 
     class Form(QualifyingType.Form):
-        maxouts = forms.IntegerField(
+        points = forms.IntegerField(
             min_value=0, label="Points",
             help_text=("Total number of points (2 points per 1.0M, 3 points "
                        "per 1.1M, 4 points per 1.2M, etc.).")
