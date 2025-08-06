@@ -52,6 +52,7 @@ class Command(ABC):
                 if settings.TESTING:
                     raise e
                 self.send_message("Internal error :(")
+                self.context.log(e)
                 rollbar.report_exc_info(extra_data=self.context.report_data())
                 if settings.DEBUG:
                     traceback.print_exc()
