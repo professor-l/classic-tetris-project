@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from inspect import signature
+import logging
 import re
 import rollbar
 import traceback
@@ -13,6 +14,7 @@ from django.conf import settings
 from .. import discord, twitch
 from ..util import Platform, DocSection
 from ..models.users import DiscordUser, TwitchUser
+from ..logging import internal_logger
 
 RE_DISCORD_MENTION = re.compile(r"^<@!?(\d+)>$")
 RE_DISCORD_TAG = re.compile(r"^@?((?P<username>[^@#:]+)#(?P<discriminator>\d+))$")
@@ -52,7 +54,7 @@ class Command(ABC):
                 if settings.TESTING:
                     raise e
                 self.send_message("Internal error :(")
-                self.context.log(e)
+                internal_logger.log(logging.ERROR, e)
                 rollbar.report_exc_info(extra_data=self.context.report_data())
                 if settings.DEBUG:
                     traceback.print_exc()

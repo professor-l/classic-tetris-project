@@ -6,6 +6,7 @@ import sys
 
 from . import discord, twitch
 
+internal_logger = logging.getLogger("internal")
 
 class LoggingManager:
     def __init__(self):
@@ -40,3 +41,4 @@ class LoggingManager:
         manager = LoggingManager()
         manager.bind(discord.logger)
         manager.bind(twitch.logger)
+        manager.bind(internal_logger)
