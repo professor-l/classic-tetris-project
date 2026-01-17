@@ -41,7 +41,7 @@ class SetPronounCommand(Command):
                 return
 
         pronoun_list = ", ".join(pronoun_map.keys())
-        raise CommandException(f"Invalid pronoun option. Choose one of: {pronoun_list}")
+        raise CommandException(f"Unsupported pronoun option. Available options are: {pronoun_list}")
 
 @Command.register()
 class GetPronounCommand(Command):
