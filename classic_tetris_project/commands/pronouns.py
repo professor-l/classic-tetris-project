@@ -20,6 +20,8 @@ class SetPronounCommand(Command):
             ("she", ["her", "hers", "she/her", "she/her/hers"]),
             ("they", ["theirs", "they/them", "they/them/theirs"]),
             ("he/they", ["ht"]),
+            ("he/she", ["hs"]),
+            ("she/he", ["sh"]),
             ("they/he", ["th"]),
             ("she/they", ["st"]),
             ("they/she", ["ts"]),

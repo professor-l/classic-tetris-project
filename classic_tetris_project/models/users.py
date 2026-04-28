@@ -23,6 +23,8 @@ class User(models.Model):
         "he": "He/him/his",
         "she": "She/her/hers",
         "they": "They/them/theirs",
+        "he/she": "He/she",
+        "she/he": "She/he",
         "he/they": "He/they",
         "they/he": "They/he",
         "she/they": "She/they",
